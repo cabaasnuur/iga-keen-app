@@ -3,112 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>IGA KEEN — Premium Ride</title>
+<title>IGA KEEN — Premium Services</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background-color: #050505; color: #fff; display: flex; justify-content: center; min-height: 100vh; }
   
-  .app-container { width: 100%; max-width: 500px; background: #050505; position: relative; overflow-x: hidden; }
+  .app-container { width: 100%; max-width: 500px; background: #050505; position: relative; overflow-x: hidden; padding-bottom: 40px; }
 
   /* ===== TOP BAR ===== */
   .top-bar {
-    display: flex; align-items: center; padding: 16px 20px;
-    border-bottom: 1px solid #1a1a1a; background: rgba(10, 10, 10, 0.9);
-    backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; padding: 20px;
+    background: #050505; position: sticky; top: 0; z-index: 50;
   }
-  .back-btn { font-size: 1.2rem; margin-right: 15px; cursor: pointer; color: #ddd; transition: 0.2s; display: none; }
-  .back-btn.active { display: block; }
-  .top-bar h2 {
-    font-size: 1.1rem; font-weight: 800; letter-spacing: 1.5px;
-    background: linear-gradient(90deg, #ffffff, #a0a0a0);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+  .user-profile { display: flex; align-items: center; gap: 12px; }
+  .user-avatar {
+    width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    display: flex; justify-content: center; align-items: center; font-weight: 800; font-size: 1.2rem; color: #000;
   }
-  .top-tagline { font-size: 0.65rem; color: #888; margin-left: auto; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
-
-  /* ===== HOME PAGE ===== */
-  .page { display: none; animation: fadeIn 0.4s ease; }
-  .page.active { display: block; }
-  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
-
-  .header-section { padding: 25px 20px; border-bottom: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; }
-  .brand-title {
-    font-size: 1.9rem; font-weight: 900; letter-spacing: 2px;
-    background: linear-gradient(120deg, #ffffff 0%, #b0b0b0 50%, #ffffff 100%);
-    background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: shine 4s linear infinite;
+  .user-info h2 { font-size: 0.9rem; font-weight: 600; color: #aaa; }
+  .user-info h3 { font-size: 1.1rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 4px; }
+  .user-info h3 svg { width: 16px; height: 16px; fill: #ff7e5f; }
+  
+  .notif-btn {
+    margin-left: auto; background: #1a1a1a; border: 1px solid #2a2a2a; width: 45px; height: 45px;
+    border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer;
   }
-  .brand-title .dot { -webkit-text-fill-color: #38bdf8; color: #38bdf8; }
-  @keyframes shine { to { background-position: 200% center; } }
-  .btn-outline {
-    background: transparent; border: 1px solid #333; color: #ccc; padding: 8px 16px;
-    border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.3s;
+  .notif-btn svg { width: 22px; height: 22px; fill: #fff; }
+
+  /* ===== HERO BANNER ===== */
+  .hero {
+    margin: 0 20px 25px; padding: 30px 25px;
+    background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+    border-radius: 25px; position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(255, 126, 95, 0.2);
   }
+  .hero::before {
+    content: ''; position: absolute; top: -50%; right: -20%; width: 200px; height: 200px;
+    background: rgba(255, 255, 255, 0.2); filter: blur(40px); border-radius: 50%;
+  }
+  .hero h1 { font-size: 1.8rem; font-weight: 900; color: #000; line-height: 1.2; margin-bottom: 8px; position: relative; z-index: 1; }
+  .hero p { font-size: 0.9rem; color: rgba(0,0,0,0.7); font-weight: 600; position: relative; z-index: 1; }
+  
+  .search-bar {
+    margin-top: 20px; background: #fff; border-radius: 15px; padding: 14px 18px;
+    display: flex; align-items: center; gap: 10px; position: relative; z-index: 1;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  .search-bar svg { width: 20px; height: 20px; fill: #888; }
+  .search-bar input { background: none; border: none; color: #000; outline: none; width: 100%; font-size: 0.95rem; font-weight: 500; }
+  .search-bar input::placeholder { color: #888; }
 
-  .hero { padding: 30px 20px; border-bottom: 1px solid #1a1a1a; }
-  .hero .subtitle { font-size: 0.7rem; letter-spacing: 2px; color: #38bdf8; margin-bottom: 15px; text-transform: uppercase; font-weight: 700; }
-  .hero h2 { font-size: 2.2rem; line-height: 1.15; margin-bottom: 18px; font-weight: 800; letter-spacing: -0.5px; }
-  .hero h2 span { color: #666; }
-  .hero p { font-size: 0.9rem; color: #999; line-height: 1.6; }
+  /* ===== CATEGORIES ===== */
+  .categories { padding: 0 20px 25px; }
+  .categories h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 15px; }
+  .cat-grid { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+  .cat-grid::-webkit-scrollbar { display: none; }
+  
+  .cat-item {
+    background: #111; border: 1px solid #222; border-radius: 20px; padding: 15px 22px;
+    display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.3s; min-width: max-content;
+  }
+  .cat-item:hover, .cat-item.active { background: #ff7e5f; border-color: #ff7e5f; }
+  .cat-item:hover svg, .cat-item.active svg { fill: #000; }
+  .cat-item:hover span, .cat-item.active span { color: #000; font-weight: 700; }
+  .cat-item svg { width: 20px; height: 20px; fill: #ff7e5f; transition: 0.3s; }
+  .cat-item span { font-size: 0.85rem; color: #fff; font-weight: 600; }
 
-  .services-section { padding: 24px 20px 40px; }
-  .services-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  /* ===== SERVICES LIST ===== */
+  .services-list { padding: 0 20px; }
+  .services-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
   .services-header h3 { font-size: 1.2rem; font-weight: 800; }
-  .services-header span { font-size: 0.75rem; color: #666; font-weight: 500; }
-
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .card {
-    background: linear-gradient(145deg, #111111, #0a0a0a); border: 1px solid #222; border-radius: 20px;
-    padding: 22px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;
-  }
-  .card::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent 70%);
-    opacity: 0; transition: 0.3s;
-  }
-  .card:hover::before { opacity: 1; }
-  .card:hover { border-color: #444; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-  .card-top { margin-bottom: 40px; }
-  .card-top h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px; }
-  .card-top p { font-size: 0.8rem; color: #777; line-height: 1.4; }
-  .card-bottom { margin-top: auto; z-index: 1; }
-  .fee-text { font-size: 0.75rem; color: #38bdf8; font-weight: 600; margin-bottom: 12px; background: rgba(56, 189, 248, 0.1); display: inline-block; padding: 4px 8px; border-radius: 6px; }
-  .dalbo-btn { font-size: 0.9rem; font-weight: 700; color: #fff; display: flex; align-items: center; }
-  .dalbo-btn::after { content: '→'; margin-left: 6px; transition: 0.2s; }
-  .card:hover .dalbo-btn::after { transform: translateX(4px); }
-
-  /* ===== SERVICE HOME PAGES (Bogagga Gaarka ah) ===== */
-  .service-home { padding: 20px; min-height: 80vh; display: flex; flex-direction: column; }
+  .services-header span { font-size: 0.85rem; color: #ff7e5f; font-weight: 600; cursor: pointer; }
   
-  .service-hero-icon {
-    width: 100%; height: 220px; background: linear-gradient(145deg, #111, #050505);
-    border: 1px solid #222; border-radius: 24px; display: flex; justify-content: center; align-items: center;
-    margin-bottom: 25px; position: relative; overflow: hidden;
+  .service-card {
+    background: #111; border: 1px solid #222; border-radius: 22px; padding: 20px;
+    display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
+    transition: 0.3s; cursor: pointer; position: relative; overflow: hidden;
   }
-  .service-hero-icon::after {
-    content: ''; position: absolute; width: 150px; height: 150px;
-    background: rgba(56, 189, 248, 0.2); filter: blur(60px); border-radius: 50%;
+  .service-card::after {
+    content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px;
+    background: rgba(255, 126, 95, 0.05); border-radius: 50%; filter: blur(20px);
   }
-  .service-hero-icon svg { width: 100px; height: 100px; fill: #38bdf8; z-index: 1; }
-
-  .service-home h1 { font-size: 2rem; font-weight: 900; margin-bottom: 10px; }
-  .service-home p.desc { color: #888; font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
+  .service-card:hover { border-color: #ff7e5f; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
   
-  .info-box { background: #111; border: 1px solid #222; border-radius: 16px; padding: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-  .info-box .label { font-size: 0.85rem; color: #aaa; }
-  .info-box .value { font-size: 1.2rem; font-weight: 800; color: #38bdf8; }
-
-  .btn-primary {
-    width: 100%; background: #38bdf8; color: #000; padding: 18px; border-radius: 14px;
-    border: none; font-size: 1.05rem; font-weight: 800; cursor: pointer; margin-top: auto;
-    transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;
+  .service-img {
+    width: 70px; height: 70px; border-radius: 18px; background: rgba(255, 126, 95, 0.1);
+    display: flex; justify-content: center; align-items: center; flex-shrink: 0;
   }
-  .btn-primary:hover { background: #0ea5e9; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3); }
+  .service-img svg { width: 35px; height: 35px; fill: #ff7e5f; }
+  
+  .service-info { flex: 1; }
+  .service-info h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; }
+  .service-info p { font-size: 0.8rem; color: #777; margin-bottom: 10px; }
+  .service-info .price { font-size: 1rem; font-weight: 800; color: #ff7e5f; }
+  
+  .dalbo-btn {
+    background: #ff7e5f; color: #000; border: none; padding: 10px 18px;
+    border-radius: 12px; font-size: 0.85rem; font-weight: 800; cursor: pointer;
+    transition: 0.2s; display: flex; align-items: center; gap: 5px; z-index: 1;
+  }
+  .dalbo-btn:hover { background: #feb47b; transform: scale(1.05); }
 
   /* ===== FORM OVERLAY ===== */
   .form-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 100; justify-content: center; align-items: flex-end;
+    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 100; justify-content: center; align-items: flex-end;
   }
   .form-container {
     background: #0f0f0f; width: 100%; max-width: 500px; border-top-left-radius: 30px; border-top-right-radius: 30px;
@@ -129,20 +128,21 @@
     padding: 14px; border-radius: 12px; font-size: 0.95rem; outline: none; transition: 0.3s;
   }
   .input-group input { padding-right: 45px; }
-  .input-group input:focus, .field textarea:focus { border-color: #38bdf8; background: #1a1a1a; }
+  .input-group input:focus, .field textarea:focus { border-color: #ff7e5f; background: #1a1a1a; }
   
   .loc-btn {
-    position: absolute; right: 10px; background: #2a2a2a; border: none; color: #38bdf8;
+    position: absolute; right: 10px; background: #2a2a2a; border: none; color: #ff7e5f;
     width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;
   }
-  .loc-btn:hover { background: #38bdf8; color: #000; }
+  .loc-btn:hover { background: #ff7e5f; color: #000; }
   .loc-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
   .submit-btn {
-    width: 100%; background: #38bdf8; color: #000; padding: 16px; border-radius: 14px;
+    width: 100%; background: #ff7e5f; color: #000; padding: 16px; border-radius: 14px;
     border: none; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 10px;
     transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px;
   }
+  .submit-btn:hover { background: #feb47b; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 126, 95, 0.3); }
 </style>
 </head>
 <body>
@@ -151,118 +151,111 @@
 
   <!-- TOP BAR -->
   <div class="top-bar">
-    <div class="back-btn" id="backBtn" onclick="goHome()">←</div>
-    <h2 id="topBarTitle">IGA KEEN</h2>
-    <span class="top-tagline">Premium App</span>
-  </div>
-
-  <!-- ================= PAGE 1: HOME ================= -->
-  <div id="page-home" class="page active">
-    <div class="header-section">
-      <h1 class="brand-title">IGA KEEN<span class="dot">.</span></h1>
-      <button class="btn-outline">Adeegyada Golgob</button>
-    </div>
-
-    <div class="hero">
-      <div class="subtitle">DHEXDHEXAADIN · DEGDEG · AMAAN</div>
-      <h2>Adeeggaaga hel.<br><span>IGA KEEN ayaa isku kaa xiraya.</span></h2>
-      <p>Dooro Taxi, Bajaaj, Delivery ama Safar. IGA KEEN waxuu isku xiraa macaamiisha iyo adeeg-bixiyeyaasha. Qiimaha adeegga waxaa isla garta labada dhinac; fee-ga IGA KEEN-na horay ayaa loo caddeeyaa.</p>
-    </div>
-
-    <div class="services-section">
-      <div class="services-header">
-        <h3>Dooro adeeg</h3>
-        <span>Taabo si aad u dalbato</span>
+    <div class="user-profile">
+      <div class="user-avatar">IK</div>
+      <div class="user-info">
+        <h2>Soo dhawoow,</h2>
+        <h3>Macaamiil <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Muqdisho</h3>
       </div>
-      <div class="grid">
-        <div class="card" onclick="openService('bajaaj')">
-          <div class="card-top"><h4>Bajaaj</h4><p>Gaadiid saddex lugood leh.</p></div>
-          <div class="card-bottom"><div class="fee-text">Fee: $0.20</div><div class="dalbo-btn">Dalbo</div></div>
-        </div>
-        <div class="card" onclick="openService('taxi')">
-          <div class="card-top"><h4>Taxi</h4><p>Gaari caadi ah oo raaxo leh.</p></div>
-          <div class="card-bottom"><div class="fee-text">Fee: $0.30</div><div class="dalbo-btn">Dalbo</div></div>
-        </div>
-        <div class="card" onclick="openService('delivery')">
-          <div class="card-top"><h4>Delivery</h4><p>Alaab ama cunto la geeyo.</p></div>
-          <div class="card-bottom"><div class="fee-text">Fee: $0.35</div><div class="dalbo-btn">Dalbo</div></div>
-        </div>
-        <div class="card" onclick="openService('safar')">
-          <div class="card-top"><h4>Safar</h4><p>Safar magaaloyinka dhexdooda.</p></div>
-          <div class="card-bottom"><div class="fee-text">Fee: $1.50</div><div class="dalbo-btn">Dalbo</div></div>
-        </div>
-      </div>
+    </div>
+    <div class="notif-btn">
+      <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
     </div>
   </div>
 
-  <!-- ================= PAGE 2: BAJAAJ HOME ================= -->
-  <div id="page-bajaaj" class="page">
-    <div class="service-home">
-      <div class="service-hero-icon">
-        <!-- SVG Bajaaj -->
-        <svg viewBox="0 0 24 24"><path d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2zM7.6 11l1.2-3.8c.1-.3.4-.5.7-.5h4.9c.3 0 .6.2.7.5l1.2 3.8H7.6z"/></svg>
-      </div>
-      <h1>Bajaaj</h1>
-      <p class="desc">Gaadiidka ugu fudud uguna dhaqso badan magaalada dhexdeeda. Ku habboon safar gaagaaban.</p>
-      <div class="info-box">
-        <span class="label">Fee Darawalka</span>
-        <span class="value">$0.20</span>
-      </div>
-      <button class="btn-primary" onclick="openForm('Bajaaj', '$0.20')">Dalbo Bajaaj Hadda</button>
+  <!-- HERO BANNER -->
+  <div class="hero">
+    <h1>Maxaad maanta<br>u baahan tahay?</h1>
+    <p>Dalbo Taxi, Bajaaj, Delivery ama Safar si degdeg ah.</p>
+    
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" placeholder="Raadi adeeg...">
     </div>
   </div>
 
-  <!-- ================= PAGE 3: TAXI HOME ================= -->
-  <div id="page-taxi" class="page">
-    <div class="service-home">
-      <div class="service-hero-icon">
-        <!-- SVG Taxi -->
+  <!-- CATEGORIES -->
+  <div class="categories">
+    <h3>Adeegyada</h3>
+    <div class="cat-grid">
+      <div class="cat-item active">
+        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
+        <span>Taxi</span>
+      </div>
+      <div class="cat-item">
+        <svg viewBox="0 0 24 24"><path d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2z"/></svg>
+        <span>Bajaaj</span>
+      </div>
+      <div class="cat-item">
+        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+        <span>Delivery</span>
+      </div>
+      <div class="cat-item">
+        <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+        <span>Safar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES LIST -->
+  <div class="services-list">
+    <div class="services-header">
+      <h3>Adeegyada Caanka ah</h3>
+      <span>Eeg Dhammaan</span>
+    </div>
+    
+    <!-- Card 1: Taxi -->
+    <div class="service-card" onclick="openForm('Taxi', '$0.30')">
+      <div class="service-img">
         <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
       </div>
-      <h1>Taxi</h1>
-      <p class="desc">Gaari caadi ah oo raaxo leh, leh qaboojiye. Ku habboon safarka qoyska ama shaqada.</p>
-      <div class="info-box">
-        <span class="label">Fee Darawalka</span>
-        <span class="value">$0.30</span>
+      <div class="service-info">
+        <h4>Taxi Gaar ah</h4>
+        <p>Gaari caadi ah oo raaxo leh</p>
+        <div class="price">$0.30 / km</div>
       </div>
-      <button class="btn-primary" onclick="openForm('Taxi', '$0.30')">Dalbo Taxi Hadda</button>
+      <button class="dalbo-btn">Dalbo</button>
     </div>
-  </div>
 
-  <!-- ================= PAGE 4: DELIVERY HOME ================= -->
-  <div id="page-delivery" class="page">
-    <div class="service-home">
-      <div class="service-hero-icon">
-        <!-- SVG Delivery Box -->
-        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+    <!-- Card 2: Bajaaj -->
+    <div class="service-card" onclick="openForm('Bajaaj', '$0.20')">
+      <div class="service-img">
+        <svg viewBox="0 0 24 24"><path d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2zM7.6 11l1.2-3.8c.1-.3.4-.5.7-.5h4.9c.3 0 .6.2.7.5l1.2 3.8H7.6z"/></svg>
       </div>
-      <h1>Delivery</h1>
-      <p class="desc">Alaab ama cunto la geeyo meel kasta oo aad ku sugan tahay magaalada. Degdeg iyo amaan.</p>
-      <div class="info-box">
-        <span class="label">Fee Guud</span>
-        <span class="value">$0.35</span>
+      <div class="service-info">
+        <h4>Bajaaj Degdeg</h4>
+        <p>Gaadiid saddex lugood leh</p>
+        <div class="price">$0.20 / km</div>
       </div>
-      <button class="btn-primary" onclick="openForm('Delivery', '$0.35')">Dir Alaab Hadda</button>
+      <button class="dalbo-btn">Dalbo</button>
     </div>
-  </div>
 
-  <!-- ================= PAGE 5: SAFAR HOME ================= -->
-  <div id="page-safar" class="page">
-    <div class="service-home">
-      <div class="service-hero-icon">
-        <!-- SVG Safar (Plane) -->
+    <!-- Card 3: Delivery -->
+    <div class="service-card" onclick="openForm('Delivery', '$0.35')">
+      <div class="service-img">
+        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5z"/></svg>
+      </div>
+      <div class="service-info">
+        <h4>Delivery Alaab</h4>
+        <p>Alaab ama cunto la geeyo</p>
+        <div class="price">$0.35 Guud</div>
+      </div>
+      <button class="dalbo-btn">Dalbo</button>
+    </div>
+
+    <!-- Card 4: Safar -->
+    <div class="service-card" onclick="openForm('Safar', '$1.50')">
+      <div class="service-img">
         <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
       </div>
-      <h1>Safar</h1>
-      <p class="desc">Safar magaaloyinka dhexdooda ah. Gaadiid waaweyn oo raaxo leh oo kaa gaarsiinaya halka aad u socoto.</p>
-      <div class="info-box">
-        <span class="label">Fee Darawalka</span>
-        <span class="value">$1.50</span>
+      <div class="service-info">
+        <h4>Safar Dheer</h4>
+        <p>Safar magaaloyinka dhexdooda</p>
+        <div class="price">$1.50 / km</div>
       </div>
-      <button class="btn-primary" onclick="openForm('Safar', '$1.50')">Dalbo Safar Hadda</button>
+      <button class="dalbo-btn">Dalbo</button>
     </div>
   </div>
-
 </div>
 
 <!-- FORM OVERLAY -->
@@ -270,14 +263,20 @@
   <div class="form-container">
     <div class="drag-handle"></div>
     <div class="form-header">
-      <h3 id="formTitle">Dalbo</h3>
+      <h3 id="formTitle">Dalbo Adeeg</h3>
       <button class="close-btn" onclick="closeForm()">×</button>
     </div>
+    
+    <div class="field">
+      <label>Adeegga Aad Dooratay</label>
+      <input type="text" id="serviceItem" readonly style="background: #1a1a1a; color: #ff7e5f; font-weight: 700;">
+    </div>
+
     <div class="field"><label>Magacaaga</label><input type="text" id="name" placeholder="Magaca buuxa"></div>
     <div class="field"><label>Telefoonkaaga</label><input type="tel" id="phone" placeholder="61XXXXXXX"></div>
     
     <div class="field">
-      <label>Halka aad joogto / Laga qaadayo</label>
+      <label>Halka aad joogto (GPS)</label>
       <div class="input-group">
         <input type="text" id="from" placeholder="Tusaale: Hodan">
         <button type="button" class="loc-btn" onclick="getLocation()">
@@ -287,7 +286,8 @@
     </div>
     
     <div class="field"><label>Halka aad rabto / Loo socdo</label><input type="text" id="to" placeholder="Tusaale: Wadajir"></div>
-    <div class="field"><label>Faahfaahin dheeraad ah (Ikhtiyaar)</label><textarea id="notes" rows="2" placeholder="Wax kasta oo aad rabto inaad sheegto..."></textarea></div>
+    <div class="field"><label>Faahfaahin dheeraad ah</label><textarea id="notes" rows="2" placeholder="Tusaale: Wax badan oo boorso ah..."></textarea></div>
+    
     <button class="submit-btn" onclick="sendToWhatsApp()">U dir WhatsApp</button>
   </div>
 </div>
@@ -295,37 +295,13 @@
 <script>
   const WHATSAPP_NUMBER = "252907825640"; 
   let currentService = "";
-  let currentFee = "";
+  let currentPrice = "";
 
-  // Shaqada beddela bogagga
-  function openService(serviceName) {
-    // Qari dhammaan bogagga
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    
-    // Muuji bogga la doortay
-    document.getElementById('page-' + serviceName).classList.add('active');
-    
-    // Badhanka dib u noqoshada ha muujiyo
-    document.getElementById('backBtn').classList.add('active');
-    
-    // Cinwaanka sare ha beddelmo
-    document.getElementById('topBarTitle').innerText = serviceName.toUpperCase();
-    
-    // Soo celi scroll-ka kor
-    window.scrollTo(0, 0);
-  }
-
-  function goHome() {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById('page-home').classList.add('active');
-    document.getElementById('backBtn').classList.remove('active');
-    document.getElementById('topBarTitle').innerText = "IGA KEEN";
-  }
-
-  function openForm(service, fee) {
+  function openForm(service, price) {
     currentService = service;
-    currentFee = fee;
+    currentPrice = price;
     document.getElementById('formTitle').innerText = "Dalbo " + service;
+    document.getElementById('serviceItem').value = service + " (" + price + ")";
     document.getElementById('formOverlay').style.display = 'flex';
   }
 
@@ -337,7 +313,7 @@
   function getLocation() {
     const locBtn = document.querySelector('.loc-btn');
     if (navigator.geolocation) {
-      locBtn.style.background = "#38bdf8";
+      locBtn.style.background = "#ff7e5f";
       locBtn.style.color = "#000";
       navigator.geolocation.getCurrentPosition(
         function(position) {
@@ -346,12 +322,12 @@
           const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
           document.getElementById('from').value = mapLink;
           locBtn.style.background = "#2a2a2a";
-          locBtn.style.color = "#38bdf8";
+          locBtn.style.color = "#ff7e5f";
         },
         function(error) {
           alert("Waan ku guuldareystay helista goobtaada. Fadlan hubi GPS-ka.");
           locBtn.style.background = "#2a2a2a";
-          locBtn.style.color = "#38bdf8";
+          locBtn.style.color = "#ff7e5f";
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
@@ -372,14 +348,14 @@
       return;
     }
 
-    let msg = `*DALBO CUSUB — IGA KEEN*%0A`;
+    let msg = `*DALBO ADEEG CUSUB*%0A`;
     msg += `━━━━━━━━━━━━━━━%0A`;
     msg += `*Adeegga:* ${currentService}%0A`;
-    msg += `*Fee-da:* ${currentFee}%0A`;
+    msg += `*Qiimaha:* ${currentPrice}%0A`;
     msg += `*Magac:* ${name}%0A`;
     msg += `*Telefoon:* ${phone}%0A`;
-    msg += `*Laga qaadayo:* ${from}%0A`;
-    msg += `*Loo socdo:* ${to}%0A`;
+    msg += `*Goobta laga qaadayo:* ${from}%0A`;
+    msg += `*Goobta loo socdo:* ${to}%0A`;
     if (notes) msg += `*Faahfaahin:* ${notes}%0A`;
     msg += `━━━━━━━━━━━━━━━`;
 
