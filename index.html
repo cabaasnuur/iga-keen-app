@@ -1,81 +1,483 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="so">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080808">
-<title>IGA KEEN — Taxi, Delivery & Safar</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>IGA KEEN | Dalbo Hadda</title>
+
 <style>
-:root{--bg:#080808;--panel:#141414;--panel2:#1c1c1c;--text:#fff;--muted:#aaa;--line:#303030;--accent:#fff;--good:#a7f3d0;--bad:#fecaca}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.wrap{width:min(100% - 30px,980px);margin:auto}header{position:sticky;top:0;z-index:5;background:#080808ee;border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}.nav{height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-size:22px;font-weight:950;letter-spacing:1px}.logo span{color:#999}.badge{border:1px solid var(--line);border-radius:99px;padding:8px 12px;font-size:12px;color:#ddd}.hero{padding:48px 0 28px}.eyebrow{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px}.hero h1{font-size:clamp(36px,8vw,64px);line-height:1.02;letter-spacing:-2px;margin:0;max-width:700px}.hero h1 span{color:#999}.hero p{color:#b8b8b8;line-height:1.7;max-width:590px;margin:18px 0 0}.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:20px 0 14px}.section-head h2{font-size:22px;margin:0}.section-head p{font-size:12px;color:var(--muted);margin:0}.services{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.service{background:var(--panel);color:white;border:1px solid var(--line);border-radius:17px;padding:18px 14px;text-align:left;transition:.2s}.service:hover,.service:focus-visible{border-color:#fff;transform:translateY(-2px)}.icon{display:grid;place-items:center;width:46px;height:46px;border-radius:13px;background:#252525;margin-bottom:16px}.icon svg{width:25px;height:25px}.service h3{font-size:16px;margin:0 0 8px}.service p{font-size:12px;color:var(--muted);line-height:1.5;min-height:36px;margin:0}.service .fee{font-size:12px;color:#ddd;display:block;margin-top:13px}.service .arrow{display:block;margin-top:13px;font-size:12px;font-weight:800}.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.info{background:#101010;border:1px solid var(--line);border-radius:14px;padding:16px}.info strong{display:block;margin-bottom:6px}.info p{color:var(--muted);font-size:12px;line-height:1.6;margin:0}.panel{display:none;border:1px solid #393939;background:#111;border-radius:20px;padding:22px;margin:25px 0;scroll-margin-top:88px}.panel.show{display:block}.panel-top{display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:20px}.panel-top h2{margin:0;font-size:24px}.panel-top p{color:var(--muted);font-size:13px;line-height:1.6;margin:7px 0 0}.close{width:38px;height:38px;background:#222;color:#fff;border:1px solid var(--line);border-radius:10px;font-size:21px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:15px}label{display:block;color:#ddd;font-size:13px;margin-bottom:8px}input,select,textarea{width:100%;padding:14px;background:#090909;color:#fff;border:1px solid #383838;border-radius:11px;outline:none}input:focus,select:focus,textarea:focus{border-color:#fff}input::placeholder,textarea::placeholder{color:#777}textarea{min-height:85px;resize:vertical}.gps{border:1px solid #393939;border-radius:12px;padding:14px;margin-bottom:16px}.gps p{font-size:12px;color:var(--muted);line-height:1.6;margin:8px 0 12px}.secondary,.primary{padding:13px 15px;border-radius:11px;font-weight:800}.secondary{width:100%;background:#222;color:white;border:1px solid #555}.primary{width:100%;background:#fff;color:#080808;border:0;padding:16px}.primary:disabled{opacity:.5;cursor:wait}.gps-status{font-size:12px;margin-top:9px;overflow-wrap:anywhere;color:#ddd}.fee-box{padding:14px;background:#1b1b1b;border:1px solid #373737;border-radius:12px;margin-bottom:16px}.fee-box strong{font-size:20px}.fee-box p{font-size:12px;line-height:1.6;color:#bbb;margin:6px 0 0}.notice{color:#aaa;font-size:11px;line-height:1.7;text-align:center;margin:12px 0 0}.message{font-size:13px;line-height:1.6;margin:12px 0;padding:12px;border-radius:10px;display:none}.message.show{display:block}.message.ok{background:#10251c;color:var(--good)}.message.err{background:#2b1414;color:var(--bad)}.admin-link{background:transparent;color:#aaa;border:0;text-decoration:underline;font-size:12px}footer{margin-top:35px;border-top:1px solid var(--line);padding:24px 0;color:#888;text-align:center;font-size:12px;line-height:1.8}.admin-tools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.admin-tools button{background:#222;color:#fff;border:1px solid #444;padding:10px 12px;border-radius:9px}.booking-list{display:grid;gap:10px}.booking-item{border:1px solid #373737;background:#171717;border-radius:12px;padding:14px}.booking-item h4{margin:0 0 8px}.booking-item p{font-size:12px;color:#bbb;line-height:1.6;margin:3px 0}.booking-item select{margin-top:8px;padding:9px}.hidden{display:none!important}
-@media(max-width:680px){.services{grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr}.service{padding:15px 12px}.hero{padding-top:36px}.grid{grid-template-columns:1fr;gap:0}.panel{padding:16px}}@media(max-width:390px){.services{grid-template-columns:1fr}.badge{font-size:10px;padding:7px 9px}}
+:root {
+  --bg: #080808;
+  --card: #141414;
+  --border: #303030;
+  --white: #fff;
+  --muted: #aaa;
+}
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--white);
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 22px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.logo span { color: #999; }
+
+header p {
+  color: var(--muted);
+  margin-bottom: 0;
+}
+
+main {
+  width: min(100% - 28px, 560px);
+  margin: 24px auto;
+}
+
+h2 { font-size: 22px; }
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.service {
+  padding: 18px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.service .icon {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.service small {
+  display: block;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.service.active {
+  border: 2px solid white;
+  background: #222;
+}
+
+.panel {
+  margin-top: 20px;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  margin: 14px 0 7px;
+  color: #eee;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #414141;
+  border-radius: 9px;
+  background: #090909;
+  color: white;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+button.primary, button.secondary {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 14px;
+}
+
+.primary {
+  background: white;
+  color: black;
+  border: none;
+}
+
+.secondary {
+  background: transparent;
+  color: white;
+  border: 1px solid #555;
+}
+
+.fee {
+  padding: 12px;
+  background: #202020;
+  border-radius: 9px;
+  margin-top: 14px;
+  line-height: 1.7;
+}
+
+.status {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #202020;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.hidden { display: none; }
+
+footer {
+  text-align: center;
+  color: #888;
+  padding: 25px 12px;
+  font-size: 13px;
+}
+
+@media (max-width: 350px) {
+  .services { grid-template-columns: 1fr; }
+}
 </style>
 </head>
+
 <body>
-<header><div class="wrap nav"><div class="logo">IGA <span>KEEN.</span></div><div class="badge">Adeegyada Goldogob</div></div></header>
-<main class="wrap">
-<section class="hero"><div class="eyebrow">Dhexdhexaadin · Degdeg · Fudud</div><h1>Adeeggaaga hel.<br><span>IGA KEEN ayaa isku kaa xiraya.</span></h1><p>Dooro Taxi, Bajaaj, Delivery ama Safar. IGA KEEN wuxuu isku xiraa macaamiisha iyo adeeg-bixiyeyaasha. Qiimaha adeegga waxaa isla garta labada dhinac; fee-ga IGA KEEN-na horay ayaa loo caddeeyaa.</p></section>
-<section><div class="section-head"><h2>Dooro adeeg</h2><p>Taabo si aad u dalbato</p></div><div class="services">
-<button class="service" type="button" onclick="openOrder('Bajaaj')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h15l1 4H4zM7 13l2-5h6l3 5M5 17a2 2 0 1 0 4 0m7 0a2 2 0 1 0 4 0M9 8h6"/></svg></span><h3>Bajaaj</h3><p>Gaadiid saddex lugood leh.</p><span class="fee">Fee darawalka: $0.20</span><span class="arrow">Dalbo →</span></button>
-<button class="service" type="button" onclick="openOrder('Taxi')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11l2-6h12l2 6v8H4zM3 11h18M7 19v2m10-2v2M7 15h.01M17 15h.01M9 5l1-2h4l1 2"/></svg></span><h3>Taxi</h3><p>Gaari caadi ah.</p><span class="fee">Fee darawalka: $0.30</span><span class="arrow">Dalbo →</span></button>
-<button class="service" type="button" onclick="openOrder('Delivery')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10M7 5l10 4"/></svg></span><h3>Delivery</h3><p>Alaab ama cunto la geeyo.</p><span class="fee">Fee: $0.35 guud ahaan</span><span class="arrow">Dalbo →</span></button>
-<button class="service" type="button" onclick="openOrder('Safar')"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 16l18-8-6-5-4 7-5-1zM3 20h18"/></svg></span><h3>Safar</h3><p>Safar magaalooyinka dhexdooda.</p><span class="fee">Fee darawalka: $1.50</span><span class="arrow">Dalbo →</span></button>
-</div></section>
-<section class="info-grid"><div class="info"><strong>Fee cad</strong><p>Macaamilka iyo adeeg-bixiyaha waxaa loo sheegaa khidmadda IGA KEEN.</p></div><div class="info"><strong>Goobta GPS</strong><p>Macaamilku wuu wadaagi karaa goobtiisa haddii uu oggolaado.</p></div><div class="info"><strong>Adiga ayaa isku xiraya</strong><p>IGA KEEN ma go'aamiyo qiimaha adeegga ay labada dhinac ku heshiiyaan.</p></div></section>
-<section class="panel" id="orderPanel"><div class="panel-top"><div><h2 id="orderTitle">Dalab cusub</h2><p>Buuxi xogtaada. Dalabka waxaa loo diri doonaa nidaamka IGA KEEN.</p></div><button class="close" onclick="closeOrder()" type="button" aria-label="Xir">×</button></div>
-<form id="orderForm"><input type="hidden" id="service" name="service"><div class="grid"><div class="field"><label for="customer">Magaca macaamilka *</label><input id="customer" required maxlength="100" placeholder="Magacaaga"></div><div class="field"><label for="phone">Telefoonka macaamilka *</label><input id="phone" required type="tel" maxlength="30" placeholder="Tusaale: 0900000000"></div></div>
-<div class="field"><label for="pickup">Meesha laga qaadayo / laga soo qaadayo *</label><input id="pickup" required maxlength="250" placeholder="Xaafad ama meel caan ah"></div>
-<div class="gps"><strong>Goobta GPS</strong><p>Riix badhanka si app-ku u helo goobtaada. Waa inaad oggolaataa location-ka browser-ka.</p><button class="secondary" id="gpsButton" type="button" onclick="getGPS()">◎ Hel goobtayda</button><div class="gps-status" id="gpsStatus" aria-live="polite">Goob lama wadaagin.</div></div>
-<div class="field"><label for="destination">Meesha loo socdo / loo geynayo *</label><input id="destination" required maxlength="250" placeholder="Goobta loo socdo"></div>
-<div class="grid"><div class="field"><label for="when">Taariikhda iyo waqtiga (ikhtiyaari)</label><input id="when" type="datetime-local"></div><div class="field"><label for="extra" id="extraLabel">Tirada rakaabka</label><select id="extra"><option value="1 qof">1 qof</option><option value="2 qof">2 qof</option><option value="3 qof">3 qof</option><option value="4 qof">4 qof</option><option value="5+ qof">5 ama ka badan</option></select></div></div>
-<div class="field hidden" id="itemsWrap"><label for="items">Alaabta / cuntada la keenayo *</label><input id="items" maxlength="500" placeholder="Maxaa la soo iibinayaa ama la keenayaa?"></div>
-<div class="field"><label for="notes">Faahfaahin dheeraad ah</label><textarea id="notes" maxlength="1000" placeholder="Faahfaahin kale... "></textarea></div>
-<div class="fee-box"><div id="feeLabel">Fee-ga IGA KEEN</div><strong id="feeValue">$0.20</strong><p id="feeExplanation">Fee-ga adeegga ayaa la caddeynayaa.</p></div>
-<div id="formMessage" class="message" role="status"></div><button class="primary" id="submitButton" type="submit">DIR DALABKA →</button><p class="notice">Dalabku waa codsi, mana aha xaqiijin ilaa IGA KEEN kula soo xiriiro. Fee-ga iyo cidda bixinaysa waa in la fahmaa ka hor inta adeegga la xaqiijin.</p></form></section>
-<section class="panel" id="adminPanel"><div class="panel-top"><div><h2>Maamulka IGA KEEN</h2><p>Geli akoonka maamulaha si aad u aragto oo u maamusho dalabyada.</p></div><button class="close" onclick="document.getElementById('adminPanel').classList.remove('show')" type="button">×</button></div>
-<div id="adminLogin"><form id="loginForm"><div class="field"><label for="adminEmail">Email-ka maamulaha</label><input id="adminEmail" type="email" required autocomplete="username"></div><div class="field"><label for="adminPassword">Password</label><input id="adminPassword" type="password" required autocomplete="current-password"></div><button class="primary" type="submit">GAL MAAMULKA</button><div id="loginMessage" class="message"></div></form></div>
-<div id="adminArea" class="hidden"><div class="admin-tools"><button type="button" onclick="loadOrders()">Cusboonaysii dalabyada</button><button type="button" onclick="signOutAdmin()">Ka bax</button></div><div id="ordersList" class="booking-list"></div></div></section>
+<header>
+  <div class="logo">IGA <span>KEEN</span></div>
+  <p>Gaadiid • Delivery • Safar</p>
+  <p>Goldogob, Soomaaliya</p>
+</header>
+
+<main>
+  <h2>Maxaad u baahan tahay?</h2>
+  <p style="color:#aaa">Dooro adeegga aad rabto.</p>
+
+  <div class="services">
+    <button class="service active" data-service="bajaaj">
+      <span class="icon">🛺</span>
+      Bajaaj
+      <small>Gaadiid magaalada dhexdeeda</small>
+    </button>
+
+    <button class="service" data-service="taxi">
+      <span class="icon">🚕</span>
+      Taxi
+      <small>Gaari raaxo leh</small>
+    </button>
+
+    <button class="service" data-service="delivery">
+      <span class="icon">📦</span>
+      Delivery
+      <small>Alaab kuu keenid</small>
+    </button>
+
+    <button class="service" data-service="safar">
+      <span class="icon">🚌</span>
+      Safar
+      <small>Safar magaalooyin kale</small>
+    </button>
+  </div>
+
+  <section class="panel">
+    <h2 id="formTitle">Dalbo Bajaaj</h2>
+
+    <form id="orderForm">
+      <label for="name">Magacaaga *</label>
+      <input id="name" required maxlength="100"
+             autocomplete="name" placeholder="Magacaaga">
+
+      <label for="phone">Lambarka telefoonka *</label>
+      <input id="phone" required maxlength="25"
+             type="tel" autocomplete="tel"
+             placeholder="Tusaale: 25290XXXXXXX">
+
+      <label for="pickup">Goobta lagaa qaadayo *</label>
+      <input id="pickup" required maxlength="250"
+             placeholder="Xaafadda ama goobta">
+
+      <button type="button" class="secondary" id="gpsButton">
+        ◎ Isticmaal goobtayda GPS
+      </button>
+
+      <label for="destination">Meesha aad u socoto *</label>
+      <input id="destination" required maxlength="250"
+             placeholder="Geli meesha aad u socoto">
+
+      <div id="deliveryFields" class="hidden">
+        <label for="item">Alaabta la keenayo</label>
+        <input id="item" maxlength="250"
+               placeholder="Tusaale: cunto ama alaab">
+
+        <label for="receiverPhone">Telefoonka qofka alaabta loo keenayo</label>
+        <input id="receiverPhone" maxlength="25"
+               type="tel" placeholder="Lambarka qofka">
+      </div>
+
+      <div id="safarFields" class="hidden">
+        <label for="travelDate">Taariikhda safarka</label>
+        <input id="travelDate" type="date">
+
+        <label for="passengers">Tirada rakaabka</label>
+        <input id="passengers" type="number"
+               min="1" max="100" value="1">
+      </div>
+
+      <label for="notes">Faahfaahin dheeraad ah</label>
+      <textarea id="notes" maxlength="1000"
+                placeholder="Wax kale oo aad rabto inaad sheegto"></textarea>
+
+      <div class="fee">
+        <strong>Khidmadaha adeegga</strong><br>
+        Macmiilka: <span id="customerFee">$0.00</span><br>
+        Adeeg-bixiyaha: <span id="providerFee">$0.20</span><br>
+        <small style="color:#aaa">
+          Khidmadaha waa qorshaha tijaabada IGA KEEN.
+          Qiimaha gaadiidka ama alaabta waa gooni.
+        </small>
+      </div>
+
+      <button class="primary" type="submit" id="submitButton">
+        DALBO HADDDA
+      </button>
+
+      <div id="message" class="status hidden"
+           role="status" aria-live="polite"></div>
+    </form>
+  </section>
 </main>
-<footer><div class="wrap"><strong>IGA KEEN.</strong><br>Taxi · Delivery · Safar<br><button class="admin-link" onclick="showAdmin()" type="button">Maamulka</button><br>© <span id="year"></span> IGA KEEN</div></footer>
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-// SETUP: geli Project URL iyo anon/publishable key ee Supabase.
-const SUPABASE_URL = 'PASTE_YOUR_SUPABASE_PROJECT_URL_HERE';
-const SUPABASE_ANON_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
-const CONFIGURED = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('PASTE_') && !SUPABASE_ANON_KEY.includes('PASTE_');
-const db = CONFIGURED ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+<footer>
+  IGA KEEN © 2026<br>
+  Adeeg fudud oo isku xira macaamiisha iyo adeeg-bixiyayaasha.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+/*
+  TALLAABO MUHIIM AH:
+  Ku beddel labada qiime xogta mashruucaaga Supabase.
+  Isticmaal Project URL iyo Publishable key oo keliya.
+  Weligaa halkan ha gelin secret ama service_role key.
+*/
+const SUPABASE_URL = "GELI_PROJECT_URL_KAAGA";
+const SUPABASE_PUBLISHABLE_KEY = "GELI_PUBLISHABLE_KEY_KAAGA";
+
+let db = null;
+
+if (
+  window.supabase &&
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("GELI_") &&
+  !SUPABASE_PUBLISHABLE_KEY.includes("GELI_") &&
+  SUPABASE_PUBLISHABLE_KEY.length > 10
+) {
+  db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+}
+
 const fees = {
-  'Bajaaj': {amount:0.20, payer:'Darawalka', customer:0, provider:0.20, text:'Macaamilka $0.00; darawalka $0.20.'},
-  'Taxi': {amount:0.30, payer:'Darawalka', customer:0, provider:0.30, text:'Macaamilka $0.00; darawalka $0.30.'},
-  'Delivery': {amount:0.35, payer:'Labada dhinac', customer:0.15, provider:0.20, text:'Macaamilka $0.15; adeeg-bixiyaha $0.20.'},
-  'Safar': {amount:1.50, payer:'Darawalka', customer:0, provider:1.50, text:'Macaamilka $0.00; darawalka $1.50.'}
+  bajaaj:   { customer: 0.00, provider: 0.20 },
+  taxi:     { customer: 0.00, provider: 0.30 },
+  delivery: { customer: 0.15, provider: 0.20 },
+  safar:    { customer: 0.00, provider: 1.50 }
 };
-let coords = null;
+
+const titles = {
+  bajaaj: "Dalbo Bajaaj",
+  taxi: "Dalbo Taxi",
+  delivery: "Dalbo Delivery",
+  safar: "Dalbo Safar"
+};
+
+let selectedService = "bajaaj";
+let gps = null;
+
 const $ = id => document.getElementById(id);
-$('year').textContent = new Date().getFullYear();
-window.openOrder = function(type){
-  $('service').value=type; $('orderTitle').textContent='Dalbo '+type;
-  $('itemsWrap').classList.toggle('hidden',type!=='Delivery'); $('items').required=type==='Delivery';
-  $('extraLabel').textContent=type==='Delivery'?'Nooca alaabta':'Tirada rakaabka';
-  $('extra').innerHTML=type==='Delivery'?'<option>Cunto</option><option>Alaab</option><option>Wax dukaan laga soo iibiyo</option><option>Wax kale</option>':'<option>1 qof</option><option>2 qof</option><option>3 qof</option><option>4 qof</option><option>5+ qof</option>';
-  const f=fees[type]; $('feeValue').textContent='$'+f.amount.toFixed(2); $('feeLabel').textContent='Fee-ga IGA KEEN — '+f.payer; $('feeExplanation').textContent=f.text;
-  $('formMessage').className='message'; $('orderPanel').classList.add('show'); $('orderPanel').scrollIntoView({behavior:'smooth',block:'start'});
-};
-window.closeOrder=()=> $('orderPanel').classList.remove('show');
-window.getGPS=function(){
-  if(!navigator.geolocation){$('gpsStatus').textContent='GPS lama taageero; gacanta ku qor goobta.';return;}
-  $('gpsButton').disabled=true;$('gpsButton').textContent='Goobta ayaa la raadinayaa…';
-  navigator.geolocation.getCurrentPosition(pos=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};$('gpsStatus').textContent='Goobta waa la helay: '+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5);$('gpsButton').disabled=false;$('gpsButton').textContent='◎ Dib u hel goobta';},err=>{$('gpsStatus').textContent=err.code===1?'GPS waa la diiday. Oggolow location-ka ama gacanta ku qor goobta.':'Goobta lama helin. Hubi GPS-ka oo isku day mar kale.';$('gpsButton').disabled=false;$('gpsButton').textContent='Isku day GPS mar kale';},{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
-};
-function showMessage(el,text,type){el.textContent=text;el.className='message show '+type;}
-$('orderForm').addEventListener('submit',async e=>{
- e.preventDefault();const type=$('service').value;const f=fees[type];const payload={service:type,customer_name:$('customer').value.trim(),customer_phone:$('phone').value.trim(),pickup:$('pickup').value.trim(),destination:$('destination').value.trim(),latitude:coords?.lat??null,longitude:coords?.lng??null,requested_at:$('when').value||null,extra:$('extra').value,items:$('items').value.trim()||null,notes:$('notes').value.trim()||null,customer_fee:f.customer,provider_fee:f.provider,total_fee:f.amount,status:'new'};
- if(!CONFIGURED){showMessage($('formMessage'),'Database weli lama xirin. Foomku waa diyaar, laakiin dalabku lama kaydin karo ilaa Supabase la habeeyo. Raac README-ga mashruuca.','err');return;}
- $('submitButton').disabled=true;$('submitButton').textContent='WAA LA DIRAYAA…';
- try{const {data,error}=await db.from('orders').insert(payload).select('id').single();if(error)throw error;showMessage($('formMessage'),'Dalabka waa la gudbiyey! Lambarka dalabka: '+data.id+'. IGA KEEN ayaa kula soo xiriiri doona.','ok');$('orderForm').reset();coords=null;$('gpsStatus').textContent='Goob lama wadaagin.';}
- catch(err){showMessage($('formMessage'),'Dalabka lama kaydin: '+(err.message||'Khalad aan la garanayn')+'. Fadlan isku day mar kale.','err');}
- finally{$('submitButton').disabled=false;$('submitButton').textContent='DIR DALABKA →';}
+
+function showMessage(text) {
+  $("message").textContent = text;
+  $("message").classList.remove("hidden");
+}
+
+function updateService(service) {
+  selectedService = service;
+
+  document.querySelectorAll(".service").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.service === service
+    );
+  });
+
+  $("formTitle").textContent = titles[service];
+  $("customerFee").textContent =
+    "$" + fees[service].customer.toFixed(2);
+  $("providerFee").textContent =
+    "$" + fees[service].provider.toFixed(2);
+
+  $("deliveryFields").classList.toggle(
+    "hidden", service !== "delivery"
+  );
+  $("safarFields").classList.toggle(
+    "hidden", service !== "safar"
+  );
+
+  $("destination").placeholder =
+    service === "safar"
+      ? "Magaalada aad u socoto"
+      : "Geli meesha aad u socoto";
+
+  $("message").classList.add("hidden");
+}
+
+document.querySelectorAll(".service").forEach(button => {
+  button.addEventListener("click", () => {
+    updateService(button.dataset.service);
+  });
 });
-window.showAdmin=()=>{$('adminPanel').classList.add('show');$('adminPanel').scrollIntoView({behavior:'smooth',block:'start'});};
-$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(!CONFIGURED){showMessage($('loginMessage'),'Marka hore ku xidh Supabase adigoo raacaya README-ga.','err');return;}const {error}=await db.auth.signInWithPassword({email:$('adminEmail').value,password:$('adminPassword').value});if(error){showMessage($('loginMessage'),'Gelitaanku wuu fashilmay: '+error.message,'err');return;}$('adminLogin').classList.add('hidden');$('adminArea').classList.remove('hidden');loadOrders();});
-window.signOutAdmin=async()=>{if(db)await db.auth.signOut();$('adminArea').classList.add('hidden');$('adminLogin').classList.remove('hidden');};
-window.loadOrders=async()=>{if(!db)return;const box=$('ordersList');box.textContent='Dalabyada ayaa la soo qaadayaa…';const {data,error}=await db.from('orders').select('*').order('created_at',{ascending:false}).limit(100);if(error){box.textContent='Dalabyada lama soo qaadi karin: '+error.message;return;}box.replaceChildren();if(!data.length){box.textContent='Weli dalab ma jiro.';return;}for(const o of data){const item=document.createElement('article');item.className='booking-item';const title=document.createElement('h4');title.textContent='#'+o.id+' · '+o.service+' · $'+Number(o.total_fee).toFixed(2);item.appendChild(title);const lines=[`Macaamil: ${o.customer_name} (${o.customer_phone})`,`Qaadis: ${o.pickup}`,`Meesha loo socdo: ${o.destination}`,`Fee: macaamil $${Number(o.customer_fee).toFixed(2)}; adeeg-bixiye $${Number(o.provider_fee).toFixed(2)}`,`Xaalad: ${o.status}`,o.latitude&&o.longitude?`GPS: https://www.google.com/maps?q=${o.latitude},${o.longitude}`:null,o.notes?`Faahfaahin: ${o.notes}`:null].filter(Boolean);for(const line of lines){const p=document.createElement('p');p.textContent=line;item.appendChild(p);}if(o.latitude&&o.longitude){const a=document.createElement('a');a.href=`https://www.google.com/maps?q=${o.latitude},${o.longitude}`;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Fur GPS Maps';a.style.color='white';item.appendChild(a);}const sel=document.createElement('select');for(const status of ['new','contacted','confirmed','in_progress','completed','cancelled']){const opt=document.createElement('option');opt.value=status;opt.textContent=({new:'Cusub',contacted:'Lala xiriiray',confirmed:'La xaqiijiyey',in_progress:'Socda',completed:'Dhammaystiran',cancelled:'La joojiyey'})[status];opt.selected=o.status===status;sel.appendChild(opt);}sel.addEventListener('change',async()=>{const {error}=await db.from('orders').update({status:sel.value}).eq('id',o.id);if(error)alert('Xaaladda lama beddeli karin: '+error.message);});item.appendChild(sel);box.appendChild(item);}};
+
+$("gpsButton").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    showMessage("Telefoonkaagu ma taageerayo GPS.");
+    return;
+  }
+
+  $("gpsButton").textContent = "GPS ayaa la raadinayaa...";
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      gps = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude
+      };
+
+      $("pickup").value =
+        `GPS: ${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;
+
+      $("gpsButton").textContent = "✓ Goobta GPS waa la helay";
+      showMessage(
+        "Goobta GPS waa la helay. Hubi in goobtu sax tahay."
+      );
+    },
+    error => {
+      $("gpsButton").textContent =
+        "◎ Isku day GPS mar kale";
+
+      showMessage(
+        "GPS lama helin. Oggolow location-ka browser-ka " +
+        "ama gacanta ku qor goobta aad joogto."
+      );
+    },
+    { enableHighAccuracy: true, timeout: 15000 }
+  );
+});
+
+$("orderForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  if (!db) {
+    showMessage(
+      "Supabase weli lama dejin. Geli Project URL iyo " +
+      "Publishable key-ga saxda ah, kadib hubi siyaasadaha database-ka."
+    );
+    return;
+  }
+
+  const payload = {
+    service_type: selectedService,
+    customer_name: $("name").value.trim(),
+    customer_phone: $("phone").value.trim(),
+    pickup_address: $("pickup").value.trim(),
+    destination_address: $("destination").value.trim(),
+    pickup_latitude: gps?.latitude ?? null,
+    pickup_longitude: gps?.longitude ?? null,
+    notes: [
+      $("notes").value.trim(),
+      selectedService === "delivery" && $("item").value.trim()
+        ? "Alaabta: " + $("item").value.trim() : "",
+      selectedService === "delivery" && $("receiverPhone").value.trim()
+        ? "Telefoonka qaataha: " + $("receiverPhone").value.trim() : ""
+    ].filter(Boolean).join("\n") || null,
+    passengers: selectedService === "safar"
+      ? Number($("passengers").value || 1)
+      : 1,
+    scheduled_at: selectedService === "safar" &&
+      $("travelDate").value
+        ? new Date(
+            $("travelDate").value + "T08:00:00"
+          ).toISOString()
+        : null,
+    customer_fee: fees[selectedService].customer,
+    provider_fee: fees[selectedService].provider,
+    currency: "USD"
+  };
+
+  $("submitButton").disabled = true;
+  $("submitButton").textContent = "Dalabka waa la dirayaa...";
+
+  try {
+    const { data, error } = await db
+      .from("orders")
+      .insert(payload)
+      .select("order_number")
+      .single();
+
+    if (error) throw error;
+
+    showMessage(
+      "Dalabkaaga waa la kaydiyey! Lambarka dalabka: " +
+      data.order_number +
+      ". IGA KEEN ayaa kula soo xiriiri doona."
+    );
+
+    $("orderForm").reset();
+    gps = null;
+    updateService(selectedService);
+  } catch (error) {
+    console.error("IGA KEEN order error:", error);
+
+    showMessage(
+      "Dalabka lama kaydin. Hubi in Supabase Data API, " +
+      "permissions iyo RLS policy-ga INSERT ay sax yihiin. " +
+      "Faahfaahin: " + (error.message || "Qalad aan la aqoon")
+    );
+  } finally {
+    $("submitButton").disabled = false;
+    $("submitButton").textContent = "DALBO HADDDA";
+  }
+});
+
+updateService("bajaaj");
 </script>
-</body></html>
+</body>
+</html>
