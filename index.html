@@ -1,193 +1,1049 @@
 <!DOCTYPE html>
 <html lang="so">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IGA KEEN - Local Transportation and Delivery</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#111111" />
+    <title>IGA KEEN | Goldogob, Somalia</title>
+    <meta
+      name="description"
+      content="IGA KEEN - Somali local transport and delivery service for Bajaaj, Taxi, Delivery, and Safar."
+    />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #000000;
-            margin: 0;
-            padding: 0;
+      :root {
+        --bg: #0a0a0a;
+        --panel: #151515;
+        --panel-2: #1d1d1d;
+        --card: #101010;
+        --line: #2a2a2a;
+        --text: #f4f4f4;
+        --muted: #b2b2b2;
+        --accent: #f6f6f6;
+        --shadow: rgba(0, 0, 0, 0.28);
+        --success: #d7f7dd;
+        --success-text: #0a3b1f;
+        --danger: #ffd7d7;
+        --danger-text: #5b1414;
+        --warning: #f7f2d3;
+        --warning-text: #4b3b08;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.5;
+      }
+
+      img,
+      svg {
+        max-width: 100%;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 18px 16px 40px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        font-size: 1.1rem;
+      }
+
+      .brand-mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        background: #fff;
+        color: #000;
+        font-weight: 800;
+      }
+
+      .header-meta {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .hero {
+        display: grid;
+        gap: 20px;
+        padding: 28px 0 18px;
+      }
+
+      .hero-copy {
+        background: linear-gradient(180deg, #111 0%, #181818 100%);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 18px 18px 20px;
+        box-shadow: 0 10px 24px var(--shadow);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: #111;
+        border: 1px solid var(--line);
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      h1 {
+        margin: 18px 0 10px;
+        font-size: clamp(2rem, 6vw, 3.3rem);
+        line-height: 1.1;
+      }
+
+      .lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+
+      .primary-btn,
+      .secondary-btn,
+      .service-btn,
+      .submit-btn,
+      .gps-btn,
+      .close-btn {
+        border: 0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+      }
+
+      .primary-btn,
+      .submit-btn {
+        background: #fff;
+        color: #111;
+        font-weight: 700;
+        min-height: 48px;
+        padding: 0 18px;
+      }
+
+      .secondary-btn,
+      .gps-btn,
+      .close-btn {
+        background: #1a1a1a;
+        border: 1px solid var(--line);
+        color: var(--text);
+        min-height: 48px;
+        padding: 0 16px;
+      }
+
+      .primary-btn:active,
+      .secondary-btn:active,
+      .service-btn:active,
+      .submit-btn:active,
+      .gps-btn:active,
+      .close-btn:active {
+        transform: scale(0.985);
+      }
+
+      .section-title {
+        margin: 16px 0 14px;
+        font-size: 1.3rem;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .service-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 18px 16px;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .service-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .service-icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        color: #111;
+        font-size: 1.45rem;
+      }
+
+      .service-card h3 {
+        margin: 0 0 4px;
+        font-size: 1.1rem;
+      }
+
+      .service-desc {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .service-btn {
+        margin-top: 14px;
+        width: 100%;
+        background: #f4f4f4;
+        color: #111;
+        font-weight: 700;
+        padding: 14px 16px;
+        min-height: 48px;
+      }
+
+      .info-box {
+        margin-top: 18px;
+        border: 1px solid var(--line);
+        background: #121212;
+        border-radius: 18px;
+        padding: 16px;
+      }
+
+      .info-box h4 {
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+      }
+
+      .info-box p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .route {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .route-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #fff;
+        display: inline-block;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.68);
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 50;
+        padding: 12px;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-panel {
+        width: min(100%, 620px);
+        max-height: 90vh;
+        overflow: auto;
+        background: #111;
+        border: 1px solid var(--line);
+        border-radius: 22px 22px 0 0;
+        padding: 16px;
+        box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .field label {
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        min-height: 46px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        padding: 12px 13px;
+        background: #181818;
+        color: var(--text);
+      }
+
+      .field textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        outline: 2px solid rgba(255, 255, 255, 0.18);
+        outline-offset: 1px;
+      }
+
+      .gps-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .gps-row button {
+        flex: 1;
+      }
+
+      .gps-status {
+        margin-top: 10px;
+        border: 1px solid var(--line);
+        background: #151515;
+        border-radius: 12px;
+        padding: 10px 12px;
+        color: var(--muted);
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .submit-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .submit-btn {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .btn-spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        border-top-color: #111;
+        border-radius: 50%;
+        display: inline-block;
+        animation: spin 0.8s linear infinite;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
-        header {
-            text-align: center;
-            padding: 20px;
-            background-color: #000000;
-            color: #ffffff;
+      }
+
+      .alert {
+        margin-top: 14px;
+        border-radius: 12px;
+        padding: 12px 14px;
+        display: none;
+      }
+
+      .alert.show {
+        display: block;
+      }
+
+      .alert.success {
+        background: var(--success);
+        color: var(--success-text);
+        border: 1px solid rgba(6, 58, 30, 0.2);
+      }
+
+      .alert.error {
+        background: var(--danger);
+        color: var(--danger-text);
+        border: 1px solid rgba(80, 18, 18, 0.2);
+      }
+
+      .alert.warning {
+        background: var(--warning);
+        color: var(--warning-text);
+        border: 1px solid rgba(80, 70, 15, 0.2);
+      }
+
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 28px;
+        padding-top: 18px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.9rem;
+      }
+
+      @media (min-width: 700px) {
+        .services-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-        .container {
-            padding: 20px;
+
+        .hero {
+          grid-template-columns: 1.5fr 1fr;
+          align-items: stretch;
         }
-        .service-card {
-            border: 1px solid #000000;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            text-align: center;
+
+        .modal-panel {
+          border-radius: 22px;
+          max-height: 88vh;
         }
-        .service-card i {
-            font-size: 50px;
-            margin-bottom: 10px;
+
+        .form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
-        button {
-            background-color: #000000;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+
+        .field.full {
+          grid-column: 1 / -1;
         }
-        button:hover {
-            background-color: #444444;
-        }
-        .order-form {
-            display: none;
-            margin-top: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #000000;
-            color: #ffffff;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
+      }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-</head>
-<body>
-    <header>
-        <h1>IGA KEEN</h1>
-        <p>Local Transportation and Delivery Service</p>
-    </header>
+  </head>
+  <body>
     <div class="container">
-        <div class="service-card">
-            <i class="fas fa-motorcycle"></i>
-            <h2>Bajaaj</h2>
-            <button onclick="openOrderForm('Bajaaj')">Dalbo Hadda</button>
+      <header class="topbar">
+        <div class="brand" aria-label="IGA KEEN">
+          <span class="brand-mark">I</span>
+          <span>IGA KEEN</span>
         </div>
-        <div class="service-card">
-            <i class="fas fa-taxi"></i>
-            <h2>Taxi</h2>
-            <button onclick="openOrderForm('Taxi')">Dalbo Hadda</button>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-box"></i>
-            <h2>Delivery</h2>
-            <button onclick="openOrderForm('Delivery')">Dalbo Hadda</button>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-bus"></i>
-            <h2>Safar</h2>
-            <button onclick="openOrderForm('Safar')">Dalbo Hadda</button>
-        </div>
+        <div class="header-meta">Goldogob, Somalia</div>
+      </header>
 
-        <div class="order-form" id="orderForm">
-            <h3>Order Form</h3>
-            <div class="form-group">
-                <label for="customerName">Customer Name:</label>
-                <input type="text" id="customerName" required>
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">🚕 ⏱️ 📦</div>
+            <h1>Waa ku soo dhowow IGA KEEN</h1>
+            <p class="lead">
+              Gaadiidka, safarka, iyo keenista guriga ama ganacsigaaga – si degdeg ah,
+              badbaado leh, iyo adeeg macquul ah.
+            </p>
+            <div class="hero-actions">
+              <button class="primary-btn" type="button" id="scrollToServices">Dalbo Hadda</button>
+              <button class="secondary-btn" type="button" id="openContactInfo">Macluumaad</button>
             </div>
-            <div class="form-group">
-                <label for="phoneNumber">Phone Number:</label>
-                <input type="text" id="phoneNumber" required>
+          </div>
+
+          <div class="info-box" aria-live="polite">
+            <h4>Waa maxay IGA KEEN?</h4>
+            <p>
+              Waxaan bixinaa adeegyada soo socda si loogu adeeggo bulshada Goldogob iyo
+              aagagga kale ee Soomaaliya.
+            </p>
+            <div class="route">
+              <span class="route-dot"></span>
+              <span>Goldogob • Soomaaliya</span>
             </div>
-            <div class="form-group">
-                <label for="pickupLocation">Pickup Location:</label>
-                <input type="text" id="pickupLocation" required>
-            </div>
-            <div class="form-group">
-                <label for="destination">Destination:</label>
-                <input type="text" id="destination" required>
-            </div>
-            <button onclick="getLocation()">Isticmaal Goobtayda</button>
-            <div id="coordinates"></div>
-            <div class="form-group">
-                <label for="additionalInstructions">Additional Instructions:</label>
-                <textarea id="additionalInstructions"></textarea>
-            </div>
-            <button onclick="submitOrder()">Submit Order</button>
-            <div id="message"></div>
-        </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="services-title">
+          <h2 class="section-title" id="services-title">Adeegyada</h2>
+          <div class="services-grid">
+            <article class="service-card">
+              <div class="service-head">
+                <div class="service-icon-wrap" aria-hidden="true">🛺</div>
+                <span class="eyebrow">Bajaaj</span>
+              </div>
+              <h3>Bajaaj</h3>
+              <p class="service-desc">Safar gaaban, gaadiid degdeg ah, iyo adeeg degdeg ah ee magaalada.</p>
+              <button class="service-btn" type="button" data-service="bajaaj">Dalbo Hadda</button>
+            </article>
+
+            <article class="service-card">
+              <div class="service-head">
+                <div class="service-icon-wrap" aria-hidden="true">🚕</div>
+                <span class="eyebrow">Taxi</span>
+              </div>
+              <h3>Taxi</h3>
+              <p class="service-desc">Safar quus ah, raaxo leh, iyo tababbar sare oo madal u ah suulashada.</p>
+              <button class="service-btn" type="button" data-service="taxi">Dalbo Hadda</button>
+            </article>
+
+            <article class="service-card">
+              <div class="service-head">
+                <div class="service-icon-wrap" aria-hidden="true">📦</div>
+                <span class="eyebrow">Delivery</span>
+              </div>
+              <h3>Delivery</h3>
+              <p class="service-desc">Keenista cunto, alaabta, ama dukaan ilaa goobta aad rabto.</p>
+              <button class="service-btn" type="button" data-service="delivery">Dalbo Hadda</button>
+            </article>
+
+            <article class="service-card">
+              <div class="service-head">
+                <div class="service-icon-wrap" aria-hidden="true">🛫</div>
+                <span class="eyebrow">Safar</span>
+              </div>
+              <h3>Safar</h3>
+              <p class="service-desc">Safar inta u dhaxaysa magaalooyinka, liis-jiid, iyo socdaal la isku dayo.</p>
+              <button class="service-btn" type="button" data-service="safar">Dalbo Hadda</button>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        IGA KEEN — Goldogob, Somalia
+      </footer>
     </div>
-    <footer>
-        <p>IGA KEEN — Goldogob, Somalia</p>
-    </footer>
 
+    <div class="modal" id="orderModal" aria-hidden="true">
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
+        <div class="modal-header">
+          <h2 id="orderModalTitle">Dalabka</h2>
+          <button class="close-btn" type="button" id="closeModalBtn" aria-label="Close">Xidh</button>
+        </div>
+
+        <form id="orderForm" novalidate>
+          <div id="formFields"></div>
+
+          <div class="submit-row">
+            <button type="submit" class="submit-btn" id="submitOrderBtn">
+              <span class="submit-label">Dir Dalabka</span>
+            </button>
+          </div>
+
+          <div id="formAlert" class="alert" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = "https://zywwypqddnvslgqztnep.supabase.co";
-        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8";
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+      // EXACT values requested by user.
+      const SUPABASE_URL = "https://zywwypqddnvslgqztnep.supabase.co";
+      const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8";
 
-        function openOrderForm(service) {
-            document.getElementById('orderForm').style.display = 'block';
-            // Additional logic for service-specific fields can be added here
+      const db = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+      // NOTE:
+      // This frontend intentionally avoids leaking internal provider fees.
+      // The fee model is internal business information and should be calculated/validated
+      // in Supabase database logic (trigger or Edge Function), not in the browser.
+      //
+      // IMPORTANT:
+      // The database schema must match the insert payload below. If your live table uses
+      // different column names, update the mapping in the SQL migration section below and
+      // align the exact names here before production use.
+      const ORDER_COLUMNS = {
+        service_type: "service_type",
+        customer_name: "customer_name",
+        phone_number: "phone_number",
+        pickup_location: "pickup_location",
+        destination: "destination",
+        notes: "notes",
+        gps_latitude: "gps_latitude",
+        gps_longitude: "gps_longitude",
+        item_name: "item_name",
+        shop_or_pickup_location: "shop_or_pickup_location",
+        recipient_name: "recipient_name",
+        recipient_phone: "recipient_phone",
+        delivery_address: "delivery_address",
+        departure_city: "departure_city",
+        destination_city: "destination_city",
+        travel_date: "travel_date",
+        passengers_count: "passengers_count",
+        contact_phone: "contact_phone",
+        status: "status",
+        created_at: "created_at"
+      };
+
+      const serviceLabels = {
+        bajaaj: "Bajaaj",
+        taxi: "Taxi",
+        delivery: "Delivery",
+        safar: "Safar"
+      };
+
+      let selectedService = null;
+      let gpsCoords = null;
+
+      const orderModal = document.getElementById("orderModal");
+      const formFields = document.getElementById("formFields");
+      const orderForm = document.getElementById("orderForm");
+      const formAlert = document.getElementById("formAlert");
+      const submitOrderBtn = document.getElementById("submitOrderBtn");
+      const modalTitle = document.getElementById("orderModalTitle");
+
+      function showAlert(message, type = "error") {
+        formAlert.textContent = message;
+        formAlert.className = "alert show " + type;
+      }
+
+      function hideAlert() {
+        formAlert.className = "alert";
+        formAlert.textContent = "";
+      }
+
+      function openModal() {
+        orderModal.classList.add("show");
+        orderModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeModal() {
+        orderModal.classList.remove("show");
+        orderModal.setAttribute("aria-hidden", "true");
+        hideAlert();
+      }
+
+      function getBaseFields() {
+        return `
+          <div class="form-grid">
+            <div class="field">
+              <label for="customer_name">Magaca macaamiisha</label>
+              <input id="customer_name" name="customer_name" type="text" autocomplete="name" required />
+            </div>
+
+            <div class="field">
+              <label for="phone_number">Lambarka taleefanka</label>
+              <input id="phone_number" name="phone_number" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+252..." />
+            </div>
+
+            <div class="field">
+              <label for="pickup_location">Goobta laga soo qaado</label>
+              <input id="pickup_location" name="pickup_location" type="text" autocomplete="street-address" required />
+            </div>
+
+            <div class="field">
+              <label for="destination">Meesha loo socdo</label>
+              <input id="destination" name="destination" type="text" autocomplete="street-address" required />
+            </div>
+
+            <div class="field full">
+              <label for="gps_location">Goobta GPS</label>
+              <div class="gps-row">
+                <button type="button" class="gps-btn" id="gpsButton">Isticmaal Goobtayda</button>
+              </div>
+              <div id="gpsStatus" class="gps-status">Goobtaadu: wali lama helin.</div>
+            </div>
+
+            <div class="field full">
+              <label for="notes">Tilmaamo dheeraad ah</label>
+              <textarea id="notes" name="notes" placeholder="Tusaale: qolka kore, guriga iyo albaabka, cabsi..."></textarea>
+            </div>
+          </div>
+        `;
+      }
+
+      function getServiceFields(service) {
+        if (service === "bajaaj" || service === "taxi") {
+          return "";
         }
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            } else {
-                document.getElementById('coordinates').innerHTML = "Geolocation is not supported by this browser.";
+        if (service === "delivery") {
+          return `
+            <div class="form-grid">
+              <div class="field">
+                <label for="item_name">Shay ama cunto</label>
+                <input id="item_name" name="item_name" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="shop_or_pickup_location">Goobta dukaan ama laga soo qaado</label>
+                <input id="shop_or_pickup_location" name="shop_or_pickup_location" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="recipient_name">Magaca qaataha (haddii loo baahdo)</label>
+                <input id="recipient_name" name="recipient_name" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="recipient_phone">Lambarka qaataha</label>
+                <input id="recipient_phone" name="recipient_phone" type="tel" inputmode="tel" placeholder="+252..." />
+              </div>
+
+              <div class="field full">
+                <label for="delivery_address">Cinwaanka keenista</label>
+                <input id="delivery_address" name="delivery_address" type="text" required />
+              </div>
+            </div>
+          `;
+        }
+
+        if (service === "safar") {
+          return `
+            <div class="form-grid">
+              <div class="field">
+                <label for="departure_city">Magaalada laga baxo</label>
+                <input id="departure_city" name="departure_city" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="destination_city">Magaalada loo socdo</label>
+                <input id="destination_city" name="destination_city" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="travel_date">Taariikhda safarka</label>
+                <input id="travel_date" name="travel_date" type="date" required />
+              </div>
+
+              <div class="field">
+                <label for="passengers_count">Tirada rakaabada</label>
+                <input id="passengers_count" name="passengers_count" type="number" min="1" value="1" required />
+              </div>
+
+              <div class="field full">
+                <label for="contact_phone">Lambarka xidhiidhka</label>
+                <input id="contact_phone" name="contact_phone" type="tel" inputmode="tel" required placeholder="+252..." />
+              </div>
+            </div>
+          `;
+        }
+
+        return "";
+      }
+
+      function renderForm(service) {
+        selectedService = service;
+        modalTitle.textContent = "Dalabka " + serviceLabels[service];
+        formFields.innerHTML = `
+          ${getBaseFields()}
+          ${getServiceFields(service)}
+        `;
+
+        const gpsButton = document.getElementById("gpsButton");
+        if (gpsButton) {
+          gpsButton.addEventListener("click", handleGpsRequest);
+        }
+
+        hideAlert();
+      }
+
+      function buildOrderPayload(formData) {
+        const now = new Date().toISOString();
+
+        const payload = {
+          [ORDER_COLUMNS.service_type]: serviceLabels[selectedService],
+          [ORDER_COLUMNS.customer_name]: String(formData.customer_name || "").trim(),
+          [ORDER_COLUMNS.phone_number]: String(formData.phone_number || "").trim(),
+          [ORDER_COLUMNS.pickup_location]: String(formData.pickup_location || "").trim(),
+          [ORDER_COLUMNS.destination]: String(formData.destination || "").trim(),
+          [ORDER_COLUMNS.notes]: String(formData.notes || "").trim(),
+          [ORDER_COLUMNS.status]: "new",
+          [ORDER_COLUMNS.created_at]: now
+        };
+
+        if (gpsCoords) {
+          payload[ORDER_COLUMNS.gps_latitude] = gpsCoords.latitude;
+          payload[ORDER_COLUMNS.gps_longitude] = gpsCoords.longitude;
+        } else {
+          payload[ORDER_COLUMNS.gps_latitude] = null;
+          payload[ORDER_COLUMNS.gps_longitude] = null;
+        }
+
+        if (selectedService === "delivery") {
+          payload[ORDER_COLUMNS.item_name] = String(formData.item_name || "").trim();
+          payload[ORDER_COLUMNS.shop_or_pickup_location] = String(formData.shop_or_pickup_location || "").trim();
+          payload[ORDER_COLUMNS.recipient_name] = String(formData.recipient_name || "").trim();
+          payload[ORDER_COLUMNS.recipient_phone] = String(formData.recipient_phone || "").trim();
+          payload[ORDER_COLUMNS.delivery_address] = String(formData.delivery_address || "").trim();
+        }
+
+        if (selectedService === "safar") {
+          payload[ORDER_COLUMNS.departure_city] = String(formData.departure_city || "").trim();
+          payload[ORDER_COLUMNS.destination_city] = String(formData.destination_city || "").trim();
+          payload[ORDER_COLUMNS.travel_date] = formData.travel_date || null;
+          payload[ORDER_COLUMNS.passengers_count] = Number(formData.passengers_count || 1);
+          payload[ORDER_COLUMNS.contact_phone] = String(formData.contact_phone || "").trim();
+        }
+
+        // Some databases use pickup location + destination as common fields.
+        // The public form intentionally does not send any internal provider fees.
+        return payload;
+      }
+
+      function validateForm(service, formData) {
+        if (!String(formData.customer_name || "").trim()) {
+          throw new Error("Fadlan geli magaca macaamiisha.");
+        }
+
+        if (!String(formData.phone_number || "").trim()) {
+          throw new Error("Fadlan geli lambarka taleefanka.");
+        }
+
+        if (!String(formData.pickup_location || "").trim()) {
+          throw new Error("Fadlan geli goobta laga soo qaado.");
+        }
+
+        if (!String(formData.destination || "").trim()) {
+          throw new Error("Fadlan geli meesha loo socdo.");
+        }
+
+        if (service === "delivery") {
+          if (!String(formData.item_name || "").trim()) {
+            throw new Error("Fadlan geli shayga ama cuntada.");
+          }
+          if (!String(formData.shop_or_pickup_location || "").trim()) {
+            throw new Error("Fadlan geli goobta dukaan ama laga soo qaado.");
+          }
+          if (!String(formData.delivery_address || "").trim()) {
+            throw new Error("Fadlan geli cinwaanka keenista.");
+          }
+        }
+
+        if (service === "safar") {
+          if (!String(formData.departure_city || "").trim()) {
+            throw new Error("Fadlan geli magaalada laga baxo.");
+          }
+          if (!String(formData.destination_city || "").trim()) {
+            throw new Error("Fadlan geli magaalada loo socdo.");
+          }
+          if (!String(formData.travel_date || "").trim()) {
+            throw new Error("Fadlan dooro taariikhda safarka.");
+          }
+          if (!String(formData.contact_phone || "").trim()) {
+            throw new Error("Fadlan geli lambarka xidhiidhka.");
+          }
+        }
+
+        if (service !== "safar") {
+          // For all non-Safar services, destination and pickup are required above.
+        }
+
+        return true;
+      }
+
+      function setLoadingState(isLoading) {
+        const label = submitOrderBtn.querySelector(".submit-label");
+        if (isLoading) {
+          label.innerHTML = '<span class="btn-spinner" aria-label="Loading"></span> &nbsp; Wuu shaqeeyaa...';
+          submitOrderBtn.disabled = true;
+          submitOrderBtn.setAttribute("aria-busy", "true");
+        } else {
+          label.textContent = "Dir Dalabka";
+          submitOrderBtn.disabled = false;
+          submitOrderBtn.removeAttribute("aria-busy");
+        }
+      }
+
+      async function submitOrder(event) {
+        event.preventDefault();
+        hideAlert();
+
+        if (!selectedService) {
+          showAlert("Fadlan xulo adeegga ugu horreeya.", "warning");
+          return;
+        }
+
+        const formData = Object.fromEntries(new FormData(orderForm).entries());
+
+        try {
+          validateForm(selectedService, formData);
+
+          setLoadingState(true);
+
+          const payload = buildOrderPayload(formData);
+
+          // IMPORTANT:
+          // We do not call .select() after insert because public SELECT is not guaranteed.
+          const { error } = await db
+            .from("orders")
+            .insert([payload]);
+
+          if (error) {
+            console.error("Supabase insert error:", error);
+
+            let friendly = "Waan ka xunnahay! Dalabkaaga hadda lama gudbin. Fadlan mar kale isku day wax yar kadib.";
+
+            // Explain the likely schema mismatch clearly if the database rejects column names.
+            if (
+              error?.message &&
+              (error.message.toLowerCase().includes("column") ||
+                error.message.toLowerCase().includes("does not exist") ||
+                error.message.toLowerCase().includes("invalid input syntax") ||
+                error.message.toLowerCase().includes("null value in column"))
+            ) {
+              friendly =
+                "Waan ka xunnahay! Qaabdhismeedka jaantuska xaashida 'orders' UMA waafaqsanayn magacyada kolamamka. Fadlan socodsii SQL ee hoose oo hubi in jaantusku la mid yahay. Waxaan kuu soo bandhigeynaa xallinta suurtagalka ah.";
             }
+
+            // If RLS blocks insert, show a clear message.
+            if (
+              error?.message &&
+              error.message.toLowerCase().includes("row level security") ||
+              error?.details?.includes("row level security")
+            ) {
+              friendly =
+                "Waan ka xunnahay! Gelitaanka jaantuska 'orders' ayaa la xannibay oo RLS-kii (Row Level Security) kama oggola. Fadlan socodsii SQL migration ee hoose si aad u sameysid gelitaan ammaan ah oo aan cidna u baahnayn inay akhrido dhammaan dalabyada.";
+            }
+
+            showAlert(friendly, "error");
+            return;
+          }
+
+          showAlert("Waad ku mahadsan tahay inaad dooratay IGA KEEN. Dalabkaaga si guul leh ayaa loo gudbiyey. Waxaan kula soo xiriiri doonnaa lambarka aad bixisay.", "success");
+
+          orderForm.reset();
+          gpsCoords = null;
+          const gpsStatus = document.getElementById("gpsStatus");
+          if (gpsStatus) {
+            gpsStatus.textContent = "Goobtaadu: wali lama helin.";
+          }
+
+          setLoadingState(false);
+
+          setTimeout(() => {
+            closeModal();
+          }, 2200);
+        } catch (err) {
+          console.error("Validation / request failure:", err);
+          showAlert(err && err.message ? err.message : "Waan ka xunnahay! Dalabkaaga hadda lama gudbin. Fadlan mar kale isku day wax yar kadib.", "error");
+        } finally {
+          setLoadingState(false);
+        }
+      }
+
+      function handleGpsRequest() {
+        const gpsStatus = document.getElementById("gpsStatus");
+
+        if (!navigator.geolocation) {
+          gpsStatus.textContent = "No GPS available in this browser. Fadlan gasho goobta gacanta.";
+          showAlert("Kormeeraha browserka ma taageero GPS. Fadlan gasho goobta gacanta.", "warning");
+          return;
         }
 
-        function showPosition(position) {
+        gpsStatus.textContent = "Wuu raacaa goobta... Fadlan oggolow gelitaanka.";
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
             const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            document.getElementById('coordinates').innerHTML = `Latitude: ${lat}, Longitude: ${lon}`;
-            // Save coordinates logic can be added here
+            const lng = position.coords.longitude;
+
+            gpsCoords = {
+              latitude: lat,
+              longitude: lng
+            };
+
+            gpsStatus.textContent = `Goobtaadu: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            hideAlert();
+          },
+          (err) => {
+            console.warn("Geolocation failed:", err);
+
+            gpsStatus.textContent = "GPS ma shaqaynin ama oggolaanshaha waa la diiday. Fadlan gasho goobta gacanta.";
+            showAlert("GPS waa la diiday ama ma shaqayn karo. Fadlan ku qor goobta gacanta.", "warning");
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+          }
+        );
+      }
+
+      document.getElementById("scrollToServices").addEventListener("click", () => {
+        document.getElementById("services-title").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      document.getElementById("openContactInfo").addEventListener("click", () => {
+        showAlert("IGA KEEN waxay bixisaa adeegga magaalada iyo safarka. Fadlan xulo adeegga aad rabto oo buuxi foomka.", "warning");
+      });
+
+      document.querySelectorAll(".service-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const service = button.dataset.service;
+          renderForm(service);
+          openModal();
+        });
+      });
+
+      document.getElementById("closeModalBtn").addEventListener("click", () => {
+        closeModal();
+      });
+
+      orderModal.addEventListener("click", (event) => {
+        if (event.target === orderModal) {
+          closeModal();
         }
+      });
 
-        function showError(error) {
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    document.getElementById('coordinates').innerHTML = "User denied the request for Geolocation.";
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    document.getElementById('coordinates').innerHTML = "Location information is unavailable.";
-                    break;
-                case error.TIMEOUT:
-                    document.getElementById('coordinates').innerHTML = "The request to get user location timed out.";
-                    break;
-                case error.UNKNOWN_ERROR:
-                    document.getElementById('coordinates').innerHTML = "An unknown error occurred.";
-                    break;
-            }
-        }
+      orderForm.addEventListener("submit", submitOrder);
 
-        async function submitOrder() {
-            const customerName = document.getElementById('customerName').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            const pickupLocation = document.getElementById('pickupLocation').value;
-            const destination = document.getElementById('destination').value;
-            const additionalInstructions = document.getElementById('additionalInstructions').value;
-
-            if (!customerName || !phoneNumber || !pickupLocation || !destination) {
-                document.getElementById('message').innerHTML = "Please fill in all required fields.";
-                return;
-            }
-
-            document.getElementById('message').innerHTML = "Submitting...";
-            const { data, error } = await db
-                .from('orders')
-                .insert([{ customer_name: customerName, phone_number: phoneNumber, pickup_location: pickupLocation, destination: destination, additional_instructions: additionalInstructions }]);
-
-            if (error) {
-                console.error(error);
-                document.getElementById('message').innerHTML = "Waan ka xunnahay! Dalabkaaga hadda lama gudbin. Fadlan mar kale isku day wax yar kadib.";
-            } else {
-                document.getElementById('message').innerHTML = "Waad ku mahadsan tahay inaad dooratay IGA KEEN. Dalabkaaga si guul leh ayaa loo gudbiyey. Waxaan kula soo xiriiri doonnaa lambarka aad bixisay.";
-            }
-        }
+      // Initialize by keeping modal hidden on page load.
+      closeModal();
     </script>
-</body>
+  </body>
 </html>
