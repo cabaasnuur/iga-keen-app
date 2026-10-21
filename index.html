@@ -2,10 +2,18 @@
 <html lang="so">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IGA KEEN Taxi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101010">
+<title>IGA KEEN | Goldogob</title>
 
 <style>
+:root {
+  --black: #101010;
+  --yellow: #ffcc00;
+  --white: #ffffff;
+  --gray: #f4f4f4;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -13,185 +21,328 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f3f4f6;
-  color: #171717;
+  background: var(--gray);
+  color: var(--black);
 }
 
 header {
-  background: #111;
+  background: var(--black);
   color: white;
-  padding: 28px 18px;
-  text-align: center;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 32px;
-  letter-spacing: 2px;
+.logo {
+  font-size: 25px;
+  font-weight: 900;
 }
 
-header p {
-  color: #ccc;
+.logo span {
+  color: var(--yellow);
 }
 
-.container {
-  max-width: 500px;
-  margin: 22px auto;
-  padding: 0 16px;
+.location {
+  font-size: 12px;
+  color: #ddd;
+  margin-top: 5px;
 }
 
-.card {
-  background: white;
-  padding: 22px;
-  border-radius: 14px;
-  box-shadow: 0 3px 12px #00000010;
-}
-
-h2 {
-  margin-top: 0;
-}
-
-label {
-  display: block;
-  margin-top: 16px;
+.badge {
+  background: var(--yellow);
+  color: black;
+  padding: 8px 10px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: bold;
+}
+
+.hero {
+  padding: 25px 18px;
+  background: var(--black);
+  color: white;
+}
+
+.hero h1 {
+  font-size: 29px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.hero h1 span {
+  color: var(--yellow);
+}
+
+.hero p {
+  color: #ddd;
+  line-height: 1.6;
   font-size: 14px;
 }
 
-input, select, textarea {
+.hero img {
   width: 100%;
-  padding: 13px;
-  margin-top: 7px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-top: 12px;
+}
+
+.container {
+  max-width: 520px;
+  margin: auto;
+  padding: 18px;
+}
+
+.section-title {
+  font-size: 21px;
+  margin: 12px 0;
+}
+
+.services {
+  display: grid;
+  gap: 15px;
+}
+
+.service {
   background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px #0000000c;
 }
 
-button {
+.service img {
   width: 100%;
-  padding: 15px;
-  margin-top: 22px;
-  border: none;
-  border-radius: 9px;
-  background: #111;
-  color: white;
-  font-size: 17px;
-  font-weight: bold;
+  height: 155px;
+  object-fit: cover;
 }
 
-.note {
+.service-content {
+  padding: 15px;
+}
+
+.service-content h3 {
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+
+.service-content p {
   color: #666;
   font-size: 13px;
   line-height: 1.5;
 }
 
-footer {
-  text-align: center;
-  padding: 20px;
+button {
+  border: 0;
+  background: var(--yellow);
+  color: #111;
+  padding: 14px;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+form {
+  background: white;
+  border-radius: 15px;
+  padding: 18px;
+  margin-top: 22px;
+  box-shadow: 0 3px 12px #0000000c;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+input, select, textarea {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  margin-top: 7px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  background: white;
+  font-size: 15px;
+}
+
+.gps {
+  background: #171717;
+  color: var(--yellow);
+  margin-top: 15px;
+}
+
+#locationStatus {
+  font-size: 12px;
+  color: #555;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.note {
   color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+footer {
+  background: var(--black);
+  color: white;
+  text-align: center;
+  padding: 25px 15px;
+  margin-top: 25px;
   font-size: 13px;
 }
+
+footer span {
+  color: var(--yellow);
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>IGA KEEN</h1>
-  <p>Taxi • Safar • Delivery</p>
-  <p>Goldogob, Soomaaliya</p>
+  <div>
+    <div class="logo">IGA <span>KEEN</span></div>
+    <div class="location">📍 Goldogob, Soomaaliya</div>
+  </div>
+  <div class="badge">ADEEG FUDUD</div>
 </header>
 
+<section class="hero">
+  <h1>Ku soo dhawoow <span>IGA KEEN</span></h1>
+  <p>
+    Taxi, Delivery iyo Safar.<br>
+    Adeeg degdeg ah, ammaan ah, laguu keeno.
+  </p>
+
+  <img
+    src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=900&q=85"
+    alt="Baabuur safar"
+  >
+</section>
+
 <main class="container">
-  <section class="card">
-    <h2>Dalbo Taxi</h2>
-    <p>Buuxi xogta hoose si aad u dalbato gaari.</p>
 
-    <form id="taxiForm">
+  <h2 class="section-title">Maxaad u baahan tahay?</h2>
 
-      <label for="name">Magacaaga</label>
-      <input id="name" type="text"
-        placeholder="Geli magacaaga" required>
+  <div class="services">
 
-      <label for="phone">Lambarkaaga telefoonka</label>
-      <input id="phone" type="tel"
-        placeholder="Geli lambarkaaga" required>
+    <article class="service">
+      <img
+        src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=85"
+        alt="Taxi baabuur"
+      >
+      <div class="service-content">
+        <h3>🚕 Taxi</h3>
+        <p>Dalbo gaari kuu yimaada meesha aad joogto.</p>
+        <button onclick="showForm('Taxi')">DALBO TAXI →</button>
+      </div>
+    </article>
 
-      <label for="pickup">Meesha lagaa qaadayo</label>
-      <input id="pickup" type="text"
-        placeholder="Tusaale: Suuqa Goldogob" required>
+    <article class="service">
+      <img
+        src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=85"
+        alt="Cunto iyo alaab"
+      >
+      <div class="service-content">
+        <h3>🛍️ Delivery</h3>
+        <p>Dalbo cunto iyo alaab laguu keeno.</p>
+        <button onclick="showForm('Delivery')">DALBO DELIVERY →</button>
+      </div>
+    </article>
 
-      <label for="destination">Meesha aad u socoto</label>
-      <input id="destination" type="text"
-        placeholder="Geli meesha aad u socoto" required>
+    <article class="service">
+      <img
+        src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=900&q=85"
+        alt="Gaari safar"
+      >
+      <div class="service-content">
+        <h3>🚌 Safar</h3>
+        <p>Raadi gaari u socda magaalooyinka kale.</p>
+        <button onclick="showForm('Safar')">DALBO SAFAR →</button>
+      </div>
+    </article>
 
-      <label for="time">Goorma ayaad rabtaa Taxi?</label>
-      <select id="time" required>
-        <option value="">Dooro waqtiga</option>
-        <option>Hadda</option>
-        <option>30 daqiiqo gudahood</option>
-        <option>Waqti dambe</option>
-      </select>
+  </div>
 
-      <label for="notes">Faahfaahin dheeraad ah</label>
-      <textarea id="notes" rows="3"
-        placeholder="Faahfaahin haddii ay jirto"></textarea>
+  <form id="orderForm">
+    <h2 id="formTitle">Dalbo Taxi</h2>
 
-      <button type="submit">
-        DALBO TAXI — WHATSAPP
-      </button>
+    <label for="name">Magacaaga</label>
+    <input id="name" placeholder="Geli magacaaga" required>
 
-      <p class="note">
-        Marka aad riixdo badhanka, WhatsApp ayaa furmaya.
-        Hubi fariinta kadibna adigu dir.
-      </p>
+    <label for="phone">Lambarkaaga</label>
+    <input id="phone" type="tel"
+      placeholder="Tusaale: 0907825640" required>
 
-    </form>
-  </section>
+    <label for="pickup">Meesha lagaa qaadayo</label>
+    <input id="pickup" placeholder="Tusaale: Suuqa Goldogob" required>
+
+    <button type="button" class="gps" onclick="getLocation()">
+      📍 SOO DIR LOCATION-KAYGA
+    </button>
+
+    <p id="locationStatus">
+      Location weli lama helin. Riix badhanka kore si aad u wadaagto.
+    </p>
+
+    <label for="destination">Meesha aad u socoto</label>
+    <input id="destination" placeholder="Geli meesha aad u socoto" required>
+
+    <label for="time">Waqtiga adeegga</label>
+    <select id="time" required>
+      <option value="">Dooro waqtiga</option>
+      <option>Hadda</option>
+      <option>30 daqiiqo gudahood</option>
+      <option>Waqti dambe</option>
+    </select>
+
+    <label for="details">Faahfaahin dheeraad ah</label>
+    <textarea id="details" rows="3"
+      placeholder="Wax kasta oo muhiim ah"></textarea>
+
+    <button type="submit" style="margin-top:20px">
+      DALABKA U DIR WHATSAPP
+    </button>
+
+    <p class="note">
+      Location-kaaga waxaa la helayaa oo keliya marka aad oggolaato.
+      Hubi xogtaada ka hor intaadan dirin dalabka.
+    </p>
+  </form>
+
 </main>
 
 <footer>
-  © 2026 IGA KEEN — Goldogob
+  <strong>IGA <span>KEEN</span></strong>
+  <p>Taxi • Delivery • Safar</p>
+  <p>© 2026 IGA KEEN — Goldogob, Soomaaliya</p>
 </footer>
 
 <script>
+/*
+  Lambarka WhatsApp-ka IGA KEEN.
+  Haddii lambarkaagu is beddelo, halkan ka beddel.
+*/
 const WHATSAPP_NUMBER = "252907825640";
 
-document.getElementById("taxiForm").addEventListener(
-  "submit", function(event) {
-    event.preventDefault();
+let gpsLink = "";
+let gpsCoordinates = "";
 
-    const name = document.getElementById("name").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const pickup = document.getElementById("pickup").value.trim();
-    const destination = document.getElementById("destination").value.trim();
-    const time = document.getElementById("time").value;
-    const notes = document.getElementById("notes").value.trim();
+function showForm(service) {
+  document.getElementById("formTitle").textContent =
+    "Dalbo " + service;
 
-    if (WHATSAPP_NUMBER.includes("X")) {
-      alert("Marka hore geli lambarka WhatsApp-ka IGA KEEN ee code-ka ku jira.");
-      return;
-    }
-
-    const message =
-      "IGA KEEN - CODSI TAXI\n\n" +
-      "Magaca: " + name + "\n" +
-      "Telefoonka: " + phone + "\n" +
-      "Meesha laga qaadayo: " + pickup + "\n" +
-      "Meesha loo socdo: " + destination + "\n" +
-      "Waqtiga: " + time + "\n" +
-      "Faahfaahin: " + (notes || "Ma jirto") + "\n\n" +
-      "Fadlan ila soo xiriir si loo xaqiijiyo dalabka.";
-
-    const url =
-      "https://wa.me/" + WHATSAPP_NUMBER +
-      "?text=" + encodeURIComponent(message);
-
-    window.open(url, "_blank");
-  }
-);
-</script>
-
-</body>
-</html>
+  document.getElementById("order
