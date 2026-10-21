@@ -2,347 +2,775 @@
 <html lang="so">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101010">
-<title>IGA KEEN | Goldogob</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="IGA KEEN — Taxi, Delivery iyo Safar.">
+<title>IGA KEEN | Adeegyadaada</title>
 
 <style>
 :root {
-  --black: #101010;
-  --yellow: #ffcc00;
+  --black: #080808;
+  --panel: #141414;
   --white: #ffffff;
-  --gray: #f4f4f4;
+  --muted: #a3a3a3;
+  --border: #303030;
 }
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--gray);
-  color: var(--black);
-}
-
-header {
+  font-family: Arial, Helvetica, sans-serif;
   background: var(--black);
-  color: white;
-  padding: 18px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  color: var(--white);
+  min-height: 100vh;
 }
 
-.logo {
-  font-size: 25px;
-  font-weight: 900;
+button, input, select, textarea {
+  font: inherit;
 }
 
-.logo span {
-  color: var(--yellow);
-}
-
-.location {
-  font-size: 12px;
-  color: #ddd;
-  margin-top: 5px;
-}
-
-.badge {
-  background: var(--yellow);
-  color: black;
-  padding: 8px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.hero {
-  padding: 25px 18px;
-  background: var(--black);
-  color: white;
-}
-
-.hero h1 {
-  font-size: 29px;
-  line-height: 1.2;
-  margin: 0 0 10px;
-}
-
-.hero h1 span {
-  color: var(--yellow);
-}
-
-.hero p {
-  color: #ddd;
-  line-height: 1.6;
-  font-size: 14px;
-}
-
-.hero img {
-  width: 100%;
-  height: 190px;
-  object-fit: cover;
-  border-radius: 15px;
-  margin-top: 12px;
+button {
+  cursor: pointer;
 }
 
 .container {
-  max-width: 520px;
+  width: min(100% - 32px, 900px);
   margin: auto;
-  padding: 18px;
+}
+
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
+  position: sticky;
+  top: 0;
+  background: rgba(8,8,8,.96);
+  z-index: 10;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: #aaa;
+}
+
+.status {
+  font-size: 12px;
+  color: #ccc;
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  border-radius: 20px;
+}
+
+.hero {
+  padding: 45px 0 30px;
+}
+
+.eyebrow {
+  color: #aaa;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-size: clamp(34px, 8vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  max-width: 650px;
+}
+
+h1 span {
+  color: #999;
+}
+
+.hero p {
+  color: #b5b5b5;
+  line-height: 1.7;
+  margin-top: 16px;
+  max-width: 500px;
 }
 
 .section-title {
   font-size: 21px;
-  margin: 12px 0;
+  margin: 22px 0 15px;
 }
 
 .services {
   display: grid;
-  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .service {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 3px 12px #0000000c;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  padding: 17px 13px;
+  color: white;
+  transition: .2s;
 }
 
-.service img {
-  width: 100%;
-  height: 155px;
-  object-fit: cover;
+.service:hover,
+.service:focus-visible {
+  border-color: white;
+  transform: translateY(-2px);
 }
 
-.service-content {
-  padding: 15px;
+.icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: #242424;
+  border-radius: 13px;
+  margin-bottom: 17px;
 }
 
-.service-content h3 {
-  margin: 0 0 8px;
-  font-size: 19px;
+.icon svg {
+  width: 25px;
+  height: 25px;
 }
 
-.service-content p {
-  color: #666;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-button {
-  border: 0;
-  background: var(--yellow);
-  color: #111;
-  padding: 14px;
-  width: 100%;
-  border-radius: 10px;
+.service h3 {
   font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.service p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  min-height: 36px;
+}
+
+.arrow {
+  display: block;
+  margin-top: 17px;
+  font-size: 13px;
   font-weight: bold;
-  cursor: pointer;
 }
 
-button:active {
-  transform: scale(.98);
+.features {
+  margin: 25px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-form {
-  background: white;
-  border-radius: 15px;
-  padding: 18px;
-  margin-top: 22px;
-  box-shadow: 0 3px 12px #0000000c;
+.feature {
+  border: 1px solid var(--border);
+  background: #101010;
+  padding: 15px;
+  border-radius: 13px;
+  font-size: 13px;
+}
+
+.feature strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.feature p {
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 12px;
+}
+
+.booking {
+  display: none;
+  background: #111;
+  border: 1px solid #383838;
+  border-radius: 20px;
+  padding: 21px;
+  margin: 28px 0;
+  scroll-margin-top: 90px;
+}
+
+.booking.show {
+  display: block;
+  animation: appear .25s ease;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.booking-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.booking-header p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 7px;
+}
+
+.close-btn {
+  border: 1px solid var(--border);
+  background: #202020;
+  color: white;
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  font-size: 20px;
+}
+
+.field {
+  margin-bottom: 16px;
 }
 
 label {
   display: block;
-  font-weight: bold;
   font-size: 13px;
-  margin-top: 16px;
+  margin-bottom: 8px;
+  color: #ddd;
 }
 
 input, select, textarea {
-  display: block;
   width: 100%;
-  padding: 13px;
-  margin-top: 7px;
-  border: 1px solid #ddd;
-  border-radius: 9px;
-  background: white;
-  font-size: 15px;
+  padding: 14px;
+  border-radius: 11px;
+  border: 1px solid #383838;
+  background: #090909;
+  color: white;
+  outline: none;
 }
 
-.gps {
-  background: #171717;
-  color: var(--yellow);
-  margin-top: 15px;
+input:focus, select:focus, textarea:focus {
+  border-color: #fff;
 }
 
-#locationStatus {
-  font-size: 12px;
-  color: #555;
-  overflow-wrap: anywhere;
-  line-height: 1.5;
-  margin-top: 10px;
-}
-
-.note {
+input::placeholder, textarea::placeholder {
   color: #777;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gps-box {
+  padding: 14px;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  margin-bottom: 17px;
+}
+
+.gps-box p {
+  color: var(--muted);
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.6;
+  margin: 9px 0;
+}
+
+.gps-btn {
+  width: 100%;
+  border: 1px solid #555;
+  background: #202020;
+  color: white;
+  border-radius: 10px;
+  padding: 13px;
+  font-weight: bold;
+}
+
+.gps-btn:disabled {
+  opacity: .6;
+}
+
+.gps-status {
+  font-size: 12px;
+  margin-top: 9px;
+  overflow-wrap: anywhere;
+}
+
+.primary-btn {
+  width: 100%;
+  border: none;
+  background: white;
+  color: black;
+  border-radius: 12px;
+  padding: 16px;
+  font-weight: 800;
+}
+
+.primary-btn:hover {
+  background: #ddd;
+}
+
+.small-note {
+  font-size: 11px;
+  color: #999;
+  line-height: 1.6;
+  margin-top: 12px;
+  text-align: center;
 }
 
 footer {
-  background: var(--black);
-  color: white;
+  border-top: 1px solid var(--border);
+  margin-top: 35px;
+  padding: 25px 0;
+  color: #999;
+  font-size: 12px;
+  line-height: 1.8;
   text-align: center;
-  padding: 25px 15px;
-  margin-top: 25px;
-  font-size: 13px;
 }
 
-footer span {
-  color: var(--yellow);
+footer strong {
+  color: white;
 }
 
+@media (max-width: 520px) {
+  .services {
+    grid-template-columns: 1fr;
+  }
+
+  .service {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 0 12px;
+    align-items: center;
+    padding: 15px;
+  }
+
+  .service .icon {
+    grid-row: 1 / 3;
+    margin: 0;
+  }
+
+  .service h3 {
+    align-self: end;
+  }
+
+  .service p {
+    min-height: auto;
+    align-self: start;
+  }
+
+  .service .arrow {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    margin: 0;
+  }
+
+  .features {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .booking {
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div>
-    <div class="logo">IGA <span>KEEN</span></div>
-    <div class="location">📍 Goldogob, Soomaaliya</div>
+  <div class="container nav">
+    <div class="logo">IGA <span>KEEN.</span></div>
+    <div class="status">● Adeegyada Goldogob</div>
   </div>
-  <div class="badge">ADEEG FUDUD</div>
 </header>
-
-<section class="hero">
-  <h1>Ku soo dhawoow <span>IGA KEEN</span></h1>
-  <p>
-    Taxi, Delivery iyo Safar.<br>
-    Adeeg degdeg ah, ammaan ah, laguu keeno.
-  </p>
-
-  <img
-    src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=900&q=85"
-    alt="Baabuur safar"
-  >
-</section>
 
 <main class="container">
 
-  <h2 class="section-title">Maxaad u baahan tahay?</h2>
+  <section class="hero">
+    <div class="eyebrow">Adeeg fudud · Degdeg · La isku halayn karo</div>
 
-  <div class="services">
+    <h1>Waxaad u baahan tahay,<br><span>waan kuu keenaynaa.</span></h1>
 
-    <article class="service">
-      <img
-        src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=85"
-        alt="Taxi baabuur"
-      >
-      <div class="service-content">
-        <h3>🚕 Taxi</h3>
-        <p>Dalbo gaari kuu yimaada meesha aad joogto.</p>
-        <button onclick="showForm('Taxi')">DALBO TAXI →</button>
-      </div>
-    </article>
-
-    <article class="service">
-      <img
-        src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=85"
-        alt="Cunto iyo alaab"
-      >
-      <div class="service-content">
-        <h3>🛍️ Delivery</h3>
-        <p>Dalbo cunto iyo alaab laguu keeno.</p>
-        <button onclick="showForm('Delivery')">DALBO DELIVERY →</button>
-      </div>
-    </article>
-
-    <article class="service">
-      <img
-        src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=900&q=85"
-        alt="Gaari safar"
-      >
-      <div class="service-content">
-        <h3>🚌 Safar</h3>
-        <p>Raadi gaari u socda magaalooyinka kale.</p>
-        <button onclick="showForm('Safar')">DALBO SAFAR →</button>
-      </div>
-    </article>
-
-  </div>
-
-  <form id="orderForm">
-    <h2 id="formTitle">Dalbo Taxi</h2>
-
-    <label for="name">Magacaaga</label>
-    <input id="name" placeholder="Geli magacaaga" required>
-
-    <label for="phone">Lambarkaaga</label>
-    <input id="phone" type="tel"
-      placeholder="Tusaale: 0907825640" required>
-
-    <label for="pickup">Meesha lagaa qaadayo</label>
-    <input id="pickup" placeholder="Tusaale: Suuqa Goldogob" required>
-
-    <button type="button" class="gps" onclick="getLocation()">
-      📍 SOO DIR LOCATION-KAYGA
-    </button>
-
-    <p id="locationStatus">
-      Location weli lama helin. Riix badhanka kore si aad u wadaagto.
+    <p>
+      Dalbo gaari, alaab ama safar adigoo jooga gurigaaga.
+      Dooro adeegga aad rabto, buuxi xogtaada, kadibna WhatsApp
+      noogu soo dir dalabkaaga.
     </p>
+  </section>
 
-    <label for="destination">Meesha aad u socoto</label>
-    <input id="destination" placeholder="Geli meesha aad u socoto" required>
+  <section>
+    <h2 class="section-title">Dooro adeeggaaga</h2>
 
-    <label for="time">Waqtiga adeegga</label>
-    <select id="time" required>
-      <option value="">Dooro waqtiga</option>
-      <option>Hadda</option>
-      <option>30 daqiiqo gudahood</option>
-      <option>Waqti dambe</option>
-    </select>
+    <div class="services">
 
-    <label for="details">Faahfaahin dheeraad ah</label>
-    <textarea id="details" rows="3"
-      placeholder="Wax kasta oo muhiim ah"></textarea>
+      <button class="service" onclick="openBooking('Taxi')" type="button">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 11l2-6h10l2 6"/>
+            <path d="M3 11h18v8H3z"/>
+            <path d="M7 19v2M17 19v2M3 15h3M18 15h3"/>
+            <circle cx="7" cy="15" r="1"/>
+            <circle cx="17" cy="15" r="1"/>
+          </svg>
+        </span>
+        <h3>Taxi</h3>
+        <p>Dalbo gaari kuu yimaada.</p>
+        <span class="arrow">Dalbo →</span>
+      </button>
 
-    <button type="submit" style="margin-top:20px">
-      DALABKA U DIR WHATSAPP
-    </button>
+      <button class="service" onclick="openBooking('Delivery')" type="button">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7l9-4 9 4-9 4z"/>
+            <path d="M3 7v10l9 4 9-4V7"/>
+            <path d="M12 11v10M7 5l9 4"/>
+          </svg>
+        </span>
+        <h3>Delivery</h3>
+        <p>Alaab ama cunto kuu keen.</p>
+        <span class="arrow">Dalbo →</span>
+      </button>
 
-    <p class="note">
-      Location-kaaga waxaa la helayaa oo keliya marka aad oggolaato.
-      Hubi xogtaada ka hor intaadan dirin dalabka.
-    </p>
-  </form>
+      <button class="service" onclick="openBooking('Safar')" type="button">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 16l18-8-6-5-4 7-5-1z"/>
+            <path d="M3 20h18"/>
+            <path d="M10 12l-3 5"/>
+          </svg>
+        </span>
+        <h3>Safar</h3>
+        <p>Qorshee safarkaaga magaalada kale.</p>
+        <span class="arrow">Dalbo →</span>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <strong>Goobtaada GPS</strong>
+      <p>La wadaag goobta aad joogto haddii aad oggolaato.</p>
+    </div>
+    <div class="feature">
+      <strong>WhatsApp</strong>
+      <p>Dalabkaaga si toos ah ugu diyaari WhatsApp.</p>
+    </div>
+  </section>
+
+  <section class="booking" id="booking">
+    <div class="booking-header">
+      <div>
+        <h2 id="formTitle">Dalbo adeeg</h2>
+        <p>Buuxi xogta hoose si dalabkaaga loo diyaariyo.</p>
+      </div>
+      <button class="close-btn" onclick="closeBooking()" type="button"
+        aria-label="Xir foomka">×</button>
+    </div>
+
+    <form id="bookingForm">
+
+      <input type="hidden" id="serviceType" name="serviceType">
+
+      <div class="grid">
+        <div class="field">
+          <label for="customerName">Magacaaga *</label>
+          <input id="customerName" name="customerName"
+            placeholder="Magaca oo buuxa" required>
+        </div>
+
+        <div class="field">
+          <label for="phone">Telefoonkaaga *</label>
+          <input id="phone" name="phone" type="tel"
+            placeholder="Tusaale: 0900000000" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="pickup">Meesha lagaa qaadayo *</label>
+        <input id="pickup" name="pickup"
+          placeholder="Tusaale: Suuqa Goldogob" required>
+      </div>
+
+      <div class="gps-box">
+        <strong>Goobtaada GPS</strong>
+        <p>
+          Taabo badhanka hoose si aad u wadaagto goobtaada.
+          Browser-ku wuxuu ku weydiin karaa oggolaansho.
+        </p>
+
+        <button class="gps-btn" id="gpsButton" type="button"
+          onclick="getLocation()">◎ Hel goobtayda GPS</button>
+
+        <div class="gps-status" id="gpsStatus" aria-live="polite">
+          Weli goob lama helin.
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="destination">Meesha loo socdo / la geynayo *</label>
+        <input id="destination" name="destination"
+          placeholder="Tusaale: Wadajir, Goldogob" required>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="dateTime" id="dateLabel">Waqtiga aad rabto</label>
+          <input id="dateTime" name="dateTime" type="datetime-local">
+        </div>
+
+        <div class="field">
+          <label for="passengers" id="extraLabel">Tirada rakaabka</label>
+          <select id="passengers" name="passengers">
+            <option value="1">1 qof</option>
+            <option value="2">2 qof</option>
+            <option value="3">3 qof</option>
+            <option value="4">4 qof</option>
+            <option value="5+">5 ama ka badan</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field" id="itemField" hidden>
+        <label for="items">Maxaa laguu soo iibinayaa ama laguu keenayaa?</label>
+        <input id="items" name="items"
+          placeholder="Tusaale: cunto, biyo ama alaab kale">
+      </div>
+
+      <div class="field">
+        <label for="notes">Faahfaahin dheeraad ah</label>
+        <textarea id="notes" name="notes"
+          placeholder="Qor faahfaahin kaa caawinaysa adeegga..."></textarea>
+      </div>
+
+      <button class="primary-btn" type="submit">
+        U dir dalabka WhatsApp →
+      </button>
+
+      <p class="small-note">
+        Dalabkaaga WhatsApp ayaa lagu diyaarinayaa. Waa inaad adigu
+        taabataa Send si loo diro. Dalabku ma xaqiijisna ilaa lagala soo
+        xiriiro.
+      </p>
+
+    </form>
+  </section>
 
 </main>
 
 <footer>
-  <strong>IGA <span>KEEN</span></strong>
-  <p>Taxi • Delivery • Safar</p>
-  <p>© 2026 IGA KEEN — Goldogob, Soomaaliya</p>
+  <div class="container">
+    <strong>IGA KEEN</strong><br>
+    Taxi · Delivery · Safar<br>
+    Adeegyada Goldogob, Soomaaliya
+  </div>
 </footer>
 
 <script>
-/*
-  Lambarka WhatsApp-ka IGA KEEN.
-  Haddii lambarkaagu is beddelo, halkan ka beddel.
-*/
+"use strict";
+
+// Lambarka WhatsApp-ka: country code + number, iyada oo aan + ama meel bannaan jirin.
 const WHATSAPP_NUMBER = "252907825640";
 
-let gpsLink = "";
-let gpsCoordinates = "";
+let gpsCoordinates = null;
 
-function showForm(service) {
-  document.getElementById("formTitle").textContent =
-    "Dalbo " + service;
+const booking = document.getElementById("booking");
+const form = document.getElementById("bookingForm");
+const serviceType = document.getElementById("serviceType");
+const formTitle = document.getElementById("formTitle");
+const itemField = document.getElementById("itemField");
+const extraLabel = document.getElementById("extraLabel");
+const passengers = document.getElementById("passengers");
+const gpsStatus = document.getElementById("gpsStatus");
+const gpsButton = document.getElementById("gpsButton");
 
-  document.getElementById("order
+function openBooking(service) {
+  serviceType.value = service;
+  formTitle.textContent = "Dalbo " + service;
+
+  itemField.hidden = service !== "Delivery";
+
+  if (service === "Taxi") {
+    extraLabel.textContent = "Tirada rakaabka";
+    passengers.innerHTML = `
+      <option value="1">1 qof</option>
+      <option value="2">2 qof</option>
+      <option value="3">3 qof</option>
+      <option value="4">4 qof</option>
+      <option value="5+">5 ama ka badan</option>`;
+  } else if (service === "Delivery") {
+    extraLabel.textContent = "Nooca gaarsiinta";
+    passengers.innerHTML = `
+      <option value="Cunto">Cunto</option>
+      <option value="Alaab">Alaab</option>
+      <option value="Dukaan">Wax dukaan laga soo iibiyo</option>
+      <option value="Wax kale">Wax kale</option>`;
+  } else {
+    extraLabel.textContent = "Tirada rakaabka";
+    passengers.innerHTML = `
+      <option value="1">1 qof</option>
+      <option value="2">2 qof</option>
+      <option value="3">3 qof</option>
+      <option value="4">4 qof</option>
+      <option value="5+">5 ama ka badan</option>`;
+  }
+
+  booking.classList.add("show");
+  booking.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function closeBooking() {
+  booking.classList.remove("show");
+}
+
+function getLocation() {
+  if (!navigator.geolocation) {
+    gpsStatus.textContent =
+      "Browser-kaagu ma taageerayo GPS. Fadlan gacanta ku qor meeshaada.";
+    return;
+  }
+
+  gpsButton.disabled = true;
+  gpsButton.textContent = "Goobtaada ayaa la raadinayaa...";
+  gpsStatus.textContent = "Sug wax yar...";
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      gpsCoordinates = { latitude, longitude };
+
+      const mapsUrl =
+        "https://www.google.com/maps?q=" + latitude + "," + longitude;
+
+      gpsStatus.innerHTML = "";
+
+      const message = document.createElement("p");
+      message.textContent = "Goobtaada waa la helay.";
+
+      const link = document.createElement("a");
+      link.href = mapsUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Ka eeg Google Maps";
+      link.style.color = "white";
+
+      gpsStatus.appendChild(message);
+      gpsStatus.appendChild(link);
+
+      gpsButton.disabled = false;
+      gpsButton.textContent = "◎ Dib u hel goobta";
+    },
+    function(error) {
+      let message = "Goobta lama helin. Gacanta ku qor meesha aad joogto.";
+
+      if (error.code === 1) {
+        message =
+          "Oggolaanshaha GPS waa la diiday. Oggolow location-ka browser-ka ama gacanta ku qor goobta.";
+      } else if (error.code === 3) {
+        message =
+          "Waqtigu wuu dhammaaday. Hubi GPS-kaaga oo isku day mar kale.";
+      }
+
+      gpsStatus.textContent = message;
+      gpsButton.disabled = false;
+      gpsButton.textContent = "◎ Isku day GPS mar kale";
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 60000
+    }
+  );
+}
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("customerName").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const pickup = document.getElementById("pickup").value.trim();
+  const destination = document.getElementById("destination").value.trim();
+  const dateTime = document.getElementById("dateTime").value;
+  const extra = passengers.value;
+  const items = document.getElementById("items").value.trim();
+  const notes = document.getElementById("notes").value.trim();
+  const service = serviceType.value;
+
+  if (!name || !phone || !pickup || !destination || !service) {
+    alert("Fadlan buuxi meelaha khasabka ah.");
+    return;
+  }
+
+  let message = "IGA KEEN — DALAB CUSUB\n";
+  message += "--------------------------\n";
+  message += "Adeegga: " + service + "\n";
+  message += "Magaca: " + name + "\n";
+  message += "Telefoonka: " + phone + "\n";
+  message += "Meesha laga qaadayo: " + pickup + "\n";
+  message += "Meesha loo socdo: " + destination + "\n";
+
+  if (gpsCoordinates) {
+    const mapsUrl =
+      "https://www.google.com/maps?q=" +
+      gpsCoordinates.latitude + "," + gpsCoordinates.longitude;
+
+    message += "GPS Location: " + mapsUrl + "\n";
+  } else {
+    message += "GPS Location: Lama wadaagin\n";
+  }
+
+  if (dateTime) {
+    message += "Waqtiga: " + dateTime.replace("T", " ") + "\n";
+  }
+
+  if (service === "Delivery") {
+    message += "Nooca dalabka: " + extra + "\n";
+    if (items) message += "Alaabta: " + items + "\n";
+  } else {
+    message += "Tirada rakaabka: " + extra + "\n";
+  }
+
+  if (notes) {
+    message += "Faahfaahin: " + notes + "\n";
+  }
+
+  message += "--------------------------\n";
+  message += "Fadlan ila soo xiriir si loo xaqiijiyo dalabka.";
+
+  const whatsappUrl =
+    "https://wa.me/" + WHATSAPP_NUMBER +
+    "?text=" + encodeURIComponent(message);
+
+  window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+});
+</script>
+
+</body>
+</html>
