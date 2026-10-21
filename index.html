@@ -2,358 +2,240 @@
 <html lang="so">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IGA KEEN | Goldogob</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dalbo — Adeegga Gaadiidka</title>
 <style>
-:root {
-  --black: #000000;
-  --white: #ffffff;
-  --gray-light: #f5f5f7;
-  --gray-border: #e0e0e0;
-  --gray-text: #666666;
-}
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif; }
+  body {
+    min-height:100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    color:#e2e8f0;
+    display:flex; flex-direction:column; align-items:center;
+    padding:20px;
+  }
+  .header { text-align:center; margin:20px 0 30px; }
+  .header h1 {
+    font-size:2.2rem;
+    background: linear-gradient(90deg,#38bdf8,#a78bfa,#f472b6);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    font-weight:800; letter-spacing:1px;
+  }
+  .header p { color:#94a3b8; margin-top:8px; font-size:0.95rem; }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
+  .grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:16px; width:100%; max-width:900px; margin-bottom:30px;
+  }
+  .card {
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:18px; padding:22px 14px; text-align:center;
+    cursor:pointer; transition:all .25s ease;
+    backdrop-filter: blur(8px);
+  }
+  .card:hover { transform:translateY(-5px); border-color:#38bdf8; box-shadow:0 10px 25px rgba(56,189,248,.25); }
+  .card.active {
+    background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(167,139,250,.2));
+    border-color:#38bdf8; box-shadow:0 0 25px rgba(56,189,248,.4);
+  }
+  .card .icon { font-size:2.2rem; margin-bottom:8px; }
+  .card .name { font-weight:700; font-size:1.05rem; }
+  .card .desc { font-size:0.75rem; color:#94a3b8; margin-top:4px; }
 
-body {
-  background: var(--white);
-  color: var(--black);
-  line-height: 1.5;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+  .form-box {
+    width:100%; max-width:900px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px; padding:28px;
+    backdrop-filter: blur(10px);
+    animation: fadeIn .35s ease;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+  .form-box h2 { margin-bottom:18px; font-size:1.3rem; color:#38bdf8; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .field { display:flex; flex-direction:column; margin-bottom:16px; }
+  .field label { font-size:0.85rem; margin-bottom:6px; color:#cbd5e1; }
+  .field input, .field select, .field textarea {
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:10px; padding:12px 14px; color:#f1f5f9;
+    font-size:0.95rem; outline:none; transition:.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color:#38bdf8; box-shadow:0 0 0 3px rgba(56,189,248,.2);
+  }
+  .field textarea { resize:vertical; min-height:70px; }
+  select option { background:#1e293b; color:#fff; }
 
-/* Header */
-header {
-  border-bottom: 1px solid var(--gray-border);
-  padding: 20px;
-  background: var(--white);
-}
+  .btn {
+    width:100%; padding:15px; border:none; border-radius:12px;
+    background:linear-gradient(90deg,#25D366,#128C7E);
+    color:#fff; font-size:1.05rem; font-weight:700;
+    cursor:pointer; transition:.25s; margin-top:10px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(37,211,102,.4); }
+  .btn:active { transform:scale(.98); }
 
-.header-inner {
-  max-width: 480px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo-title {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-}
-
-.sub-title {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--gray-text);
-}
-
-.city-tag {
-  font-size: 11px;
-  font-weight: 600;
-  border: 1px solid var(--black);
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-
-/* Main Container */
-main {
-  max-width: 480px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 24px 20px;
-  flex: 1;
-}
-
-/* Service Selector Tabs */
-.service-tabs {
-  display: flex;
-  background: var(--gray-light);
-  padding: 4px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-}
-
-.tab-btn {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 12px 8px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gray-text);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tab-btn.active {
-  background: var(--black);
-  color: var(--white);
-}
-
-/* Banner Box */
-.info-card {
-  border: 1px solid var(--black);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-}
-
-.info-card h2 {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-
-.info-card p {
-  font-size: 13px;
-  color: var(--gray-text);
-}
-
-/* Form Styling */
-.form-group {
-  margin-bottom: 16px;
-}
-
-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid var(--gray-border);
-  border-radius: 8px;
-  font-size: 14px;
-  background: var(--white);
-  color: var(--black);
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--black);
-}
-
-.btn-gps {
-  width: 100%;
-  background: var(--white);
-  color: var(--black);
-  border: 1px dashed var(--black);
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 4px;
-  transition: background 0.2s;
-}
-
-.btn-gps:hover {
-  background: var(--gray-light);
-}
-
-#gpsStatus {
-  font-size: 12px;
-  color: var(--gray-text);
-  margin-top: 6px;
-}
-
-.btn-submit {
-  width: 100%;
-  background: var(--black);
-  color: var(--white);
-  border: none;
-  padding: 16px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.btn-submit:active {
-  opacity: 0.9;
-}
-
-/* Footer */
-footer {
-  border-top: 1px solid var(--gray-border);
-  padding: 24px 20px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--gray-text);
-  margin-top: auto;
-}
-
-footer strong {
-  color: var(--black);
-}
+  .note { text-align:center; font-size:0.78rem; color:#64748b; margin-top:16px; }
+  @media (max-width:560px){ .row{grid-template-columns:1fr;} .header h1{font-size:1.7rem;} }
 </style>
 </head>
-
 <body>
 
-<header>
-  <div class="header-inner">
-    <div>
-      <div class="logo-title">IGA KEEN</div>
-      <div class="sub-title">Adeeg Degdeg Ah</div>
-    </div>
-    <div class="city-tag">GOLDOGOB</div>
-  </div>
-</header>
-
-<main>
-
-  <!-- Service Selection Tabs -->
-  <div class="service-tabs">
-    <button class="tab-btn active" onclick="selectService(this, 'Taxi')">Taxi</button>
-    <button class="tab-btn" onclick="selectService(this, 'Delivery')">Delivery</button>
-    <button class="tab-btn" onclick="selectService(this, 'Safar')">Safar</button>
+  <div class="header">
+    <h1>🚀 Dalbo</h1>
+    <p>Dooro adeegga aad rabto — Delivery, Taxi, Bajaaj ama Safar</p>
   </div>
 
-  <!-- Info Card -->
-  <div class="info-card">
-    <h2 id="serviceHeading">Adeegga Taxi-ga</h2>
-    <p id="serviceDesc">Puntland - Ka hel gaari kuu dhow meel kasta oo aad joogto.</p>
+  <!-- 4 Qaybood -->
+  <div class="grid" id="cards">
+    <div class="card active" data-type="delivery">
+      <div class="icon">📦</div>
+      <div class="name">Delivery</div>
+      <div class="desc">Dirista alaabta</div>
+    </div>
+    <div class="card" data-type="taxi">
+      <div class="icon">🚕</div>
+      <div class="name">Taxi</div>
+      <div class="desc">Gaadiid gaar ah</div>
+    </div>
+    <div class="card" data-type="bajaaj">
+      <div class="icon">🛺</div>
+      <div class="name">Bajaaj</div>
+      <div class="desc">Safarka dhuuban</div>
+    </div>
+    <div class="card" data-type="safar">
+      <div class="icon">✈️</div>
+      <div class="name">Safar</div>
+      <div class="desc">Safar dheer</div>
+    </div>
   </div>
 
-  <!-- Form -->
-  <form id="orderForm" onsubmit="submitForm(event)">
+  <!-- Foomka -->
+  <div class="form-box" id="formBox">
+    <h2 id="formTitle">📦 Foomka Delivery</h2>
 
-    <div class="form-group">
-      <label for="name">Magacaaga</label>
-      <input type="text" id="name" placeholder="Geli magacaaga" required>
+    <div class="row">
+      <div class="field">
+        <label>Magacaaga</label>
+        <input type="text" id="name" placeholder="Magaca buuxa">
+      </div>
+      <div class="field">
+        <label>Telefoonkaaga</label>
+        <input type="tel" id="phone" placeholder="61XXXXXXX">
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="phone">Lambarka Telefoonka</label>
-      <input type="tel" id="phone" placeholder="Tusaale: 0907825640" required>
+    <div class="row">
+      <div class="field">
+        <label>Goobta laga qaadayo</label>
+        <input type="text" id="from" placeholder="Tusaale: Hodan">
+      </div>
+      <div class="field">
+        <label>Goobta loo socdo</label>
+        <input type="text" id="to" placeholder="Tusaale: Wadajir">
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="pickup">Meesha Lagaa Qaadayo</label>
-      <input type="text" id="pickup" placeholder="Tusaale: Suuqa dhexe" required>
-      <button type="button" class="btn-gps" onclick="fetchGPS()">📍 Soo Dir GPS Location-kayga</button>
-      <div id="gpsStatus">Location lama helin (Optional)</div>
+    <div class="row">
+      <div class="field">
+        <label>Taariikhda</label>
+        <input type="date" id="date">
+      </div>
+      <div class="field">
+        <label>Waqtiga</label>
+        <input type="time" id="time">
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="destination">Meesha Aad U Socoto / Ku Aadeysid</label>
-      <input type="text" id="destination" placeholder="Geli meesha u socoto" required>
+    <div class="field" id="extraField">
+      <label>Faahfaahin dheeraad ah</label>
+      <textarea id="notes" placeholder="Sharax waxa aad rabto..."></textarea>
     </div>
 
-    <div class="form-group">
-      <label for="time">Waqtiga</label>
-      <select id="time" required>
-        <option value="Hadda">Hadda (Degdeg)</option>
-        <option value="30 daqiiqo gudahood">30 daqiiqo gudahood</option>
-        <option value="Waqti dambe">Waqti dambe</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="notes">Faahfaahin Dheeraad Ah</label>
-      <textarea id="notes" rows="2" placeholder="Sida alaabta aad rabto ama faahfaahin kale"></textarea>
-    </div>
-
-    <button type="submit" class="btn-submit">DALABKA U DIR WHATSAPP</button>
-
-  </form>
-
-</main>
-
-<footer>
-  <p><strong>IGA KEEN</strong> — Goldogob, Soomaaliya</p>
-  <p style="margin-top: 4px;">© 2026 Xaqdoorka waa la dhowray.</p>
-</footer>
+    <button class="btn" onclick="sendToWhatsApp()">
+      <span>📲</span> Dalbo Hadda (WhatsApp)
+    </button>
+    <p class="note">Markaad riixdo, fariinta waxaa toos loogu dirayaa WhatsApp.</p>
+  </div>
 
 <script>
-const WHATSAPP_NUMBER = "252907825640";
-let selectedService = "Taxi";
-let userGPS = "";
+  // ====== Beddel lambarka WhatsApp-kaaga halkan ======
+  const WHATSAPP_NUMBER = "252612345678"; // <-- ku beddel lambarkaaga (qoraal, waa inuu yahay lambar caalami ah oo aan lahayn +)
 
-const serviceData = {
-  "Taxi": "Ka hel gaari kuu dhow meel kasta oo aad joogto Goldogob.",
-  "Delivery": "Alaab ama cunto ka dalbo meel kasta naga soo gaarsiin doona.",
-  "Safar": "Boos ka qabso gawaarida u socda magaalooyinka kale."
-};
+  let currentType = "delivery";
 
-function selectService(element, serviceName) {
-  // Update Tab active state
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  element.classList.add('active');
+  const titles = {
+    delivery: "📦 Foomka Delivery",
+    taxi:     "🚕 Foomka Taxi",
+    bajaaj:   "🛺 Foomka Bajaaj",
+    safar:    "✈️ Foomka Safar"
+  };
 
-  // Update headers
-  selectedService = serviceName;
-  document.getElementById('serviceHeading').textContent = `Adeegga ${serviceName}`;
-  document.getElementById('serviceDesc').textContent = serviceData[serviceName];
-}
+  const placeholders = {
+    delivery: { from: "Goobta alaabta laga qaadayo", to: "Goobta loo dirayo" },
+    taxi:     { from: "Halka aad joogto", to: "Halka aad rabto inaad tagto" },
+    bajaaj:   { from: "Halka aad joogto", to: "Halka aad rabto inaad tagto" },
+    safar:    { from: "Magaalada laga baxayo", to: "Magaalada loo socdo" }
+  };
 
-function fetchGPS() {
-  const status = document.getElementById('gpsStatus');
-  if (!navigator.geolocation) {
-    status.textContent = "GPS-ka ma taageerayo telefoonkaaga.";
-    return;
-  }
-  status.textContent = "Location-ka waa la raadinayaa...";
-  
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      userGPS = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-      status.textContent = "✅ Location-ka waa la helay!";
-    },
-    () => {
-      status.textContent = "❌ Waalaga helay Location-ka.";
+  // Beddelka cards
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      currentType = card.dataset.type;
+
+      document.getElementById('formTitle').textContent = titles[currentType];
+      document.getElementById('from').placeholder = placeholders[currentType].from;
+      document.getElementById('to').placeholder = placeholders[currentType].to;
+
+      // Animation cusub
+      const box = document.getElementById('formBox');
+      box.style.animation = 'none';
+      void box.offsetWidth;
+      box.style.animation = 'fadeIn .35s ease';
+    });
+  });
+
+  // Dir WhatsApp
+  function sendToWhatsApp() {
+    const name  = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const from  = document.getElementById('from').value.trim();
+    const to    = document.getElementById('to').value.trim();
+    const date  = document.getElementById('date').value;
+    const time  = document.getElementById('time').value;
+    const notes = document.getElementById('notes').value.trim();
+
+    if (!name || !phone || !from || !to) {
+      alert("Fadlan buuxi: Magaca, Telefoonka, Goobta laga qaadayo iyo Goobta loo socdo.");
+      return;
     }
-  );
-}
 
-function submitForm(e) {
-  e.preventDefault();
+    const typeLabel = {
+      delivery: "📦 Delivery",
+      taxi: "🚕 Taxi",
+      bajaaj: "🛺 Bajaaj",
+      safar: "✈️ Safar"
+    }[currentType];
 
-  const name = document.getElementById('name').value;
-  const phone = document.getElementById('phone').value;
-  const pickup = document.getElementById('pickup').value;
-  const destination = document.getElementById('destination').value;
-  const time = document.getElementById('time').value;
-  const notes = document.getElementById('notes').value;
+    let msg = `*DALBO CUSUB*%0A`;
+    msg += `━━━━━━━━━━━━━━━%0A`;
+    msg += `*Adeeg:* ${typeLabel}%0A`;
+    msg += `*Magac:* ${name}%0A`;
+    msg += `*Telefoon:* ${phone}%0A`;
+    msg += `*Laga qaadayo:* ${from}%0A`;
+    msg += `*Loo socdo:* ${to}%0A`;
+    if (date) msg += `*Taariikh:* ${date}%0A`;
+    if (time) msg += `*Waqti:* ${time}%0A`;
+    if (notes) msg += `*Faahfaahin:* ${notes}%0A`;
+    msg += `━━━━━━━━━━━━━━━`;
 
-  let msg = `*DALAB CUSUB: ${selectedService.toUpperCase()}*\n\n`;
-  msg += `👤 *Magaca:* ${name}\n`;
-  msg += `📞 *Lambar:* ${phone}\n`;
-  msg += `📍 *Laga qaadayo:* ${pickup}\n`;
-  msg += `🎯 *U socdaa:* ${destination}\n`;
-  msg += `⏰ *Waqtiga:* ${time}\n`;
-  
-  if (userGPS) {
-    msg += `🌐 *Location:* ${userGPS}\n`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+    window.open(url, '_blank');
   }
-  if (notes) {
-    msg += `📝 *Faahfaahin:* ${notes}\n`;
-  }
-
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
-}
 </script>
-
 </body>
 </html>
