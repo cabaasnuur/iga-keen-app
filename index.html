@@ -1,462 +1,1691 @@
 <!DOCTYPE html>
 <html lang="so">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>IGA KEEN — Goldogob</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --primary: #D4F34C; /* Cagaar dhalaalaya */
-    --bg-color: #F4F5F7;
-    --text-dark: #111111;
-    --text-light: #777777;
-    --white: #FFFFFF;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background-color: var(--bg-color); color: var(--text-dark); display: flex; justify-content: center; min-height: 100vh; }
-  
-  .app-container { width: 100%; max-width: 500px; background: var(--bg-color); position: relative; overflow-x: hidden; min-height: 100vh; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IGA KEEN</title>
+    <meta
+      name="description"
+      content="IGA KEEN — Taxi, Bajaaj, Delivery iyo Safar, isku xirka macaamiisha iyo adeeg-bixiyeyaasha."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav container">
+        <a href="#home" class="brand" aria-label="IGA KEEN Home">IGA KEEN</a>
 
-  /* TOP BAR */
-  .top-bar { display: flex; align-items: center; padding: 20px; }
-  .user-profile { display: flex; align-items: center; gap: 10px; }
-  .icon-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--white); display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-  .icon-btn svg { width: 20px; height: 20px; fill: var(--text-dark); }
-  .user-info h2 { font-size: 0.75rem; color: var(--text-light); font-weight: 500; }
-  .user-info h3 { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
-  .notif-btn { margin-left: auto; position: relative; }
-  .notif-dot { position: absolute; top: 10px; right: 12px; width: 8px; height: 8px; background: #FF5A5F; border-radius: 50%; border: 2px solid var(--white); }
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
 
-  /* HERO BANNER */
-  .hero-banner { margin: 0 20px 25px; background: var(--primary); border-radius: 30px; padding: 25px; position: relative; overflow: hidden; }
-  .hero-text { position: relative; z-index: 2; width: 60%; }
-  .hero-text h1 { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 10px; color: var(--text-dark); }
-  .hero-text p { font-size: 0.8rem; color: rgba(0,0,0,0.6); font-weight: 500; }
-  
-  .hero-img { position: absolute; right: -20px; bottom: -10px; width: 180px; z-index: 1; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
-  .hero-img img { width: 100%; height: auto; }
+        <div class="nav-menu" id="navMenu">
+          <a href="#home">Home</a>
+          <a href="#services">Adeegyada</a>
+          <a href="#order" data-open-order>Dalbo</a>
+          <a href="#contact">Nala Soo Xiriir</a>
+          <button class="nav-cta" type="button" data-open-order>Dalbo Hadda</button>
+        </div>
+      </nav>
+    </header>
 
-  /* SERVICES */
-  .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
-  .section-header h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-dark); }
-  
-  .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; margin-bottom: 25px; }
-  .service-card { background: var(--white); border-radius: 25px; padding: 20px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.03); position: relative; }
-  .service-card:hover { transform: translateY(-3px); }
-  .service-card.active { background: var(--primary); }
-  
-  .service-icon { width: 50px; height: 50px; border-radius: 15px; background: #F0F0F0; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; }
-  .service-card.active .service-icon { background: var(--white); }
-  .service-icon svg { width: 25px; height: 25px; fill: var(--text-dark); }
-  
-  .service-card h4 { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 5px; }
-  .service-card p { font-size: 0.75rem; color: var(--text-light); }
-  .service-card.active p { color: rgba(0,0,0,0.6); }
+    <main>
+      <section class="hero" id="home">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">IGA KEEN</p>
+            <h1>“Dalbo adeegga aad u baahan tahay.”</h1>
+            <p class="hero-description">
+              “Taxi, Bajaaj, Delivery iyo Safar — IGA KEEN ayaa isku kaa xiraya
+              macaamiisha iyo adeeg-bixiyeyaasha.”
+            </p>
+            <button class="primary-btn large" type="button" data-open-order>
+              DALBO HADDA
+            </button>
+          </div>
 
-  /* DRIVERS LIST */
-  .drivers-list { padding: 0 20px; }
-  .driver-item { background: var(--white); border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s; border: 1px solid transparent; }
-  .driver-item:hover { border-color: var(--primary); }
-  
-  /* SAWIRKAAGA HALKAN AYAA KA SOO BAXAYAA */
-  .driver-avatar { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: #E0E0E0; flex-shrink: 0; border: 2px solid var(--primary); }
-  .driver-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  
-  .driver-details { flex: 1; }
-  .driver-details h4 { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
-  .driver-details p { font-size: 0.75rem; color: var(--text-light); font-weight: 500; }
-  
-  .driver-vehicle { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--text-dark); background: #F4F5F7; padding: 5px 10px; border-radius: 10px; }
-  .driver-vehicle svg { width: 16px; height: 16px; fill: var(--text-dark); }
+          <div class="hero-visual" aria-hidden="true">
+            <div class="visual-card">
+              <div class="mini-badge">On-demand</div>
+              <div class="visual-grid">
+                <span>🚕 Taxi</span>
+                <span>🛺 Bajaaj</span>
+                <span>📦 Delivery</span>
+                <span>🧭 Safar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  /* FORM OVERLAY */
-  .form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: flex-end; backdrop-filter: blur(3px); }
-  .form-container { background: var(--white); width: 100%; max-width: 500px; border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 25px 20px 30px; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); max-height: 90vh; overflow-y: auto; }
-  @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
-  
-  .form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .form-header h3 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); }
-  .close-btn { background: #F4F5F7; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; color: var(--text-dark); }
-  
-  .modal-driver { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #EEE; }
-  .modal-driver .avatar { width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid var(--primary); }
-  .modal-driver .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .modal-driver h4 { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); }
-  .modal-driver p { font-size: 0.8rem; color: var(--text-light); display: flex; align-items: center; gap: 5px; margin-top: 3px; }
-  .modal-driver p svg { width: 14px; height: 14px; fill: #FFC107; }
+      <section class="services" id="services">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-tag">Adeegyada</span>
+            <h2>Waxaad ka heli kartaa adeeg kasta oo aad u baahan tahay.</h2>
+          </div>
 
-  .field { margin-bottom: 15px; margin-top: 15px; }
-  .field label { display: block; font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px; font-weight: 600; }
-  .input-group { position: relative; display: flex; align-items: center; }
-  .input-group input, .field input { width: 100%; background: #F4F5F7; border: 2px solid transparent; padding: 15px; border-radius: 15px; font-size: 0.95rem; outline: none; transition: 0.3s; font-weight: 500; }
-  .input-group input:focus, .field input:focus { border-color: var(--primary); background: var(--white); }
-  
-  .loc-btn { position: absolute; right: 8px; background: var(--primary); color: var(--text-dark); border: none; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-  .loc-btn svg { width: 18px; height: 18px; fill: var(--text-dark); }
+          <div class="service-grid">
+            <article class="service-card" type="button" tabindex="0" data-service-card="Taxi">
+              <div class="service-icon">🚕</div>
+              <h3>Taxi</h3>
+              <p>Safarka degdega ah iyo gaadiidka tooska ah.</p>
+            </article>
 
-  .submit-btn { width: 100%; background: var(--text-dark); color: var(--white); padding: 18px; border-radius: 20px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
-  .submit-btn:hover { background: #333; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+            <article class="service-card" tabindex="0" data-service-card="Bajaaj">
+              <div class="service-icon">🛺</div>
+              <h3>Bajaaj</h3>
+              <p>Safar gaaban oo xawaare leh iyo hufan.</p>
+            </article>
 
-  /* TRACKING OVERLAY */
-  .tracking-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 200; overflow-y: auto; }
-  .map-container { width: 100%; height: 45vh; background: #E5E5E5; position: relative; }
-  .map-container img.map-bg { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-  
-  .floating-card { position: absolute; top: 40px; left: 20px; right: 20px; background: var(--white); border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 10; }
-  .floating-card .avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary); }
-  .floating-card .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .floating-card h4 { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
-  .floating-card p { font-size: 0.75rem; color: var(--text-light); }
-  .floating-card .status { margin-left: auto; background: var(--primary); color: var(--text-dark); padding: 6px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+            <article class="service-card" tabindex="0" data-service-card="Delivery">
+              <div class="service-icon">📦</div>
+              <h3>Delivery</h3>
+              <p>Gaadiid dhawaaga ah oo alaabta kuu keenaya.</p>
+            </article>
 
-  .tracking-card { position: relative; margin-top: -30px; background: var(--white); border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 25px 20px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); z-index: 10; min-height: 55vh; }
-  .tracking-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .tracking-header h3 { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); }
-  
-  .route-box { background: #F4F5F7; border-radius: 15px; padding: 15px; margin-bottom: 20px; }
-  .route-point { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; }
-  .route-point:last-child { margin-bottom: 0; }
-  .dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 4px; }
-  .dot.green { background: var(--text-dark); border: 3px solid var(--primary); }
-  .dot.black { background: var(--text-dark); }
-  .route-point p { font-size: 0.75rem; color: var(--text-light); }
-  .route-point h5 { font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
+            <article class="service-card" tabindex="0" data-service-card="Safar">
+              <div class="service-icon">🧭</div>
+              <h3>Safar</h3>
+              <p>Safarro la qorsheeyay oo si ammaan ah loo qabto.</p>
+            </article>
+          </div>
+        </div>
+      </section>
 
-  .action-btns { display: flex; gap: 10px; margin-top: 20px; }
-  .action-btn { flex: 1; padding: 15px; border-radius: 15px; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-  .whatsapp-btn { background: #25D366; color: #fff; }
-  .cancel-btn { background: #FF5A5F; color: #fff; }
+      <section class="contact" id="contact">
+        <div class="container">
+          <div class="contact-card">
+            <div class="section-heading left">
+              <span class="section-tag">Nala Soo Xiriir</span>
+              <h2>Waan diyaar u nahay inaad naga caawiso.</h2>
+            </div>
 
-  /* BOTTOM NAV */
-  .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 15px 10px; border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 50; }
-  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #AAA; cursor: pointer; transition: 0.2s; }
-  .nav-item.active { color: var(--text-dark); }
-  .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
-  .nav-item span { font-size: 0.65rem; font-weight: 600; }
+            <div class="contact-list">
+              <a href="https://wa.me/252XXXXXXXXX?text=Salaan%20IGA%20KEEN" target="_blank" rel="noopener" class="contact-item whatsapp">
+                <span class="contact-label">WhatsApp</span>
+                <strong>+252 XXXXXXX</strong>
+              </a>
 
-</style>
-</head>
-<body>
+              <a href="tel:+252XXXXXXXXX" class="contact-item">
+                <span class="contact-label">Phone</span>
+                <strong>+252 XXXXXXX</strong>
+              </a>
 
-<div class="app-container">
+              <div class="contact-item">
+                <span class="contact-label">Location</span>
+                <strong>Hargeysa, Somaliland</strong>
+              </div>
+            </div>
 
-  <!-- TOP BAR -->
-  <div class="top-bar">
-    <div class="user-profile">
-      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
-      <div class="user-info">
-        <h2>Location</h2>
-        <h3>Goldogob, Somalia</h3>
+            <a
+              class="primary-btn large contact-whatsapp"
+              href="https://wa.me/252XXXXXXXXX?text=Salaan%20IGA%20KEEN%2C%20waan%20u%20baahan%20ahay%20caawimo."
+              target="_blank"
+              rel="noopener"
+            >
+              WhatsApp Nagula Soo Xiriir
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <h3>IGA KEEN</h3>
+          <p>“Isku xirka macaamiisha iyo adeeg-bixiyeyaasha.”</p>
+        </div>
+
+        <div class="footer-links">
+          <span>Services:</span>
+          <div class="footer-list">
+            <a href="#services">Taxi</a>
+            <a href="#services">Bajaaj</a>
+            <a href="#services">Delivery</a>
+            <a href="#services">Safar</a>
+          </div>
+        </div>
       </div>
-    </div>
-    <button class="icon-btn notif-btn">
-      <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-      <div class="notif-dot"></div>
-    </button>
-  </div>
 
-  <!-- HERO BANNER -->
-  <div class="hero-banner">
-    <div class="hero-text">
-      <h1>Dalbo Gaadiid Daqiiqado Gudahood</h1>
-      <p>Ammaan, Degdeg & Qiimo Jaban</p>
-    </div>
-    <div class="hero-img">
-      <img src="https://pngimg.com/d/car_png48.png" alt="Car">
-    </div>
-  </div>
+      <div class="copyright">© 2026 IGA KEEN</div>
+    </footer>
 
-  <!-- SERVICES -->
-  <div class="section-header">
-    <h3>Adeegyada</h3>
-  </div>
-  <div class="services-grid">
-    <div class="service-card active" onclick="openForm('Taxi', 'Taxi')">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
-      </div>
-      <h4>Cab Booking</h4>
-      <p>Taxi Gaar ah</p>
-    </div>
-    
-    <div class="service-card" onclick="openForm('Delivery', 'Delivery')">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
-      </div>
-      <h4>Package Delivery</h4>
-      <p>Alaab Qaadista</p>
-    </div>
-  </div>
+    <div class="modal" id="orderModal" aria-hidden="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Dalbo Adeeg</h3>
+          <button class="close-modal" id="closeOrderModal" type="button" aria-label="Close form">
+            ✕
+          </button>
+        </div>
 
-  <!-- DRIVERS LIST -->
-  <div class="section-header">
-    <h3>Darawallada Goldogob</h3>
-  </div>
-  <div class="drivers-list">
-    
-    <!-- Sakiin -->
-    <div class="driver-item" onclick="openForm('Sakiin Safar + Taxi', 'Taxi')">
-      <!-- Halkan ayaa Sawirkaaga lagu riday -->
-      <div class="driver-avatar">
-        <!-- FIIRO GAAR AH: Ku beddel linkigan sawirkaaga tooska ah -->
-        <img src="https://i.ibb.co/6PZ9Z9Z/your-image.jpg" alt="Sakiin" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80'">
-      </div>
-      <div class="driver-details">
-        <h4>Sakiin Safar + Taxi</h4>
-        <p>Gaari Probox Casaan</p>
-      </div>
-      <div class="driver-vehicle">
-        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
-        Taxi
-      </div>
-    </div>
+        <form id="orderForm" novalidate>
+          <div class="field">
+            <label for="serviceSelect">Service</label>
+            <select id="serviceSelect" name="service">
+              <option value="Taxi">Taxi</option>
+              <option value="Bajaaj">Bajaaj</option>
+              <option value="Delivery">Delivery</option>
+              <option value="Safar">Safar</option>
+            </select>
+            <div class="field-error" data-error-for="service"></div>
+          </div>
 
-    <!-- Nuur Muuse -->
-    <div class="driver-item" onclick="openForm('Nuur Muuse Safar', 'Safar')">
-      <div class="driver-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80" alt="Driver"></div>
-      <div class="driver-details">
-        <h4>Nuur Muuse</h4>
-        <p>Gaari Land Cruiser Cad</p>
-      </div>
-      <div class="driver-vehicle">
-        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
-        Safar
-      </div>
-    </div>
+          <div id="dynamicFields"></div>
 
-    <!-- Nuraani -->
-    <div class="driver-item" onclick="openForm('Nuraani Bajaaj', 'Bajaaj')">
-      <div class="driver-avatar"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80" alt="Driver"></div>
-      <div class="driver-details">
-        <h4>Nuraani</h4>
-        <p>Bajaaj Gaduudan</p>
-      </div>
-      <div class="driver-vehicle">
-        <svg viewBox="0 0 24 24"><path d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2z"/></svg>
-        Bajaaj
-      </div>
-    </div>
+          <div class="location-panel">
+            <div class="location-status" id="locationStatus">📍 Location lama helin</div>
 
-    <!-- Sanaag Restaurant -->
-    <div class="driver-item" onclick="openForm('Sanaag Restaurant', 'Cunto')">
-      <div class="driver-avatar" style="border-color: #FFC107;"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150&q=80" alt="Restaurant"></div>
-      <div class="driver-details">
-        <h4>Sanaag Restaurant</h4>
-        <p>Bariis, Baasto & Hilib</p>
-      </div>
-      <div class="driver-vehicle" style="background: #FFF3CD; color: #856404;">
-        Cunto
-      </div>
-    </div>
+            <button
+              type="button"
+              class="secondary-btn"
+              id="getLocationBtn"
+            >
+              Hel Location-kayga
+            </button>
 
-  </div>
+            <p class="gps-notice" id="gpsNotice">
+              Waxaan u baahanahay location-kaaga si adeeg-bixiyuhu kuu helo.
+            </p>
 
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav">
-    <div class="nav-item active">
-      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Home</span>
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
-      <span>Ride</span>
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
-      <span>Delivery</span>
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Profile</span>
-    </div>
-  </div>
+            <div class="location-details hidden" id="locationDetails">
+              <div class="location-label">📍 Location la helay</div>
+              <p>Latitude: <span id="latitudeValue">-</span></p>
+              <p>Longitude: <span id="longitudeValue">-</span></p>
+              <a
+                href="#"
+                id="mapLink"
+                class="map-link"
+                target="_blank"
+                rel="noopener"
+              >
+                Ka eeg Map-ka
+              </a>
+            </div>
 
-</div>
+            <div class="field-error" id="locationError"></div>
+          </div>
 
-<!-- ================= FORM OVERLAY ================= -->
-<div class="form-overlay" id="formOverlay">
-  <div class="form-container">
-    <div class="form-header">
-      <h3>Dalbo Adeeg</h3>
-      <button class="close-btn" onclick="closeForm()">✕</button>
-    </div>
-    
-    <div class="modal-driver">
-      <div class="avatar" id="modalAvatar">
-        <img src="https://i.ibb.co/6PZ9Z9Z/your-image.jpg" alt="Driver" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80'">
-      </div>
-      <div>
-        <h4 id="modalDriverName">Sakiin Safar</h4>
-        <p><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg> 4.9 (120+ Reviews)</p>
+          <div class="field manual-pickup">
+            <label for="manualPickupLocation">B. Geli meesha gacanta</label>
+            <input
+              type="text"
+              id="manualPickupLocation"
+              name="manualPickupLocation"
+              placeholder="e.g. Hargeysa, Cudurka Road"
+              autocomplete="street-address"
+            />
+            <div class="field-error" data-error-for="manualPickupLocation"></div>
+          </div>
+
+          <div class="form-footer">
+            <button type="submit" class="primary-btn block">
+              Dib u eeg Dalabka
+            </button>
+          </div>
+        </form>
+
+        <div id="summaryCard" class="summary-card hidden">
+          <h4>Dalabkaaga</h4>
+          <div id="summaryContent" class="summary-content"></div>
+          <div class="summary-actions">
+            <button type="button" class="secondary-btn" id="backToFormBtn">
+              Dib u Noqo
+            </button>
+            <button type="button" class="primary-btn" id="submitWhatsAppBtn">
+              DIR DALABKA WHATSAPP
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label>Magacaaga</label>
-      <input type="text" id="name" placeholder="Geli magacaaga">
-    </div>
-    <div class="field">
-      <label>Telefoonkaaga</label>
-      <input type="tel" id="phone" placeholder="61XXXXXXX">
-    </div>
-    
-    <div class="field">
-      <label>Halka aad joogto (GPS)</label>
-      <div class="input-group">
-        <input type="text" id="from" placeholder="Tusaale: Bartamaha Goldogob">
-        <button type="button" class="loc-btn" onclick="getLocation()">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    <div class="success-modal hidden" id="successModal" aria-live="polite">
+      <div class="success-box">
+        <h3>Dalabka waa diyaar</h3>
+        <p>WhatsApp ayaa kuu furmaya si aad u xaqiijiso dalabkaaga.</p>
+        <button type="button" class="primary-btn block" id="closeSuccessBtn">
+          Ku Laabo IGA KEEN
         </button>
       </div>
     </div>
-    
-    <div class="field">
-      <label>Halka aad rabto / Loo socdo</label>
-      <input type="text" id="to" placeholder="Tusaale: Xaafada Sanaag">
-    </div>
-    
-    <button class="submit-btn" onclick="submitOrder()">Book Now — Dalbo Hadda</button>
-  </div>
-</div>
 
-<!-- ================= TRACKING OVERLAY ================= -->
-<div class="tracking-overlay" id="trackingOverlay">
-  <div class="map-container">
-    <img class="map-bg" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" alt="Map">
-    
-    <div class="floating-card">
-      <div class="avatar" id="trackingAvatar">
-         <img src="https://i.ibb.co/6PZ9Z9Z/your-image.jpg" alt="Driver" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80'">
-      </div>
-      <div>
-        <h4 id="trackingDriver">Sakiin</h4>
-        <p>★ 4.9 • 2 mins away</p>
-      </div>
-      <div class="status">Transit</div>
-    </div>
-  </div>
-
-  <div class="tracking-card">
-    <div class="tracking-header">
-      <h3>Faahfaahinta Safarka</h3>
-      <span style="font-size:0.8rem; font-weight:700; color:var(--text-light);" id="trackingId">#GK-90210</span>
-    </div>
-
-    <div class="route-box">
-      <div class="route-point">
-        <div class="dot green"></div>
-        <div>
-          <p>Laga qaadayo</p>
-          <h5 id="trackingFrom">Goldogob</h5>
-        </div>
-      </div>
-      <div class="route-point">
-        <div class="dot black"></div>
-        <div>
-          <p>Loo socdo</p>
-          <h5 id="trackingTo">Goldogob</h5>
-        </div>
-      </div>
-    </div>
-
-    <div class="action-btns">
-      <button class="action-btn whatsapp-btn" onclick="sendToWhatsApp()">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M12.031 21.455c-1.636 0-3.243-.424-4.656-1.23l-.334-.191-3.464.911.923-3.379-.206-.344C3.435 15.824 2.98 14.07 2.98 12.272c0-4.991 4.06-9.052 9.052-9.052 4.991 0 9.052 4.061 9.052 9.052 0 4.991-4.061 9.052-9.052 9.052zm4.613-6.77c-.253-.126-1.497-.739-1.73-.824-.232-.084-.4-.126-.57.127-.167.253-.648.825-.796.994-.147.168-.294.19-.547.063-.253-.126-1.069-.394-2.036-1.257-.753-.672-1.261-1.503-1.408-1.756-.147-.253-.016-.39.11-.516.114-.112.253-.295.38-.443.126-.147.168-.253.253-.42.085-.168.042-.316-.02-.443-.063-.126-.57-1.373-.78-1.877-.204-.49-.415-.42-.57-.428-.147-.008-.316-.008-.485-.008-.169 0-.443.063-.675.316-.232.253-.886.866-.886 2.113 0 1.247.907 2.45 1.033 2.618.126.169 1.792 2.735 4.338 3.829.606.262 1.078.418 1.448.535.607.193 1.16.166 1.598.101.487-.073 1.497-.612 1.708-1.203.211-.59.211-1.096.147-1.203-.063-.105-.232-.168-.485-.294z"/></svg>
-        Contact
-      </button>
-      <button class="action-btn cancel-btn" onclick="closeTracking()">Cancel Ride</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  const WHATSAPP_NUMBER = "252907825640"; 
-  let currentService = "";
-  
-  // HALKAN AYAAD KU BEDDELAYSAA SAWIRKAAGA
-  // Haddii aad rabto inaad sawirkaaga (Ninka qoraalka leh) isticmaasho, linkiga sawirkaaga halkan ku xir!
-  const YOUR_IMAGE_URL = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80"; 
-
-  function openForm(service, type) {
-    currentService = service;
-    document.getElementById('modalDriverName').innerText = service;
-    document.getElementById('formOverlay').style.display = 'flex';
-    
-    // Sawirka oo lagu beddelo kii saxda ahaa
-    document.getElementById('modalAvatar').innerHTML = `<img src="${YOUR_IMAGE_URL}" alt="Driver">`;
-  }
-
-  function closeForm() {
-    document.getElementById('formOverlay').style.display = 'none';
-    ['name','phone','from','to'].forEach(id => document.getElementById(id).value = '');
-  }
-
-  function getLocation() {
-    const locBtn = document.querySelector('.loc-btn');
-    if (navigator.geolocation) {
-      locBtn.style.background = "#ccc";
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          document.getElementById('from').value = `https://maps.google.com/?q=${lat},${lon}`;
-          locBtn.style.background = "var(--primary)";
-        },
-        function(error) {
-          alert("Fadlan hubi in GPS-kaagu shidan yahay.");
-          locBtn.style.background = "var(--primary)";
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    } else {
-      alert("Browser-kaagu ma taageero GPS.");
-    }
-  }
-
-  function submitOrder() {
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const from = document.getElementById('from').value.trim();
-    const to = document.getElementById('to').value.trim();
-
-    if (!name || !phone || !from || !to) {
-      alert("Fadlan buuxi dhammaan macluumaadka.");
-      return;
-    }
-
-    closeForm();
-    
-    document.getElementById('trackingFrom').innerText = from;
-    document.getElementById('trackingTo').innerText = to;
-    document.getElementById('trackingDriver').innerText = currentService;
-    document.getElementById('trackingId').innerText = "#GK-" + Math.floor(10000 + Math.random() * 90000);
-    document.getElementById('trackingAvatar').innerHTML = `<img src="${YOUR_IMAGE_URL}" alt="Driver">`;
-
-    document.getElementById('trackingOverlay').style.display = 'block';
-  }
-
-  function closeTracking() {
-    document.getElementById('trackingOverlay').style.display = 'none';
-  }
-
-  function sendToWhatsApp() {
-    const name = document.getElementById('name').value || "Macaamiil";
-    const from = document.getElementById('from').value || "Goldogob";
-    const to = document.getElementById('to').value || "Goldogob";
-    const bookingId = document.getElementById('trackingId').innerText;
-
-    let msg = `*DALBO CUSUB — IGA KEEN*%0A`;
-    msg += `━━━━━━━━━━━━━━━%0A`;
-    msg += `*Adeegga:* ${currentService}%0A`;
-    msg += `*Booking ID:* ${bookingId}%0A`;
-    msg += `*Magac:* ${name}%0A`;
-    msg += `*Laga qaadayo:* ${from}%0A`;
-    msg += `*Loo socdo:* ${to}%0A`;
-    msg += `━━━━━━━━━━━━━━━`;
-
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
-  }
-</script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
+```
+
+2. style.css
+
+```css
+:root {
+  --bg: #f3f3f3;
+  --surface: #ffffff;
+  --surface-alt: #f7f7f7;
+  --surface-strong: #141414;
+  --text: #111111;
+  --muted: #5d5d5d;
+  --line: #dcdcdc;
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.07);
+  --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.08);
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 30px;
+  --transition: 0.24s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.06);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 72px;
+  gap: 16px;
+}
+
+.brand {
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.nav-menu a {
+  font-size: 0.96rem;
+  color: var(--muted);
+  transition: color var(--transition);
+}
+
+.nav-menu a:hover,
+.nav-menu a:focus-visible {
+  color: var(--text);
+}
+
+.nav-cta,
+.primary-btn,
+.secondary-btn,
+.contact-whatsapp {
+  border: none;
+  border-radius: 999px;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.nav-cta,
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.primary-btn {
+  background: var(--surface-strong);
+  color: white;
+  box-shadow: 0 14px 28px rgba(17, 17, 17, 0.18);
+  padding: 0.95rem 1.6rem;
+}
+
+.primary-btn:hover,
+.primary-btn:focus-visible {
+  transform: translateY(-1px);
+}
+
+.secondary-btn {
+  background: #efefef;
+  color: var(--text);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  padding: 0.8rem 1.3rem;
+}
+
+.secondary-btn:hover,
+.secondary-btn:focus-visible {
+  background: #e9e9e9;
+}
+
+.large {
+  padding: 1.1rem 1.8rem;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.nav-cta {
+  background: #111111;
+  color: white;
+  padding: 0.8rem 1.2rem;
+}
+
+.nav-toggle {
+  display: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #f2f2f2;
+  border: 1px solid var(--line);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 4px;
+}
+
+.hero {
+  padding: 48px 0 28px;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 32px;
+}
+
+.hero-copy {
+  max-width: 640px;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 4vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.hero-description {
+  margin: 20px 0 28px;
+  max-width: 620px;
+  font-size: 1.06rem;
+  color: var(--muted);
+}
+
+.hero-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.visual-card {
+  width: min(100%, 430px);
+  background: linear-gradient(145deg, #171717 0%, #2d2d2d 100%);
+  border-radius: var(--radius-xl);
+  padding: 26px;
+  box-shadow: var(--shadow-soft);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.visual-card::before {
+  content: "";
+  position: absolute;
+  inset: -30% -20% auto auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mini-badge {
+  display: inline-block;
+  padding: 0.48rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.11);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+.visual-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.visual-grid span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 86px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.services {
+  padding: 32px 0 20px;
+}
+
+.section-heading {
+  margin-bottom: 26px;
+  text-align: center;
+}
+
+.section-heading.left {
+  text-align: left;
+}
+
+.section-tag {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  letter-spacing: -0.05em;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.service-card {
+  background: var(--surface);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+  border-radius: var(--radius-lg);
+  padding: 24px 18px;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+.service-card:hover,
+.service-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.09);
+}
+
+.service-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-alt);
+  font-size: 2rem;
+  margin-bottom: 14px;
+}
+
+.service-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+}
+
+.service-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.contact {
+  padding: 42px 0 50px;
+}
+
+.contact-card {
+  background: var(--surface);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+  border-radius: 30px;
+  box-shadow: var(--shadow-soft);
+  padding: 28px 22px;
+}
+
+.contact-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 26px 0 30px;
+}
+
+.contact-item {
+  background: var(--surface-alt);
+  border: 1px solid rgba(17, 17, 17, 0.04);
+  border-radius: 20px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.contact-item strong {
+  font-size: 1rem;
+}
+
+.contact-whatsapp {
+  display: inline-flex;
+}
+
+.site-footer {
+  background: #111111;
+  color: white;
+  padding: 32px 0 14px;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.footer-brand h3 {
+  margin: 0 0 10px;
+  font-size: 1.5rem;
+  letter-spacing: 0.03em;
+}
+
+.footer-brand p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 340px;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-links > span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.footer-list a {
+  opacity: 0.85;
+}
+
+.copyright {
+  width: min(1120px, calc(100% - 32px));
+  margin: 18px auto 0;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+}
+
+.modal,
+.success-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(17, 17, 17, 0.55);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.modal.show,
+.success-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card,
+.success-box {
+  width: min(720px, 100%);
+  max-height: min(92vh, 860px);
+  overflow-y: auto;
+  background: white;
+  border-radius: 28px;
+  padding: 22px 20px 18px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  letter-spacing: -0.04em;
+}
+
+.close-modal {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: #f1f1f1;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+#orderForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#dynamicFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: white;
+  padding: 0.9rem 0.9rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(17, 17, 17, 0.5);
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.field-error {
+  min-height: 18px;
+  color: #b42318;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.location-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--surface-alt);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+}
+
+.location-status {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.gps-notice {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.location-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 8px;
+}
+
+.location-label {
+  font-weight: 700;
+}
+
+.location-details p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  color: #111111;
+  text-decoration: underline;
+  margin-top: 2px;
+}
+
+.form-footer {
+  padding-top: 6px;
+}
+
+.block {
+  width: 100%;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.summary-card {
+  background: var(--surface-alt);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.summary-card h4 {
+  margin: 0 0 16px;
+  font-size: clamp(1.4rem, 2vw, 1.7rem);
+}
+
+.summary-content {
+  display: grid;
+  gap: 14px;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(17, 17, 17, 0.04);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.summary-row strong {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-row span {
+  font-weight: 600;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.summary-actions .secondary-btn,
+.summary-actions .primary-btn {
+  flex: 1;
+}
+
+.success-box {
+  width: min(460px, 100%);
+  padding: 30px 24px;
+  border-radius: 24px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.success-box h3 {
+  margin: 0 0 12px;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  letter-spacing: -0.05em;
+}
+
+.success-box p {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+@media (max-width: 980px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-copy {
+    max-width: 100%;
+  }
+
+  .hero-visual {
+    order: -1;
+  }
+
+  .service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 16px;
+    right: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(17, 17, 17, 0.06);
+    box-shadow: var(--shadow-soft);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: opacity var(--transition), transform var(--transition);
+  }
+
+  .nav-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav-menu a,
+  .nav-menu .nav-cta {
+    width: 100%;
+    text-align: center;
+    padding: 0.85rem 0.9rem;
+  }
+
+  .service-grid,
+  #dynamicFields {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-actions {
+    flex-direction: column;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 440px) {
+  .container {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .hero {
+    padding-top: 30px;
+  }
+
+  .hero-copy h1 {
+    font-size: 2.3rem;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .nav-cta {
+    min-height: 52px;
+  }
+
+  .modal-card,
+  .success-box {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+```
+
+3. script.js
+
+```javascript
+const IGA_KEEN_WHATSAPP = "252XXXXXXXXX";
+
+const appState = {
+  selectedService: "Taxi",
+  gpsLocation: null,
+  summaryData: null,
+  isSummaryVisible: false,
+};
+
+const serviceSelect = document.getElementById("serviceSelect");
+const dynamicFields = document.getElementById("dynamicFields");
+const orderForm = document.getElementById("orderForm");
+const summaryCard = document.getElementById("summaryCard");
+const summaryContent = document.getElementById("summaryContent");
+const getLocationBtn = document.getElementById("getLocationBtn");
+const locationStatus = document.getElementById("locationStatus");
+const locationDetails = document.getElementById("locationDetails");
+const latitudeValue = document.getElementById("latitudeValue");
+const longitudeValue = document.getElementById("longitudeValue");
+const mapLink = document.getElementById("mapLink");
+const locationError = document.getElementById("locationError");
+const gpsNotice = document.getElementById("gpsNotice");
+const manualPickupLocation = document.getElementById("manualPickupLocation");
+const orderModal = document.getElementById("orderModal");
+const successModal = document.getElementById("successModal");
+const closeOrderModalBtn = document.getElementById("closeOrderModal");
+const backToFormBtn = document.getElementById("backToFormBtn");
+const submitWhatsAppBtn = document.getElementById("submitWhatsAppBtn");
+
+document.addEventListener("DOMContentLoaded", function () {
+  setupNavigation();
+  bindServiceCardClicks();
+  bindOpenOrderButtons();
+  bindCloseHandlers();
+  updateServiceForm();
+  setDefaultLocationView();
+  serviceSelect.addEventListener("change", updateServiceForm);
+});
+
+function setupNavigation() {
+  const navToggle = document.getElementById("navToggle");
+  const navMenu = document.getElementById("navMenu");
+
+  navToggle.addEventListener("click", function () {
+    const isOpen = navMenu.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  navMenu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      navMenu.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+    });
+  });
+}
+
+function bindServiceCardClicks() {
+  const cards = document.querySelectorAll("[data-service-card]");
+  cards.forEach((card) => {
+    card.addEventListener("click", function () {
+      const serviceName = this.getAttribute("data-service-card");
+      serviceSelect.value = serviceName;
+      appState.selectedService = serviceName;
+      updateServiceForm();
+      openOrderModal();
+    });
+  });
+}
+
+function bindOpenOrderButtons() {
+  document.querySelectorAll("[data-open-order]").forEach((btn) => {
+    btn.addEventListener("click", openOrderModal);
+  });
+}
+
+function bindCloseHandlers() {
+  closeOrderModalBtn.addEventListener("click", closeOrderModal);
+  backToFormBtn.addEventListener("click", backToFormView);
+  submitWhatsAppBtn.addEventListener("click", sendToWhatsApp);
+  document.getElementById("closeSuccessBtn").addEventListener("click", closeSuccessModal);
+
+  orderForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (validateOrder()) {
+      showOrderSummary();
+    }
+  });
+
+  getLocationBtn.addEventListener("click", getUserLocation);
+
+  manualPickupLocation.addEventListener("input", function () {
+    if (this.value.trim()) {
+      clearError("manualPickupLocation");
+    }
+  });
+
+  serviceSelect.addEventListener("change", function () {
+    appState.selectedService = this.value;
+    updateServiceForm();
+    clearServiceError();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeOrderModal();
+      closeSuccessModal();
+    }
+  });
+
+  orderModal.addEventListener("click", function (event) {
+    if (event.target === orderModal) {
+      closeOrderModal();
+    }
+  });
+
+  successModal.addEventListener("click", function (event) {
+    if (event.target === successModal) {
+      closeSuccessModal();
+    }
+  });
+}
+
+function openOrderModal() {
+  orderModal.classList.add("show");
+  orderModal.setAttribute("aria-hidden", "false");
+  orderForm.classList.remove("hidden");
+  summaryCard.classList.add("hidden");
+  appState.isSummaryVisible = false;
+}
+
+function closeOrderModal() {
+  orderModal.classList.remove("show");
+  orderModal.setAttribute("aria-hidden", "true");
+}
+
+function closeSuccessModal() {
+  successModal.classList.remove("show");
+}
+
+function setDefaultLocationView() {
+  locationStatus.textContent = "📍 Location lama helin";
+  locationDetails.classList.add("hidden");
+  locationError.textContent = "";
+  gpsNotice.textContent = "Waxaan u baahanahay location-kaaga si adeeg-bixiyuhu kuu helo.";
+}
+
+function updateServiceForm() {
+  const service = serviceSelect.value || "Taxi";
+  appState.selectedService = service;
+
+  let fieldsMarkup = "";
+
+  if (service === "Taxi" || service === "Bajaaj") {
+    fieldsMarkup = `
+      <div class="field">
+        <label for="customerName">Magaca</label>
+        <input id="customerName" name="customerName" type="text" placeholder="Magacaaga" />
+        <div class="field-error" data-error-for="customerName"></div>
+      </div>
+
+      <div class="field">
+        <label for="customerPhone">Phone number</label>
+        <input id="customerPhone" name="customerPhone" type="tel" placeholder="+252 ..." />
+        <div class="field-error" data-error-for="customerPhone"></div>
+      </div>
+
+      <div class="field full">
+        <label for="destination">Xaggee loo socdaa?</label>
+        <input id="destination" name="destination" type="text" placeholder="e.g. Hargeysa, Market Street" />
+        <div class="field-error" data-error-for="destination"></div>
+      </div>
+
+      <div class="field">
+        <label for="passengers">Tirada dadka</label>
+        <input id="passengers" name="passengers" type="number" min="1" placeholder="1" />
+        <div class="field-error" data-error-for="passengers"></div>
+      </div>
+
+      <div class="field full">
+        <label for="additionalNote">Fiiro dheeraad ah</label>
+        <textarea id="additionalNote" name="additionalNote" placeholder="Fiiro dheeraad ah"></textarea>
+        <div class="field-error" data-error-for="additionalNote"></div>
+      </div>
+    `;
+  }
+
+  if (service === "Delivery") {
+    fieldsMarkup = `
+      <div class="field">
+        <label for="customerName">Magaca</label>
+        <input id="customerName" name="customerName" type="text" placeholder="Magacaaga" />
+        <div class="field-error" data-error-for="customerName"></div>
+      </div>
+
+      <div class="field">
+        <label for="customerPhone">Phone number</label>
+        <input id="customerPhone" name="customerPhone" type="tel" placeholder="+252 ..." />
+        <div class="field-error" data-error-for="customerPhone"></div>
+      </div>
+
+      <div class="field full">
+        <label for="deliveryDestination">Delivery destination</label>
+        <input id="deliveryDestination" name="deliveryDestination" type="text" placeholder="Meesha la geeynayo" />
+        <div class="field-error" data-error-for="deliveryDestination"></div>
+      </div>
+
+      <div class="field full">
+        <label for="deliveryItem">Maxaa la keenayaa?</label>
+        <input id="deliveryItem" name="deliveryItem" type="text" placeholder="Maxaa la keenayaa?" />
+        <div class="field-error" data-error-for="deliveryItem"></div>
+      </div>
+
+      <div class="field">
+        <label for="receiverName">Magaca qaataha</label>
+        <input id="receiverName" name="receiverName" type="text" placeholder="Magaca qaataha" />
+        <div class="field-error" data-error-for="receiverName"></div>
+      </div>
+
+      <div class="field">
+        <label for="receiverPhone">Telefoonka qaataha</label>
+        <input id="receiverPhone" name="receiverPhone" type="tel" placeholder="+252 ..." />
+        <div class="field-error" data-error-for="receiverPhone"></div>
+      </div>
+
+      <div class="field full">
+        <label for="additionalNote">Fiiro dheeraad ah</label>
+        <textarea id="additionalNote" name="additionalNote" placeholder="Fiiro dheeraad ah"></textarea>
+        <div class="field-error" data-error-for="additionalNote"></div>
+      </div>
+    `;
+  }
+
+  if (service === "Safar") {
+    fieldsMarkup = `
+      <div class="field">
+        <label for="customerName">Magaca</label>
+        <input id="customerName" name="customerName" type="text" placeholder="Magacaaga" />
+        <div class="field-error" data-error-for="customerName"></div>
+      </div>
+
+      <div class="field">
+        <label for="customerPhone">Phone number</label>
+        <input id="customerPhone" name="customerPhone" type="tel" placeholder="+252 ..." />
+        <div class="field-error" data-error-for="customerPhone"></div>
+      </div>
+
+      <div class="field">
+        <label for="departureCity">Magaalada laga baxayo</label>
+        <input id="departureCity" name="departureCity" type="text" placeholder="Magaalada laga baxayo" />
+        <div class="field-error" data-error-for="departureCity"></div>
+      </div>
+
+      <div class="field">
+        <label for="destinationCity">Magaalada loo socdo</label>
+        <input id="destinationCity" name="destinationCity" type="text" placeholder="Magaalada loo socdo" />
+        <div class="field-error" data-error-for="destinationCity"></div>
+      </div>
+
+      <div class="field">
+        <label for="travelPassengers">Tirada dadka</label>
+        <input id="travelPassengers" name="travelPassengers" type="number" min="1" placeholder="1" />
+        <div class="field-error" data-error-for="travelPassengers"></div>
+      </div>
+
+      <div class="field">
+        <label for="travelDate">Taariikhda safarka</label>
+        <input id="travelDate" name="travelDate" type="date" />
+        <div class="field-error" data-error-for="travelDate"></div>
+      </div>
+
+      <div class="field full">
+        <label for="pickupLocationTrip">Pickup location</label>
+        <input id="pickupLocationTrip" name="pickupLocationTrip" type="text" placeholder="Meesha loo soo qaadayo" />
+        <div class="field-error" data-error-for="pickupLocationTrip"></div>
+      </div>
+
+      <div class="field full">
+        <label for="additionalNote">Fiiro dheeraad ah</label>
+        <textarea id="additionalNote" name="additionalNote" placeholder="Fiiro dheeraad ah"></textarea>
+        <div class="field-error" data-error-for="additionalNote"></div>
+      </div>
+    `;
+  }
+
+  dynamicFields.innerHTML = fieldsMarkup;
+}
+
+function clearServiceError() {
+  const serviceError = document.querySelector("[data-error-for='service']");
+  if (serviceError) {
+    serviceError.textContent = "";
+  }
+}
+
+function getUserLocation() {
+  if (!navigator.geolocation) {
+    handleLocationError({
+      code: 0,
+      message: "Geolocation is not supported by this browser.",
+    });
+    return;
+  }
+
+  gpsNotice.textContent = "Waxaan u baahanahay location-kaaga si adeeg-bixiyuhu kuu helo.";
+  locationError.textContent = "";
+
+  navigator.geolocation.getCurrentPosition(
+    handleLocationSuccess,
+    handleLocationError,
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0,
+    }
+  );
+}
+
+function handleLocationSuccess(position) {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+
+  appState.gpsLocation = {
+    latitude,
+    longitude,
+    mapsUrl: `https://www.google.com/maps?q=${latitude},${longitude}`,
+  };
+
+  latitudeValue.textContent = latitude;
+  longitudeValue.textContent = longitude;
+  mapLink.href = appState.gpsLocation.mapsUrl;
+  mapLink.target = "_blank";
+  mapLink.rel = "noopener noreferrer";
+
+  locationStatus.textContent = "📍 Location waa la helay";
+  locationDetails.classList.remove("hidden");
+  locationError.textContent = "";
+  gpsNotice.textContent = "Location-kaaga waa la helay.";
+}
+
+function handleLocationError(error) {
+  appState.gpsLocation = null;
+
+  locationDetails.classList.add("hidden");
+  latitudeValue.textContent = "-";
+  longitudeValue.textContent = "-";
+  mapLink.href = "#";
+
+  let message = "Location-ka lama heli karin. Fadlan oggolow GPS-ka ama meesha gacanta ku qor.";
+
+  if (error && error.code === 1) {
+    message = "Location-ka lama heli karin. Fadlan oggolow GPS-ka ama meesha gacanta ku qor.";
+  } else if (error && error.code === 3) {
+    message = "Waqtiga location-ku waa dhammaaday. Fadlan mar kale isku day ama meesha gacanta ku qor.";
+  } else if (error && error.code === 2) {
+    message = "Position-ka lama heli karin. Fadlan mar kale isku day ama meesha gacanta ku qor.";
+  } else if (error && error.code === 0) {
+    message = "Browser-kaagu ma taageero geolocation. Fadlan meesha gacanta ku qor.";
+  }
+
+  locationStatus.textContent = "📍 Location lama helin";
+  locationError.textContent = message;
+  gpsNotice.textContent = "Waxaan u baahanahay location-kaaga si adeeg-bixiyuhu kuu helo.";
+}
+
+function validateOrder() {
+  clearAllErrors();
+
+  const service = serviceSelect.value;
+  const name = document.getElementById("customerName")?.value.trim() || "";
+  const phone = document.getElementById("customerPhone")?.value.trim() || "";
+  const manualPickupValue = manualPickupLocation.value.trim();
+
+  let destination = "";
+  let details = "";
+  let pickupLocation = "";
+
+  if (!service) {
+    setError("service", "Fadlan dooro adeegga.");
+  }
+
+  if (!name) {
+    setError("customerName", "Magaca waa lagama maarmaan.");
+  }
+
+  if (!phone) {
+    setError("customerPhone", "Telefoonka waa lagama maarmaan.");
+  }
+
+  if (service === "Taxi" || service === "Bajaaj") {
+    destination = document.getElementById("destination")?.value.trim() || "";
+    details = document.getElementById("additionalNote")?.value.trim() || "";
+
+    if (!destination) {
+      setError("destination", "Xaggee loo socdaa waa in la qoro.");
+    }
+
+    if (document.getElementById("passengers")?.value.trim() === "") {
+      setError("passengers", "Tirada dadka waa lagama maarmaan.");
+    }
+  }
+
+  if (service === "Delivery") {
+    destination = document.getElementById("deliveryDestination")?.value.trim() || "";
+    details = document.getElementById("deliveryItem")?.value.trim() || "";
+    const receiverName = document.getElementById("receiverName")?.value.trim() || "";
+    const receiverPhone = document.getElementById("receiverPhone")?.value.trim() || "";
+
+    if (!destination) {
+      setError("deliveryDestination", "Meesha loo geeynayo waa lagama maarmaan.");
+    }
+
+    if (!details) {
+      setError("deliveryItem", "Maxaa la keenayaa waa lagama maarmaan.");
+    }
+
+    if (!receiverName) {
+      setError("receiverName", "Magaca qaataha waa lagama maarmaan.");
+    }
+
+    if (!receiverPhone) {
+      setError("receiverPhone", "Telefoonka qaataha waa lagama maarmaan.");
+    }
+  }
+
+  if (service === "Safar") {
+    const departureCity = document.getElementById("departureCity")?.value.trim() || "";
+    const destinationCity = document.getElementById("destinationCity")?.value.trim() || "";
+    const travelPassengers = document.getElementById("travelPassengers")?.value.trim() || "";
+    const travelDate = document.getElementById("travelDate")?.value.trim() || "";
+    const pickupTripLocation = document.getElementById("pickupLocationTrip")?.value.trim() || "";
+
+    if (!departureCity) {
+      setError("departureCity", "Magaalada laga baxayo waa lagama maarmaan.");
+    }
+
+    if (!destinationCity) {
+      setError("destinationCity", "Magaalada loo socdo waa lagama maarmaan.");
+    }
+
+    if (!travelPassengers) {
+      setError("travelPassengers", "Tirada dadka waa lagama maarmaan.");
+    }
+
+    if (!travelDate) {
+      setError("travelDate", "Taariikhda safarka waa lagama maarmaan.");
+    }
+
+    if (!pickupTripLocation) {
+      setError("pickupLocationTrip", "Pickup location waa lagama maarmaan.");
+    }
+
+    destination = `${departureCity} → ${destinationCity}`;
+    details = `Tirada dadka: ${travelPassengers}; Taariikh: ${travelDate}; Pickup: ${pickupTripLocation}`;
+  }
+
+  if (appState.gpsLocation && appState.gpsLocation.mapsUrl) {
+    pickupLocation = appState.gpsLocation.mapsUrl;
+  } else if (manualPickupValue) {
+    pickupLocation = manualPickupValue;
+  } else {
+    setError("manualPickupLocation", "Pickup location waa lagama maarmaan. Fadlan isticmaal GPS ama geli meesha gacanta.");
+  }
+
+  const hasErrors = document.querySelectorAll(".field-error:not(:empty)").length > 0;
+
+  if (hasErrors) {
+    return false;
+  }
+
+  appState.summaryData = {
+    service,
+    name,
+    phone,
+    pickupLocation,
+    destination,
+    details,
+    latitude: appState.gpsLocation ? appState.gpsLocation.latitude : "",
+    longitude: appState.gpsLocation ? appState.gpsLocation.longitude : "",
+  };
+
+  return true;
+}
+
+function clearAllErrors() {
+  document.querySelectorAll(".field-error").forEach((el) => {
+    el.textContent = "";
+  });
+}
+
+function setError(fieldName, message) {
+  const errorEl = document.querySelector(`[data-error-for="${fieldName}"]`);
+  if (errorEl) {
+    errorEl.textContent = message;
+  }
+}
+
+function clearError(fieldName) {
+  const errorEl = document.querySelector(`[data-error-for="${fieldName}"]`);
+  if (errorEl) {
+    errorEl.textContent = "";
+  }
+}
+
+function showOrderSummary() {
+  if (!appState.summaryData) {
+    return;
+  }
+
+  const { service, name, phone, pickupLocation, destination, details, latitude, longitude } = appState.summaryData;
+
+  const summaryRows = [
+    ["Adeeg", service],
+    ["Magac", name],
+    ["Telefoon", phone],
+    ["Pickup", pickupLocation],
+    ["Destination", destination],
+    ["Details", details],
+  ];
+
+  if (latitude && longitude) {
+    summaryRows.push(["Latitude", latitude]);
+    summaryRows.push(["Longitude", longitude]);
+  }
+
+  summaryContent.innerHTML = summaryRows
+    .map(([label, value]) => {
+      const safeValue = String(value || "-");
+      const displayValue =
+        label === "Pickup" && safeValue.startsWith("http")
+          ? `<a href="${safeValue}" target="_blank" rel="noopener" class="map-link">${safeValue}</a>`
+          : safeValue;
+
+      return `
+        <div class="summary-row">
+          <strong>${label}</strong>
+          <span>${displayValue}</span>
+        </div>
+      `;
+    })
+    .join("");
+
+  orderForm.classList.add("hidden");
+  summaryCard.classList.remove("hidden");
+  appState.isSummaryVisible = true;
+}
+
+function generateWhatsAppMessage() {
+  if (!appState.summaryData) {
+    return "";
+  }
+
+  const {
+    service,
+    name,
+    phone,
+    pickupLocation,
+    destination,
+    details,
+    latitude,
+    longitude,
+  } = appState.summaryData;
+
+  const mapsText =
+    pickupLocation && pickupLocation.startsWith("http")
+      ? `Pickup Location:\n${pickupLocation}`
+      : `Pickup Location:\n${pickupLocation || "N/A"}`;
+
+  const latitudeLine = latitude ? `Latitude:\n${latitude}` : "Latitude:\nN/A";
+  const longitudeLine = longitude ? `Longitude:\n${longitude}` : "Longitude:\nN/A";
+
+  return [
+    "IGA KEEN — DALAB CUSUB",
+    "",
+    `Adeeg: ${service}`,
+    "",
+    `Magac: ${name}`,
+    `Phone: ${phone}`,
+    "",
+    mapsText,
+    "",
+    latitudeLine,
+    longitudeLine,
+    "",
+    `Destination:\n${destination}`,
+    "",
+    `Details:\n${details}`,
+    "",
+    "Fadlan la xiriir macaamilka si aad u xaqiijiso dalabka.",
+  ].join("\n");
+}
+
+function sendToWhatsApp() {
+  if (!validateOrder()) {
+    if (appState.isSummaryVisible) {
+      orderForm.classList.remove("hidden");
+      summaryCard.classList.add("hidden");
+      appState.isSummaryVisible = false;
+    }
+    return;
+  }
+
+  const message = generateWhatsAppMessage();
+  const encodedMessage = encodeURIComponent(message);
+  const waUrl = `https://wa.me/${IGA_KEEN_WHATSAPP}?text=${encodedMessage}`;
+
+  window.open(waUrl, "_blank", "noopener,noreferrer");
+
+  summaryCard.classList.add("hidden");
+  orderForm.classList.add("hidden");
+  successModal.classList.add("show");
+}
+```
+
+This is the complete project as requested.
