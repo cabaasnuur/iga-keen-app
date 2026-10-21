@@ -3,238 +3,424 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dalbo — Adeegga Gaadiidka</title>
+<title>IGA KEEN — Taxi, Delivery & Safar</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  
   body {
-    min-height:100vh;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-    color:#e2e8f0;
-    display:flex; flex-direction:column; align-items:center;
-    padding:20px;
+    background-color: #0a0a0a;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
   }
-  .header { text-align:center; margin:20px 0 30px; }
-  .header h1 {
-    font-size:2.2rem;
-    background: linear-gradient(90deg,#38bdf8,#a78bfa,#f472b6);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    font-weight:800; letter-spacing:1px;
-  }
-  .header p { color:#94a3b8; margin-top:8px; font-size:0.95rem; }
 
+  .app-container {
+    width: 100%;
+    max-width: 500px; /* Mobile size */
+    min-height: 100vh;
+    background: #0a0a0a;
+    border-left: 1px solid #222;
+    border-right: 1px solid #222;
+  }
+
+  /* Top Bar */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #222;
+    background: #111;
+  }
+  .back-btn {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    cursor: pointer;
+    color: #ddd;
+  }
+  .top-bar h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  /* Header Section */
+  .header-section {
+    padding: 24px 20px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-section h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid #444;
+    color: #ddd;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 30px 20px;
+    border-bottom: 1px solid #222;
+  }
+  .hero .subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #888;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+  }
+  .hero h2 {
+    font-size: 2.2rem;
+    line-height: 1.1;
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+  .hero h2 span {
+    color: #777; /* Grey color for the second line */
+  }
+  .hero p {
+    font-size: 0.95rem;
+    color: #aaa;
+    line-height: 1.5;
+  }
+
+  /* Services Section */
+  .services-section {
+    padding: 24px 20px;
+  }
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .services-header h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .services-header span {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  /* Grid */
   .grid {
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:16px; width:100%; max-width:900px; margin-bottom:30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
+
+  /* Cards */
   .card {
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:18px; padding:22px 14px; text-align:center;
-    cursor:pointer; transition:all .25s ease;
-    backdrop-filter: blur(8px);
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
-  .card:hover { transform:translateY(-5px); border-color:#38bdf8; box-shadow:0 10px 25px rgba(56,189,248,.25); }
-  .card.active {
-    background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(167,139,250,.2));
-    border-color:#38bdf8; box-shadow:0 0 25px rgba(56,189,248,.4);
+  
+  .card:hover, .card.active {
+    border-color: #555;
+    background: #1a1a1a;
   }
-  .card .icon { font-size:2.2rem; margin-bottom:8px; }
-  .card .name { font-weight:700; font-size:1.05rem; }
-  .card .desc { font-size:0.75rem; color:#94a3b8; margin-top:4px; }
 
-  .form-box {
-    width:100%; max-width:900px;
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:20px; padding:28px;
-    backdrop-filter: blur(10px);
-    animation: fadeIn .35s ease;
+  .card-top {
+    margin-bottom: 40px;
   }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
-  .form-box h2 { margin-bottom:18px; font-size:1.3rem; color:#38bdf8; }
-  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .field { display:flex; flex-direction:column; margin-bottom:16px; }
-  .field label { font-size:0.85rem; margin-bottom:6px; color:#cbd5e1; }
-  .field input, .field select, .field textarea {
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.15);
-    border-radius:10px; padding:12px 14px; color:#f1f5f9;
-    font-size:0.95rem; outline:none; transition:.2s;
+  .card-top h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 6px;
   }
-  .field input:focus, .field select:focus, .field textarea:focus {
-    border-color:#38bdf8; box-shadow:0 0 0 3px rgba(56,189,248,.2);
+  .card-top p {
+    font-size: 0.8rem;
+    color: #888;
+    line-height: 1.3;
   }
-  .field textarea { resize:vertical; min-height:70px; }
-  select option { background:#1e293b; color:#fff; }
 
-  .btn {
-    width:100%; padding:15px; border:none; border-radius:12px;
-    background:linear-gradient(90deg,#25D366,#128C7E);
-    color:#fff; font-size:1.05rem; font-weight:700;
-    cursor:pointer; transition:.25s; margin-top:10px;
-    display:flex; align-items:center; justify-content:center; gap:10px;
+  .card-bottom {
+    margin-top: auto;
   }
-  .btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(37,211,102,.4); }
-  .btn:active { transform:scale(.98); }
+  .fee-text {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+  .dalbo-btn {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    align-items: center;
+  }
+  .dalbo-btn::after {
+    content: '→';
+    margin-left: 5px;
+  }
 
-  .note { text-align:center; font-size:0.78rem; color:#64748b; margin-top:16px; }
-  @media (max-width:560px){ .row{grid-template-columns:1fr;} .header h1{font-size:1.7rem;} }
+  /* Form Overlay (Waxa soo baxa marka card-ka la riixo) */
+  .form-overlay {
+    display: none; /* Qarsoodi ah marka hore */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    justify-content: center;
+    align-items: flex-end; /* Mobile bottom sheet style */
+  }
+
+  .form-container {
+    background: #141414;
+    width: 100%;
+    max-width: 500px;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    padding: 24px;
+    border: 1px solid #333;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .form-header h3 { font-size: 1.2rem; }
+  .close-btn { background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; }
+
+  .field { margin-bottom: 15px; }
+  .field label {
+    display: block;
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+  }
+  .field input:focus, .field textarea:focus { border-color: #777; }
+
+  .submit-btn {
+    width: 100%;
+    background: #fff;
+    color: #000;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .submit-btn:hover { background: #ddd; }
 </style>
 </head>
 <body>
 
-  <div class="header">
-    <h1>🚀 Dalbo</h1>
-    <p>Dooro adeegga aad rabto — Delivery, Taxi, Bajaaj ama Safar</p>
+<div class="app-container">
+  
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="back-btn">←</div>
+    <h2>IGA KEEN — Taxi, Delivery & Safar</h2>
   </div>
 
-  <!-- 4 Qaybood -->
-  <div class="grid" id="cards">
-    <div class="card active" data-type="delivery">
-      <div class="icon">📦</div>
-      <div class="name">Delivery</div>
-      <div class="desc">Dirista alaabta</div>
+  <!-- Header -->
+  <div class="header-section">
+    <h1>IGA KEEN.</h1>
+    <button class="btn-outline">Adeegyada Golgob</button>
+  </div>
+
+  <!-- Hero Text -->
+  <div class="hero">
+    <div class="subtitle">DHEXDHEXAADIN · DEGDEG · FUDUD</div>
+    <h2>Adeeggaaga hel.<br><span>IGA KEEN ayaa isku kaa xiraya.</span></h2>
+    <p>Dooro Taxi, Bajaaj, Delivery ama Safar. IGA KEEN waxuu isku xiraa macaamiisha iyo adeeg-bixiyeyaasha. Qiimaha adeegga waxaa isla garta labada dhinac; fee-ga IGA KEEN-na horay ayaa loo caddeeyaa.</p>
+  </div>
+
+  <!-- Services -->
+  <div class="services-section">
+    <div class="services-header">
+      <h3>Dooro adeeg</h3>
+      <span>Taabo si aad u dalbato</span>
     </div>
-    <div class="card" data-type="taxi">
-      <div class="icon">🚕</div>
-      <div class="name">Taxi</div>
-      <div class="desc">Gaadiid gaar ah</div>
-    </div>
-    <div class="card" data-type="bajaaj">
-      <div class="icon">🛺</div>
-      <div class="name">Bajaaj</div>
-      <div class="desc">Safarka dhuuban</div>
-    </div>
-    <div class="card" data-type="safar">
-      <div class="icon">✈️</div>
-      <div class="name">Safar</div>
-      <div class="desc">Safar dheer</div>
+
+    <div class="grid">
+      <!-- Bajaaj -->
+      <div class="card" onclick="openForm('Bajaaj')">
+        <div class="card-top">
+          <h4>Bajaaj</h4>
+          <p>Gaadiid saddex lugood leh.</p>
+        </div>
+        <div class="card-bottom">
+          <div class="fee-text">Fee darawalka: $0.20</div>
+          <div class="dalbo-btn">Dalbo</div>
+        </div>
+      </div>
+
+      <!-- Taxi -->
+      <div class="card" onclick="openForm('Taxi')">
+        <div class="card-top">
+          <h4>Taxi</h4>
+          <p>Gaari caadi ah.</p>
+        </div>
+        <div class="card-bottom">
+          <div class="fee-text">Fee darawalka: $0.30</div>
+          <div class="dalbo-btn">Dalbo</div>
+        </div>
+      </div>
+
+      <!-- Delivery -->
+      <div class="card" onclick="openForm('Delivery')">
+        <div class="card-top">
+          <h4>Delivery</h4>
+          <p>Alaab ama cunto la geeyo.</p>
+        </div>
+        <div class="card-bottom">
+          <div class="fee-text">Fee: $0.35 guud ahaan</div>
+          <div class="dalbo-btn">Dalbo</div>
+        </div>
+      </div>
+
+      <!-- Safar -->
+      <div class="card" onclick="openForm('Safar')">
+        <div class="card-top">
+          <h4>Safar</h4>
+          <p>Safar magaaloyinka dhexdooda.</p>
+        </div>
+        <div class="card-bottom">
+          <div class="fee-text">Fee darawalka: $1.50</div>
+          <div class="dalbo-btn">Dalbo</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Foomka -->
-  <div class="form-box" id="formBox">
-    <h2 id="formTitle">📦 Foomka Delivery</h2>
+</div>
 
-    <div class="row">
-      <div class="field">
-        <label>Magacaaga</label>
-        <input type="text" id="name" placeholder="Magaca buuxa">
-      </div>
-      <div class="field">
-        <label>Telefoonkaaga</label>
-        <input type="tel" id="phone" placeholder="61XXXXXXX">
-      </div>
+<!-- Form-ka (Waxaa soo baxa marka la taabo "Dalbo") -->
+<div class="form-overlay" id="formOverlay">
+  <div class="form-container">
+    <div class="form-header">
+      <h3 id="formTitle">Dalbo Bajaaj</h3>
+      <button class="close-btn" onclick="closeForm()">×</button>
     </div>
 
-    <div class="row">
-      <div class="field">
-        <label>Goobta laga qaadayo</label>
-        <input type="text" id="from" placeholder="Tusaale: Hodan">
-      </div>
-      <div class="field">
-        <label>Goobta loo socdo</label>
-        <input type="text" id="to" placeholder="Tusaale: Wadajir">
-      </div>
+    <div class="field">
+      <label>Magacaaga</label>
+      <input type="text" id="name" placeholder="Magaca buuxa">
+    </div>
+    
+    <div class="field">
+      <label>Telefoonkaaga</label>
+      <input type="tel" id="phone" placeholder="61XXXXXXX">
     </div>
 
-    <div class="row">
-      <div class="field">
-        <label>Taariikhda</label>
-        <input type="date" id="date">
-      </div>
-      <div class="field">
-        <label>Waqtiga</label>
-        <input type="time" id="time">
-      </div>
+    <div class="field">
+      <label>Halka aad joogto / Laga qaadayo</label>
+      <input type="text" id="from" placeholder="Tusaale: Hodan">
     </div>
 
-    <div class="field" id="extraField">
-      <label>Faahfaahin dheeraad ah</label>
-      <textarea id="notes" placeholder="Sharax waxa aad rabto..."></textarea>
+    <div class="field">
+      <label>Halka aad rabto / Loo socdo</label>
+      <input type="text" id="to" placeholder="Tusaale: Wadajir">
     </div>
 
-    <button class="btn" onclick="sendToWhatsApp()">
-      <span>📲</span> Dalbo Hadda (WhatsApp)
-    </button>
-    <p class="note">Markaad riixdo, fariinta waxaa toos loogu dirayaa WhatsApp.</p>
+    <div class="field">
+      <label>Faahfaahin dheeraad ah (Ikhtiyaar)</label>
+      <textarea id="notes" rows="2" placeholder="Wax kasta oo aad rabto inaad sheegto..."></textarea>
+    </div>
+
+    <button class="submit-btn" onclick="sendToWhatsApp()">U dir WhatsApp</button>
   </div>
+</div>
 
 <script>
-  // ====== Beddel lambarka WhatsApp-kaaga halkan ======
-  const WHATSAPP_NUMBER = "252907825640"; // <-- ku beddel lambarkaaga (qoraal, waa inuu yahay lambar caalami ah oo aan lahayn +)
+  // ====== BEDDEL LAMBARKAAGA WHATSAPP HALKAN ======
+  const WHATSAPP_NUMBER = "2527825640"; // Ku beddel lambarkaaga rasmiga ah
 
-  let currentType = "delivery";
+  let currentService = "Bajaaj";
+  let currentFee = "";
 
-  const titles = {
-    delivery: "📦 Foomka Delivery",
-    taxi:     "🚕 Foomka Taxi",
-    bajaaj:   "🛺 Foomka Bajaaj",
-    safar:    "✈️ Foomka Safar"
-  };
+  function openForm(service) {
+    currentService = service;
+    document.getElementById('formTitle').innerText = "Dalbo " + service;
+    
+    // Qiimaha qayb kasta
+    const fees = {
+      "Bajaaj": "$0.20",
+      "Taxi": "$0.30",
+      "Delivery": "$0.35",
+      "Safar": "$1.50"
+    };
+    currentFee = fees[service];
 
-  const placeholders = {
-    delivery: { from: "Goobta alaabta laga qaadayo", to: "Goobta loo dirayo" },
-    taxi:     { from: "Halka aad joogto", to: "Halka aad rabto inaad tagto" },
-    bajaaj:   { from: "Halka aad joogto", to: "Halka aad rabto inaad tagto" },
-    safar:    { from: "Magaalada laga baxayo", to: "Magaalada loo socdo" }
-  };
+    document.getElementById('formOverlay').style.display = 'flex';
+  }
 
-  // Beddelka cards
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      currentType = card.dataset.type;
+  function closeForm() {
+    document.getElementById('formOverlay').style.display = 'none';
+    // Nadiifi foomka
+    document.getElementById('name').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('from').value = '';
+    document.getElementById('to').value = '';
+    document.getElementById('notes').value = '';
+  }
 
-      document.getElementById('formTitle').textContent = titles[currentType];
-      document.getElementById('from').placeholder = placeholders[currentType].from;
-      document.getElementById('to').placeholder = placeholders[currentType].to;
-
-      // Animation cusub
-      const box = document.getElementById('formBox');
-      box.style.animation = 'none';
-      void box.offsetWidth;
-      box.style.animation = 'fadeIn .35s ease';
-    });
-  });
-
-  // Dir WhatsApp
   function sendToWhatsApp() {
-    const name  = document.getElementById('name').value.trim();
+    const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
-    const from  = document.getElementById('from').value.trim();
-    const to    = document.getElementById('to').value.trim();
-    const date  = document.getElementById('date').value;
-    const time  = document.getElementById('time').value;
+    const from = document.getElementById('from').value.trim();
+    const to = document.getElementById('to').value.trim();
     const notes = document.getElementById('notes').value.trim();
 
     if (!name || !phone || !from || !to) {
-      alert("Fadlan buuxi: Magaca, Telefoonka, Goobta laga qaadayo iyo Goobta loo socdo.");
+      alert("Fadlan buuxi Magaca, Telefoonka, Goobta laga qaadayo iyo Goobta loo socdo.");
       return;
     }
 
-    const typeLabel = {
-      delivery: "📦 Delivery",
-      taxi: "🚕 Taxi",
-      bajaaj: "🛺 Bajaaj",
-      safar: "✈️ Safar"
-    }[currentType];
-
-    let msg = `*DALBO CUSUB*%0A`;
+    let msg = `*DALBO CUSUB — IGA KEEN*%0A`;
     msg += `━━━━━━━━━━━━━━━%0A`;
-    msg += `*Adeeg:* ${typeLabel}%0A`;
+    msg += `*Adeegga:* ${currentService}%0A`;
+    msg += `*Fee-da:* ${currentFee}%0A`;
     msg += `*Magac:* ${name}%0A`;
     msg += `*Telefoon:* ${phone}%0A`;
     msg += `*Laga qaadayo:* ${from}%0A`;
     msg += `*Loo socdo:* ${to}%0A`;
-    if (date) msg += `*Taariikh:* ${date}%0A`;
-    if (time) msg += `*Waqti:* ${time}%0A`;
     if (notes) msg += `*Faahfaahin:* ${notes}%0A`;
     msg += `━━━━━━━━━━━━━━━`;
 
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
     window.open(url, '_blank');
+    
+    closeForm();
   }
 </script>
 </body>
