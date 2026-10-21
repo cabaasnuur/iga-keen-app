@@ -35,19 +35,24 @@
   /* ===== RESTAURANTS ===== */
   .restaurant-card { margin: 0 20px 15px; padding: 15px; border: 1px solid #eee; border-radius: 18px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.2s; }
   .restaurant-card:hover { border-color: #e63946; box-shadow: 0 5px 15px rgba(230, 57, 70, 0.1); }
-  .rest-logo { width: 60px; height: 60px; border-radius: 15px; background: #fff3f3; display: flex; justify-content: center; align-items: center; }
-  .rest-logo svg { width: 30px; height: 30px; fill: #e63946; }
+  
+  /* SAWIRKA RESTAURANT-KA */
+  .rest-logo { width: 65px; height: 65px; border-radius: 15px; overflow: hidden; flex-shrink: 0; }
+  .rest-logo img { width: 100%; height: 100%; object-fit: cover; }
+
   .rest-info h4 { font-size: 1rem; font-weight: 800; color: #111; margin-bottom: 4px; }
   .rest-info p { font-size: 0.8rem; color: #777; }
 
   /* ===== DRIVERS (Horizontal Scroll) ===== */
   .drivers-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; }
   .drivers-scroll::-webkit-scrollbar { display: none; }
-  .driver-card { min-width: 140px; border: 1px solid #eee; border-radius: 18px; padding: 15px; text-align: center; transition: 0.2s; cursor: pointer; }
+  .driver-card { min-width: 150px; border: 1px solid #eee; border-radius: 18px; padding: 15px; text-align: center; transition: 0.2s; cursor: pointer; }
   .driver-card:hover { border-color: #e63946; }
-  .driver-img { width: 70px; height: 70px; border-radius: 50%; background: #f5f5f5; margin: 0 auto 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 2px solid #e63946; }
-  /* Halkan sawirka gaariga ayaa lagu riday SVG */
-  .driver-img svg { width: 45px; height: 45px; }
+  
+  /* SAWIRKA BAABUURTA */
+  .driver-img { width: 100%; height: 90px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; border: 1px solid #eee; }
+  .driver-img img { width: 100%; height: 100%; object-fit: cover; }
+
   .driver-card h4 { font-size: 0.95rem; font-weight: 800; color: #111; margin-bottom: 2px; }
   .driver-card p { font-size: 0.75rem; color: #777; font-weight: 600; }
   .driver-card .service-type { font-size: 0.7rem; background: #e63946; color: #fff; padding: 3px 8px; border-radius: 10px; display: inline-block; margin-top: 8px; font-weight: 700; }
@@ -80,12 +85,13 @@
   .submit-btn { width: 100%; background: #e63946; color: #fff; padding: 16px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 10px; transition: 0.2s; }
   .submit-btn:hover { background: #d62839; }
 
-  /* ===== TRACKING PAGE (Mid u eg sawirka Midig) ===== */
+  /* ===== TRACKING PAGE ===== */
   .tracking-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 200; overflow-y: auto; }
+  
+  /* SAWIRKA MAP-KA */
   .map-container { width: 100%; height: 350px; background: #e5e5e5; position: relative; overflow: hidden; }
-  /* Map placeholder */
-  .map-container::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://www.transparenttextures.com/patterns/cubes.png'); opacity: 0.1; }
-  .map-path { position: absolute; top: 50%; left: 20%; width: 60%; height: 4px; background: #333; border-radius: 2px; z-index: 2; }
+  .map-container img.map-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+  .map-path { position: absolute; top: 50%; left: 20%; width: 60%; height: 4px; background: #e63946; border-radius: 2px; z-index: 2; }
   .map-path::before { content: ''; position: absolute; left: -10px; top: -8px; width: 20px; height: 20px; background: #fff; border: 4px solid #e63946; border-radius: 50%; }
   .map-path::after { content: ''; position: absolute; right: -10px; top: -8px; width: 20px; height: 20px; background: #e63946; border-radius: 50%; }
   
@@ -95,8 +101,11 @@
   .status-badge { background: #f0f0f0; color: #333; padding: 5px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: 800; }
   
   .driver-info-track { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-  .driver-info-track .avatar { width: 50px; height: 50px; border-radius: 50%; background: #f5f5f5; display: flex; justify-content: center; align-items: center; overflow: hidden; border: 2px solid #e63946; }
-  .driver-info-track .avatar svg { width: 30px; height: 30px; }
+  
+  /* SAWIRKA DARAWALKA EE TRACKING-KA */
+  .driver-info-track .avatar { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 2px solid #e63946; flex-shrink: 0; }
+  .driver-info-track .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  
   .driver-info-track h4 { font-size: 1rem; font-weight: 800; }
   .driver-info-track p { font-size: 0.8rem; color: #777; }
   
@@ -142,7 +151,8 @@
   </div>
   <div class="restaurant-card" onclick="openForm('Cunto - Sanaag Restaurant', 'restaurant')">
     <div class="rest-logo">
-      <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>
+      <!-- Sawirka Sanaag Restaurant -->
+      <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Sanaag Restaurant">
     </div>
     <div class="rest-info">
       <h4>Sanaag Restaurant</h4>
@@ -157,9 +167,9 @@
   <div class="drivers-scroll">
     <!-- Sakiin -->
     <div class="driver-card" onclick="openForm('Sakiin Safar + Taxi', 'taxi')">
-      <div class="driver-img" style="background:#ffe5e5;">
-        <!-- Probox Casaan -->
-        <svg viewBox="0 0 24 24"><path fill="#e63946" d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+      <div class="driver-img">
+        <!-- Sawirka Probox Casaan -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Toyota_Probox_1.5_F_%28NCP160V%29_%28front%29%2C_2011.jpg/320px-Toyota_Probox_1.5_F_%28NCP160V%29_%28front%29%2C_2011.jpg" alt="Probox Casaan" style="filter: hue-rotate(330deg) saturate(3);">
       </div>
       <h4>Sakiin</h4>
       <p>Probox Casaan</p>
@@ -168,9 +178,9 @@
 
     <!-- Nuur Muuse -->
     <div class="driver-card" onclick="openForm('Nuur Muuse Safar', 'taxi')">
-      <div class="driver-img" style="background:#e5f5ff;">
-        <!-- Land Cruiser Cad -->
-        <svg viewBox="0 0 24 24"><path fill="#333" d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+      <div class="driver-img">
+        <!-- Sawirka Land Cruiser Cad -->
+        <img src="https://images.unsplash.com/photo-1594502184342-54b0d6d5b1f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Land Cruiser Cad">
       </div>
       <h4>Nuur Muuse</h4>
       <p>Land Cruiser Cad</p>
@@ -179,9 +189,9 @@
 
     <!-- Nuraani -->
     <div class="driver-card" onclick="openForm('Nuraani Bajaaj', 'bajaaj')">
-      <div class="driver-img" style="background:#fff5e5;">
-        <!-- Bajaaj Gaduudan -->
-        <svg viewBox="0 0 24 24"><path fill="#e63946" d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2zM7.6 11l1.2-3.8c.1-.3.4-.5.7-.5h4.9c.3 0 .6.2.7.5l1.2 3.8H7.6z"/></svg>
+      <div class="driver-img">
+        <!-- Sawirka Bajaaj Gaduudan -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Auto_rickshaw_in_Delhi.jpg/320px-Auto_rickshaw_in_Delhi.jpg" alt="Bajaaj Gaduudan" style="filter: hue-rotate(330deg) saturate(3);">
       </div>
       <h4>Nuraani</h4>
       <p>Bajaaj Gaduudan</p>
@@ -233,13 +243,11 @@
   </div>
 </div>
 
-<!-- ================= TRACKING OVERLAY (Sida Sawirka Midig) ================= -->
+<!-- ================= TRACKING OVERLAY ================= -->
 <div class="tracking-overlay" id="trackingOverlay">
-  <!-- Map Background (Sawirka Location-ka) -->
+  <!-- Map Background (Sawirka Location-ka dhabta ah) -->
   <div class="map-container">
-    <!-- Halkan waxaa laga soo qaaday sawirka Google Maps Background -->
-    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" style="width:100%; height:100%; object-fit:cover; opacity:0.4;" alt="Map">
-    <!-- Line-ka Safarka -->
+    <img class="map-img" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" alt="Map">
     <div class="map-path" style="top: 40%; left: 30%; width: 40%; transform: rotate(-15deg);"></div>
   </div>
 
@@ -253,10 +261,10 @@
       <span class="status-badge" id="trackingStatus">Transit</span>
     </div>
 
-    <!-- Darawalka -->
+    <!-- Darawalka Sawirkiisa -->
     <div class="driver-info-track">
       <div class="avatar" id="trackingAvatar">
-        <!-- SVG-ga gaariga ayaa halkan soo baxaya -->
+        <!-- Sawirka gaariga ayaa halkan soo baxaya -->
       </div>
       <div>
         <h4 id="trackingDriver">Sakiin</h4>
@@ -294,11 +302,23 @@
 <script>
   const WHATSAPP_NUMBER = "252907825640"; 
   let currentService = "";
-  let currentVehicleType = "";
+  let currentImgSrc = "";
 
   function openForm(service, type) {
     currentService = service;
-    currentVehicleType = type;
+    // Halkan waxaan ku keydinaynaa sawirka saxda ah ee qof kasta
+    if(service.includes('Sakiin')) {
+      currentImgSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Toyota_Probox_1.5_F_%28NCP160V%29_%28front%29%2C_2011.jpg/320px-Toyota_Probox_1.5_F_%28NCP160V%29_%28front%29%2C_2011.jpg";
+    } else if(service.includes('Nuur Muuse')) {
+      currentImgSrc = "https://images.unsplash.com/photo-1594502184342-54b0d6d5b1f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80";
+    } else if(service.includes('Nuraani')) {
+      currentImgSrc = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Auto_rickshaw_in_Delhi.jpg/320px-Auto_rickshaw_in_Delhi.jpg";
+    } else if(service.includes('Sanaag')) {
+      currentImgSrc = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80";
+    } else {
+      currentImgSrc = "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80";
+    }
+
     document.getElementById('formTitle').innerText = "Dalbo " + service;
     document.getElementById('serviceItem').value = service;
     document.getElementById('formOverlay').style.display = 'flex';
@@ -332,7 +352,6 @@
     }
   }
 
-  // Marka la dalbado, tus Tracking-ka
   function submitOrder() {
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
@@ -344,42 +363,35 @@
       return;
     }
 
-    // Qari foomka, tus Tracking-ka
     closeForm();
     showTracking(name, from, to);
   }
 
   function showTracking(name, from, to) {
-    // Samee Booking ID random ah
     const randomId = "GK-" + Math.floor(10000 + Math.random() * 90000);
     document.getElementById('trackingId').innerText = "#" + randomId;
     document.getElementById('trackingFrom').innerText = from;
     document.getElementById('trackingTo').innerText = to;
 
-    // Sawirka gaariga ee soo baxaya
-    let svgIcon = "";
     let driverName = "";
     let vehicleName = "";
 
     if (currentService.includes('Sakiin')) {
       driverName = "Sakiin Safar + Taxi";
       vehicleName = "Probox Casaan";
-      svgIcon = `<svg viewBox="0 0 24 24"><path fill="#e63946" d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`;
     } else if (currentService.includes('Nuur Muuse')) {
       driverName = "Nuur Muuse Safar";
       vehicleName = "Land Cruiser Cad";
-      svgIcon = `<svg viewBox="0 0 24 24"><path fill="#333" d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>`;
     } else if (currentService.includes('Nuraani')) {
       driverName = "Nuraani";
       vehicleName = "Bajaaj Gaduudan";
-      svgIcon = `<svg viewBox="0 0 24 24"><path fill="#e63946" d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2zM7.6 11l1.2-3.8c.1-.3.4-.5.7-.5h4.9c.3 0 .6.2.7.5l1.2 3.8H7.6z"/></svg>`;
     } else {
       driverName = "Delivery Boy";
       vehicleName = "Qof walba wuu qaadi karaa";
-      svgIcon = `<svg viewBox="0 0 24 24"><path fill="#e63946" d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>`;
     }
 
-    document.getElementById('trackingAvatar').innerHTML = svgIcon;
+    // Halkan waxaan ku darnaa Sawirka Dhabta ah gudaha Avatar-ka Tracking-ka
+    document.getElementById('trackingAvatar').innerHTML = `<img src="${currentImgSrc}" alt="${driverName}">`;
     document.getElementById('trackingDriver').innerText = driverName;
     document.getElementById('trackingVehicle').innerText = vehicleName;
     
@@ -390,7 +402,6 @@
     document.getElementById('trackingOverlay').style.display = 'none';
   }
 
-  // U dir WhatsApp fariinta
   function sendToWhatsApp() {
     const name = document.getElementById('name').value || "Macaamiil";
     const from = document.getElementById('from').value || "Goldogob";
