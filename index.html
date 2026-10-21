@@ -6,7 +6,6 @@
 <title>IGA KEEN — Goldogob</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  /* ===== AASAASKA ===== */
   :root {
     --primary: #D4F34C; /* Cagaar dhalaalaya */
     --bg-color: #F4F5F7;
@@ -17,9 +16,9 @@
   * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
   body { background-color: var(--bg-color); color: var(--text-dark); display: flex; justify-content: center; min-height: 100vh; }
   
-  .app-container { width: 100%; max-width: 500px; background: var(--bg-color); position: relative; overflow-x: hidden; min-height: 100vh; padding-bottom: 80px; }
+  .app-container { width: 100%; max-width: 500px; background: var(--bg-color); position: relative; overflow-x: hidden; min-height: 100vh; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
 
-  /* ===== TOP BAR ===== */
+  /* TOP BAR */
   .top-bar { display: flex; align-items: center; padding: 20px; }
   .user-profile { display: flex; align-items: center; gap: 10px; }
   .icon-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--white); display: flex; justify-content: center; align-items: center; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -29,17 +28,16 @@
   .notif-btn { margin-left: auto; position: relative; }
   .notif-dot { position: absolute; top: 10px; right: 12px; width: 8px; height: 8px; background: #FF5A5F; border-radius: 50%; border: 2px solid var(--white); }
 
-  /* ===== HERO BANNER ===== */
+  /* HERO BANNER */
   .hero-banner { margin: 0 20px 25px; background: var(--primary); border-radius: 30px; padding: 25px; position: relative; overflow: hidden; }
   .hero-text { position: relative; z-index: 2; width: 60%; }
   .hero-text h1 { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 10px; color: var(--text-dark); }
   .hero-text p { font-size: 0.8rem; color: rgba(0,0,0,0.6); font-weight: 500; }
   
-  /* Sawirka Gaariga ee Hero-ga */
   .hero-img { position: absolute; right: -20px; bottom: -10px; width: 180px; z-index: 1; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); }
   .hero-img img { width: 100%; height: auto; }
 
-  /* ===== SERVICES SECTION ===== */
+  /* SERVICES */
   .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
   .section-header h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-dark); }
   
@@ -56,12 +54,13 @@
   .service-card p { font-size: 0.75rem; color: var(--text-light); }
   .service-card.active p { color: rgba(0,0,0,0.6); }
 
-  /* ===== DRIVERS LIST ===== */
+  /* DRIVERS LIST */
   .drivers-list { padding: 0 20px; }
   .driver-item { background: var(--white); border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.2s; border: 1px solid transparent; }
   .driver-item:hover { border-color: var(--primary); }
   
-  .driver-avatar { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: #E0E0E0; flex-shrink: 0; }
+  /* SAWIRKAAGA HALKAN AYAA KA SOO BAXAYAA */
+  .driver-avatar { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; background: #E0E0E0; flex-shrink: 0; border: 2px solid var(--primary); }
   .driver-avatar img { width: 100%; height: 100%; object-fit: cover; }
   
   .driver-details { flex: 1; }
@@ -69,8 +68,9 @@
   .driver-details p { font-size: 0.75rem; color: var(--text-light); font-weight: 500; }
   
   .driver-vehicle { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--text-dark); background: #F4F5F7; padding: 5px 10px; border-radius: 10px; }
+  .driver-vehicle svg { width: 16px; height: 16px; fill: var(--text-dark); }
 
-  /* ===== FORM OVERLAY (Bottom Sheet) ===== */
+  /* FORM OVERLAY */
   .form-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: flex-end; backdrop-filter: blur(3px); }
   .form-container { background: var(--white); width: 100%; max-width: 500px; border-top-left-radius: 35px; border-top-right-radius: 35px; padding: 25px 20px 30px; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); max-height: 90vh; overflow-y: auto; }
   @keyframes slideUp { from{transform:translateY(100%);} to{transform:translateY(0);} }
@@ -79,7 +79,6 @@
   .form-header h3 { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); }
   .close-btn { background: #F4F5F7; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; color: var(--text-dark); }
   
-  /* Driver Info in Modal */
   .modal-driver { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #EEE; }
   .modal-driver .avatar { width: 70px; height: 70px; border-radius: 50%; overflow: hidden; border: 3px solid var(--primary); }
   .modal-driver .avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -87,19 +86,11 @@
   .modal-driver p { font-size: 0.8rem; color: var(--text-light); display: flex; align-items: center; gap: 5px; margin-top: 3px; }
   .modal-driver p svg { width: 14px; height: 14px; fill: #FFC107; }
 
-  /* Vehicle Selection */
-  .vehicle-option { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 20px; border: 2px solid #F4F5F7; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
-  .vehicle-option.active { border-color: var(--primary); background: rgba(212, 243, 76, 0.1); }
-  .vehicle-option .v-icon { width: 45px; height: 45px; border-radius: 12px; background: var(--white); display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-  .vehicle-option .v-icon svg { width: 25px; height: 25px; fill: var(--text-dark); }
-  .vehicle-option .v-info h5 { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
-  .vehicle-option .v-info p { font-size: 0.75rem; color: var(--text-light); }
-  
-  .field { margin-bottom: 15px; margin-top: 20px; }
+  .field { margin-bottom: 15px; margin-top: 15px; }
   .field label { display: block; font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px; font-weight: 600; }
   .input-group { position: relative; display: flex; align-items: center; }
-  .input-group input { width: 100%; background: #F4F5F7; border: 2px solid transparent; padding: 15px; border-radius: 15px; font-size: 0.95rem; outline: none; transition: 0.3s; font-weight: 500; }
-  .input-group input:focus { border-color: var(--primary); background: var(--white); }
+  .input-group input, .field input { width: 100%; background: #F4F5F7; border: 2px solid transparent; padding: 15px; border-radius: 15px; font-size: 0.95rem; outline: none; transition: 0.3s; font-weight: 500; }
+  .input-group input:focus, .field input:focus { border-color: var(--primary); background: var(--white); }
   
   .loc-btn { position: absolute; right: 8px; background: var(--primary); color: var(--text-dark); border: none; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
   .loc-btn svg { width: 18px; height: 18px; fill: var(--text-dark); }
@@ -107,13 +98,11 @@
   .submit-btn { width: 100%; background: var(--text-dark); color: var(--white); padding: 18px; border-radius: 20px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
   .submit-btn:hover { background: #333; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-  /* ===== TRACKING OVERLAY ===== */
+  /* TRACKING OVERLAY */
   .tracking-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 200; overflow-y: auto; }
-  
   .map-container { width: 100%; height: 45vh; background: #E5E5E5; position: relative; }
   .map-container img.map-bg { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
   
-  /* Floating Driver Card on Map */
   .floating-card { position: absolute; top: 40px; left: 20px; right: 20px; background: var(--white); border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 10; }
   .floating-card .avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary); }
   .floating-card .avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -139,7 +128,7 @@
   .whatsapp-btn { background: #25D366; color: #fff; }
   .cancel-btn { background: #FF5A5F; color: #fff; }
 
-  /* Bottom Nav */
+  /* BOTTOM NAV */
   .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 15px 10px; border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 50; }
   .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #AAA; cursor: pointer; transition: 0.2s; }
   .nav-item.active { color: var(--text-dark); }
@@ -174,7 +163,6 @@
       <p>Ammaan, Degdeg & Qiimo Jaban</p>
     </div>
     <div class="hero-img">
-      <!-- Sawir Gaari oo casri ah -->
       <img src="https://pngimg.com/d/car_png48.png" alt="Car">
     </div>
   </div>
@@ -184,7 +172,7 @@
     <h3>Adeegyada</h3>
   </div>
   <div class="services-grid">
-    <div class="service-card active" onclick="openForm('Taxi', 'Probox')">
+    <div class="service-card active" onclick="openForm('Taxi', 'Taxi')">
       <div class="service-icon">
         <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
       </div>
@@ -192,7 +180,7 @@
       <p>Taxi Gaar ah</p>
     </div>
     
-    <div class="service-card" onclick="openForm('Delivery', 'Qof walba')">
+    <div class="service-card" onclick="openForm('Delivery', 'Delivery')">
       <div class="service-icon">
         <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
       </div>
@@ -208,28 +196,31 @@
   <div class="drivers-list">
     
     <!-- Sakiin -->
-    <div class="driver-item" onclick="openForm('Sakiin Safar + Taxi', 'Probox')">
-      <!-- Halkan ayaa sawirkaagii laga soo bandhigayaa. Wixii sawir ah geli linkiga hoose -->
-      <div class="driver-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80" alt="Driver"></div>
+    <div class="driver-item" onclick="openForm('Sakiin Safar + Taxi', 'Taxi')">
+      <!-- Halkan ayaa Sawirkaaga lagu riday -->
+      <div class="driver-avatar">
+        <!-- FIIRO GAAR AH: Ku beddel linkigan sawirkaaga tooska ah -->
+        <img src="https://i.ibb.co/6PZ9Z9Z/your-image.jpg" alt="Sakiin" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80'">
+      </div>
       <div class="driver-details">
         <h4>Sakiin Safar + Taxi</h4>
         <p>Gaari Probox Casaan</p>
       </div>
       <div class="driver-vehicle">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="#D4F34C"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
         Taxi
       </div>
     </div>
 
     <!-- Nuur Muuse -->
-    <div class="driver-item" onclick="openForm('Nuur Muuse Safar', 'Land Cruiser')">
+    <div class="driver-item" onclick="openForm('Nuur Muuse Safar', 'Safar')">
       <div class="driver-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&q=80" alt="Driver"></div>
       <div class="driver-details">
         <h4>Nuur Muuse</h4>
         <p>Gaari Land Cruiser Cad</p>
       </div>
       <div class="driver-vehicle">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="#D4F34C"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg>
         Safar
       </div>
     </div>
@@ -242,8 +233,20 @@
         <p>Bajaaj Gaduudan</p>
       </div>
       <div class="driver-vehicle">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="#D4F34C"><path d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2z"/></svg>
         Bajaaj
+      </div>
+    </div>
+
+    <!-- Sanaag Restaurant -->
+    <div class="driver-item" onclick="openForm('Sanaag Restaurant', 'Cunto')">
+      <div class="driver-avatar" style="border-color: #FFC107;"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150&q=80" alt="Restaurant"></div>
+      <div class="driver-details">
+        <h4>Sanaag Restaurant</h4>
+        <p>Bariis, Baasto & Hilib</p>
+      </div>
+      <div class="driver-vehicle" style="background: #FFF3CD; color: #856404;">
+        Cunto
       </div>
     </div>
 
@@ -279,11 +282,9 @@
       <button class="close-btn" onclick="closeForm()">✕</button>
     </div>
     
-    <!-- Halkan waxaa ku qoran Sawirkaaga iyo Magaca -->
     <div class="modal-driver">
       <div class="avatar" id="modalAvatar">
-        <!-- Sawirkaaga ayaa halkan soo baxaya -->
-        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80" alt="Driver">
+        <img src="https://i.ibb.co/6PZ9Z9Z/your-image.jpg" alt="Driver" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80'">
       </div>
       <div>
         <h4 id="modalDriverName">Sakiin Safar</h4>
@@ -291,32 +292,6 @@
       </div>
     </div>
 
-    <!-- Gaadiidka -->
-    <div class="vehicle-option active" id="v-probox">
-      <div class="v-icon"><svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg></div>
-      <div class="v-info">
-        <h5>Probox Casaan</h5>
-        <p>4 Qof • Qaboojiye</p>
-      </div>
-    </div>
-
-    <div class="vehicle-option" id="v-landcruiser">
-      <div class="v-icon"><svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg></div>
-      <div class="v-info">
-        <h5>Land Cruiser Cad</h5>
-        <p>7 Qof • Safar Dheer</p>
-      </div>
-    </div>
-
-    <div class="vehicle-option" id="v-bajaaj">
-      <div class="v-icon"><svg viewBox="0 0 24 24"><path d="M19 11h-1.5l-1.5-4.5c-.3-.8-1-1.5-1.9-1.5H9.9c-.9 0-1.6.7-1.9 1.5L6.5 11H5c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h.1c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h5.8c.3 1.1 1.3 2 2.5 2s2.2-.9 2.5-2h.1c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2z"/></svg></div>
-      <div class="v-info">
-        <h5>Bajaaj Gaduudan</h5>
-        <p>3 Qof • Degdeg</p>
-      </div>
-    </div>
-
-    <!-- Form -->
     <div class="field">
       <label>Magacaaga</label>
       <input type="text" id="name" placeholder="Geli magacaaga">
@@ -338,23 +313,21 @@
     
     <div class="field">
       <label>Halka aad rabto / Loo socdo</label>
-      <input type="text" id="to" placeholder="Tusaale: Xaafada Sanaag" style="width:100%; background: #F4F5F7; border: 2px solid transparent; padding: 15px; border-radius: 15px; outline: none; font-size: 0.95rem;">
+      <input type="text" id="to" placeholder="Tusaale: Xaafada Sanaag">
     </div>
     
     <button class="submit-btn" onclick="submitOrder()">Book Now — Dalbo Hadda</button>
   </div>
 </div>
 
-<!-- ================= TRACKING OVERLAY (Qaabka Sawirka 3aad) ================= -->
+<!-- ================= TRACKING OVERLAY ================= -->
 <div class="tracking-overlay" id="trackingOverlay">
   <div class="map-container">
-    <!-- Khariidad dhab ah -->
     <img class="map-bg" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop" alt="Map">
     
-    <!-- Floating Driver Card (Sida sawirka midig) -->
     <div class="floating-card">
       <div class="avatar" id="trackingAvatar">
-         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80" alt="Driver">
+         <img src="https://i.ibb.co/6PZ9Z9Z/your-image.jpg" alt="Driver" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80'">
       </div>
       <div>
         <h4 id="trackingDriver">Sakiin</h4>
@@ -400,12 +373,18 @@
 <script>
   const WHATSAPP_NUMBER = "252907825640"; 
   let currentService = "";
-  let currentImgSrc = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80"; // Sawirkaaga halkan ayaa lagu keydiyay
+  
+  // HALKAN AYAAD KU BEDDELAYSAA SAWIRKAAGA
+  // Haddii aad rabto inaad sawirkaaga (Ninka qoraalka leh) isticmaasho, linkiga sawirkaaga halkan ku xir!
+  const YOUR_IMAGE_URL = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80"; 
 
   function openForm(service, type) {
     currentService = service;
     document.getElementById('modalDriverName').innerText = service;
     document.getElementById('formOverlay').style.display = 'flex';
+    
+    // Sawirka oo lagu beddelo kii saxda ahaa
+    document.getElementById('modalAvatar').innerHTML = `<img src="${YOUR_IMAGE_URL}" alt="Driver">`;
   }
 
   function closeForm() {
@@ -448,14 +427,11 @@
 
     closeForm();
     
-    // Ku shub shaashadda Tracking-ka
     document.getElementById('trackingFrom').innerText = from;
     document.getElementById('trackingTo').innerText = to;
     document.getElementById('trackingDriver').innerText = currentService;
     document.getElementById('trackingId').innerText = "#GK-" + Math.floor(10000 + Math.random() * 90000);
-    
-    // Sawirka Darawalka oo lagu daray Tracking-ka
-    document.getElementById('trackingAvatar').innerHTML = `<img src="${currentImgSrc}" alt="Driver">`;
+    document.getElementById('trackingAvatar').innerHTML = `<img src="${YOUR_IMAGE_URL}" alt="Driver">`;
 
     document.getElementById('trackingOverlay').style.display = 'block';
   }
