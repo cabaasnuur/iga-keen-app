@@ -1,132 +1,197 @@
 <!DOCTYPE html>
 <html lang="so">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IGA KEEN - Goldogob</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGA KEEN Taxi</title>
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f5f7;
-      color: #171717;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    header {
-      background: #111111;
-      color: white;
-      padding: 25px 20px;
-      text-align: center;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #171717;
+}
 
-    header h1 {
-      font-size: 30px;
-      letter-spacing: 2px;
-    }
+header {
+  background: #111;
+  color: white;
+  padding: 28px 18px;
+  text-align: center;
+}
 
-    header p {
-      margin-top: 8px;
-      color: #cccccc;
-    }
+header h1 {
+  margin: 0;
+  font-size: 32px;
+  letter-spacing: 2px;
+}
 
-    .container {
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
+header p {
+  color: #ccc;
+}
 
-    h2 {
-      margin: 20px 0 15px;
-    }
+.container {
+  max-width: 500px;
+  margin: 22px auto;
+  padding: 0 16px;
+}
 
-    .service {
-      background: white;
-      padding: 20px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px #00000010;
-    }
+.card {
+  background: white;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px #00000010;
+}
 
-    .service h3 {
-      margin-bottom: 8px;
-    }
+h2 {
+  margin-top: 0;
+}
 
-    .service p {
-      color: #666666;
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
+label {
+  display: block;
+  margin-top: 16px;
+  font-weight: bold;
+  font-size: 14px;
+}
 
-    button {
-      width: 100%;
-      background: #111111;
-      color: white;
-      padding: 13px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
+input, select, textarea {
+  width: 100%;
+  padding: 13px;
+  margin-top: 7px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background: white;
+}
 
-    button:active {
-      background: #333333;
-    }
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 22px;
+  border: none;
+  border-radius: 9px;
+  background: #111;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+}
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: #777777;
-      font-size: 13px;
-    }
-  </style>
+.note {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+  font-size: 13px;
+}
+</style>
 </head>
+
 <body>
 
-  <header>
-    <h1>IGA KEEN</h1>
-    <p>Taxi • Delivery • Safar</p>
-    <p>Goldogob, Soomaaliya</p>
-  </header>
+<header>
+  <h1>IGA KEEN</h1>
+  <p>Taxi • Safar • Delivery</p>
+  <p>Goldogob, Soomaaliya</p>
+</header>
 
-  <main class="container">
-    <h2>Maxaad u baahan tahay?</h2>
+<main class="container">
+  <section class="card">
+    <h2>Dalbo Taxi</h2>
+    <p>Buuxi xogta hoose si aad u dalbato gaari.</p>
 
-    <section class="service">
-      <h3>Taxi</h3>
-      <p>Dalbo gaari kuu yimaada meesha aad joogto.</p>
-      <button onclick="order('Taxi')">Dalbo Taxi</button>
-    </section>
+    <form id="taxiForm">
 
-    <section class="service">
-      <h3>Delivery</h3>
-      <p>Dalbo cunto ama alaab laguu keeno.</p>
-      <button onclick="order('Delivery')">Dalbo Delivery</button>
-    </section>
+      <label for="name">Magacaaga</label>
+      <input id="name" type="text"
+        placeholder="Geli magacaaga" required>
 
-    <section class="service">
-      <h3>Safar</h3>
-      <p>Raadi gaari u socda Gaalkacyo, Garowe iyo meelo kale.</p>
-      <button onclick="order('Safar')">Dalbo Safar</button>
-    </section>
-  </main>
+      <label for="phone">Lambarkaaga telefoonka</label>
+      <input id="phone" type="tel"
+        placeholder="Geli lambarkaaga" required>
 
-  <footer>
-    © 2026 IGA KEEN. Dhammaan xuquuqdu way dhowran tahay.
-  </footer>
+      <label for="pickup">Meesha lagaa qaadayo</label>
+      <input id="pickup" type="text"
+        placeholder="Tusaale: Suuqa Goldogob" required>
 
-  <script>
-    function order(service) {
-      alert(
-        "Waxaad dooratay: " + service +
-        "\nAdeeggan weli wuxuu u baahan yahay in lagu xiro WhatsApp iyo nidaamka dalabaadka."
-      );
+      <label for="destination">Meesha aad u socoto</label>
+      <input id="destination" type="text"
+        placeholder="Geli meesha aad u socoto" required>
+
+      <label for="time">Goorma ayaad rabtaa Taxi?</label>
+      <select id="time" required>
+        <option value="">Dooro waqtiga</option>
+        <option>Hadda</option>
+        <option>30 daqiiqo gudahood</option>
+        <option>Waqti dambe</option>
+      </select>
+
+      <label for="notes">Faahfaahin dheeraad ah</label>
+      <textarea id="notes" rows="3"
+        placeholder="Faahfaahin haddii ay jirto"></textarea>
+
+      <button type="submit">
+        DALBO TAXI — WHATSAPP
+      </button>
+
+      <p class="note">
+        Marka aad riixdo badhanka, WhatsApp ayaa furmaya.
+        Hubi fariinta kadibna adigu dir.
+      </p>
+
+    </form>
+  </section>
+</main>
+
+<footer>
+  © 2026 IGA KEEN — Goldogob
+</footer>
+
+<script>
+const WHATSAPP_NUMBER = "252907825640";
+
+document.getElementById("taxiForm").addEventListener(
+  "submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const pickup = document.getElementById("pickup").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+    const time = document.getElementById("time").value;
+    const notes = document.getElementById("notes").value.trim();
+
+    if (WHATSAPP_NUMBER.includes("X")) {
+      alert("Marka hore geli lambarka WhatsApp-ka IGA KEEN ee code-ka ku jira.");
+      return;
     }
-  </script>
+
+    const message =
+      "IGA KEEN - CODSI TAXI\n\n" +
+      "Magaca: " + name + "\n" +
+      "Telefoonka: " + phone + "\n" +
+      "Meesha laga qaadayo: " + pickup + "\n" +
+      "Meesha loo socdo: " + destination + "\n" +
+      "Waqtiga: " + time + "\n" +
+      "Faahfaahin: " + (notes || "Ma jirto") + "\n\n" +
+      "Fadlan ila soo xiriir si loo xaqiijiyo dalabka.";
+
+    const url =
+      "https://wa.me/" + WHATSAPP_NUMBER +
+      "?text=" + encodeURIComponent(message);
+
+    window.open(url, "_blank");
+  }
+);
+</script>
 
 </body>
 </html>
