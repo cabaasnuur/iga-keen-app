@@ -3,270 +3,207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#000000">
 <title>IGA KEEN | Goldogob</title>
 
 <style>
 :root {
   --black: #000000;
   --white: #ffffff;
-  --gray-bg: #fafafa;
-  --border-color: #e5e5e5;
-  --text-muted: #666666;
+  --gray-light: #f5f5f7;
+  --gray-border: #e0e0e0;
+  --gray-text: #666666;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: var(--gray-bg);
+  background: var(--white);
   color: var(--black);
   line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Header */
 header {
+  border-bottom: 1px solid var(--gray-border);
+  padding: 20px;
   background: var(--white);
-  border-bottom: 1px solid var(--border-color);
-  padding: 16px 20px;
+}
+
+.header-inner {
+  max-width: 480px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
-.logo {
+.logo-title {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.5px;
 }
 
-.location {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 2px;
+.sub-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-text);
 }
 
-.badge {
-  border: 1px solid var(--black);
-  color: var(--black);
-  padding: 6px 12px;
-  border-radius: 20px;
+.city-tag {
   font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  border: 1px solid var(--black);
+  padding: 4px 10px;
+  border-radius: 4px;
 }
 
-/* Hero */
-.hero {
-  background: var(--black);
-  color: var(--white);
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.hero-inner {
-  max-width: 520px;
+/* Main Container */
+main {
+  max-width: 480px;
+  width: 100%;
   margin: 0 auto;
+  padding: 24px 20px;
+  flex: 1;
 }
 
-.hero h1 {
-  font-size: 32px;
-  font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
-}
-
-.hero p {
-  color: #cccccc;
-  font-size: 15px;
+/* Service Selector Tabs */
+.service-tabs {
+  display: flex;
+  background: var(--gray-light);
+  padding: 4px;
+  border-radius: 12px;
   margin-bottom: 24px;
 }
 
-.hero-img-wrapper {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #333333;
-}
-
-.hero img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
-}
-
-/* Container */
-.container {
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 30px 20px;
-}
-
-.section-title {
-  font-size: 20px;
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 8px;
+  font-size: 13px;
   font-weight: 700;
-  margin-bottom: 20px;
-  letter-spacing: -0.3px;
-}
-
-/* Services */
-.services {
-  display: grid;
-  gap: 16px;
-  margin-bottom: 35px;
-}
-
-.service {
-  background: var(--white);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: border-color 0.2s ease;
-}
-
-.service:hover {
-  border-color: var(--black);
-}
-
-.service img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  display: block;
-  filter: grayscale(20%);
-}
-
-.service-content {
-  padding: 20px;
-}
-
-.service-content h3 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.service-content p {
-  color: var(--text-muted);
-  font-size: 14px;
-  margin-bottom: 16px;
-}
-
-/* Buttons */
-button {
-  border: 1px solid var(--black);
-  background: var(--black);
-  color: var(--white);
-  padding: 14px 20px;
-  width: 100%;
+  color: var(--gray-text);
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-button:hover {
-  background: #222222;
+.tab-btn.active {
+  background: var(--black);
+  color: var(--white);
 }
 
-button:active {
-  transform: scale(0.99);
-}
-
-.btn-secondary {
-  background: var(--white);
-  color: var(--black);
+/* Banner Box */
+.info-card {
   border: 1px solid var(--black);
-}
-
-.btn-secondary:hover {
-  background: #f0f0f0;
-}
-
-/* Form */
-form {
-  background: var(--white);
-  border: 1px solid var(--border-color);
+  padding: 20px;
   border-radius: 12px;
-  padding: 24px;
+  margin-bottom: 24px;
 }
 
-form h2 {
-  font-size: 20px;
-  font-weight: 700;
+.info-card h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.info-card p {
+  font-size: 13px;
+  color: var(--gray-text);
+}
+
+/* Form Styling */
+.form-group {
   margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color);
 }
 
 label {
   display: block;
-  font-weight: 600;
-  font-size: 13px;
-  margin-top: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 6px;
 }
 
 input, select, textarea {
-  display: block;
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--border-color);
+  padding: 14px;
+  border: 1px solid var(--gray-border);
   border-radius: 8px;
-  background: var(--white);
   font-size: 14px;
+  background: var(--white);
   color: var(--black);
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s;
 }
 
 input:focus, select:focus, textarea:focus {
   border-color: var(--black);
 }
 
-#locationStatus {
-  font-size: 12px;
-  color: var(--text-muted);
-  overflow-wrap: anywhere;
-  margin-top: 8px;
+.btn-gps {
+  width: 100%;
+  background: var(--white);
+  color: var(--black);
+  border: 1px dashed var(--black);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.2s;
 }
 
-.note {
-  color: var(--text-muted);
+.btn-gps:hover {
+  background: var(--gray-light);
+}
+
+#gpsStatus {
   font-size: 12px;
-  margin-top: 16px;
-  line-height: 1.5;
+  color: var(--gray-text);
+  margin-top: 6px;
+}
+
+.btn-submit {
+  width: 100%;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-submit:active {
+  opacity: 0.9;
 }
 
 /* Footer */
 footer {
-  background: var(--black);
-  color: var(--white);
+  border-top: 1px solid var(--gray-border);
+  padding: 24px 20px;
   text-align: center;
-  padding: 30px 20px;
-  margin-top: 40px;
-  font-size: 13px;
+  font-size: 12px;
+  color: var(--gray-text);
+  margin-top: auto;
 }
 
 footer strong {
-  font-size: 16px;
-  display: block;
-  margin-bottom: 4px;
-}
-
-footer p {
-  color: #888888;
-  margin-top: 4px;
+  color: var(--black);
 }
 </style>
 </head>
@@ -274,185 +211,147 @@ footer p {
 <body>
 
 <header>
-  <div>
-    <div class="logo">IGA KEEN</div>
-    <div class="location">📍 Goldogob, Soomaaliya</div>
+  <div class="header-inner">
+    <div>
+      <div class="logo-title">IGA KEEN</div>
+      <div class="sub-title">Adeeg Degdeg Ah</div>
+    </div>
+    <div class="city-tag">GOLDOGOB</div>
   </div>
-  <div class="badge">Adeeg Fudud</div>
 </header>
 
-<section class="hero">
-  <div class="hero-inner">
-    <h1>Ku soo dhawoow IGA KEEN</h1>
-    <p>Taxi, Delivery iyo Safar. Adeeg degdeg ah oo ammaan ah.</p>
+<main>
 
-    <div class="hero-img-wrapper">
-      <img
-        src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=900&q=85"
-        alt="Baabuur safar"
-      >
+  <!-- Service Selection Tabs -->
+  <div class="service-tabs">
+    <button class="tab-btn active" onclick="selectService(this, 'Taxi')">Taxi</button>
+    <button class="tab-btn" onclick="selectService(this, 'Delivery')">Delivery</button>
+    <button class="tab-btn" onclick="selectService(this, 'Safar')">Safar</button>
+  </div>
+
+  <!-- Info Card -->
+  <div class="info-card">
+    <h2 id="serviceHeading">Adeegga Taxi-ga</h2>
+    <p id="serviceDesc">Puntland - Ka hel gaari kuu dhow meel kasta oo aad joogto.</p>
+  </div>
+
+  <!-- Form -->
+  <form id="orderForm" onsubmit="submitForm(event)">
+
+    <div class="form-group">
+      <label for="name">Magacaaga</label>
+      <input type="text" id="name" placeholder="Geli magacaaga" required>
     </div>
-  </div>
-</section>
 
-<main class="container">
+    <div class="form-group">
+      <label for="phone">Lambarka Telefoonka</label>
+      <input type="tel" id="phone" placeholder="Tusaale: 0907825640" required>
+    </div>
 
-  <h2 class="section-title">Maxaad u baahan tahay?</h2>
+    <div class="form-group">
+      <label for="pickup">Meesha Lagaa Qaadayo</label>
+      <input type="text" id="pickup" placeholder="Tusaale: Suuqa dhexe" required>
+      <button type="button" class="btn-gps" onclick="fetchGPS()">📍 Soo Dir GPS Location-kayga</button>
+      <div id="gpsStatus">Location lama helin (Optional)</div>
+    </div>
 
-  <div class="services">
+    <div class="form-group">
+      <label for="destination">Meesha Aad U Socoto / Ku Aadeysid</label>
+      <input type="text" id="destination" placeholder="Geli meesha u socoto" required>
+    </div>
 
-    <article class="service">
-      <img
-        src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=85"
-        alt="Taxi baabuur"
-      >
-      <div class="service-content">
-        <h3>🚕 Taxi</h3>
-        <p>Dalbo gaari kuu yimaada meesha aad joogto.</p>
-        <button onclick="showForm('Taxi')">DALBO TAXI</button>
-      </div>
-    </article>
+    <div class="form-group">
+      <label for="time">Waqtiga</label>
+      <select id="time" required>
+        <option value="Hadda">Hadda (Degdeg)</option>
+        <option value="30 daqiiqo gudahood">30 daqiiqo gudahood</option>
+        <option value="Waqti dambe">Waqti dambe</option>
+      </select>
+    </div>
 
-    <article class="service">
-      <img
-        src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=85"
-        alt="Cunto iyo alaab"
-      >
-      <div class="service-content">
-        <h3>🛍️ Delivery</h3>
-        <p>Dalbo cunto iyo alaab laguu keeno.</p>
-        <button onclick="showForm('Delivery')">DALBO DELIVERY</button>
-      </div>
-    </article>
+    <div class="form-group">
+      <label for="notes">Faahfaahin Dheeraad Ah</label>
+      <textarea id="notes" rows="2" placeholder="Sida alaabta aad rabto ama faahfaahin kale"></textarea>
+    </div>
 
-    <article class="service">
-      <img
-        src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=900&q=85"
-        alt="Gaari safar"
-      >
-      <div class="service-content">
-        <h3>🚌 Safar</h3>
-        <p>Raadi gaari u socda magaalooyinka kale.</p>
-        <button onclick="showForm('Safar')">DALBO SAFAR</button>
-      </div>
-    </article>
+    <button type="submit" class="btn-submit">DALABKA U DIR WHATSAPP</button>
 
-  </div>
-
-  <form id="orderForm" onsubmit="sendToWhatsApp(event)">
-    <h2 id="formTitle">Dalbo Taxi</h2>
-
-    <label for="name">Magacaaga</label>
-    <input id="name" placeholder="Geli magacaaga" required>
-
-    <label for="phone">Lambarkaaga</label>
-    <input id="phone" type="tel" placeholder="Tusaale: 0907825640" required>
-
-    <label for="pickup">Meesha lagaa qaadayo</label>
-    <input id="pickup" placeholder="Tusaale: Suuqa Goldogob" required>
-
-    <button type="button" class="btn-secondary" onclick="getLocation()" style="margin-top:12px;">
-      📍 SOO DIR LOCATION-KAYGA
-    </button>
-
-    <p id="locationStatus">
-      Location weli lama helin. Riix badhanka kore si aad u wadaagto.
-    </p>
-
-    <label for="destination">Meesha aad u socoto</label>
-    <input id="destination" placeholder="Geli meesha aad u socoto" required>
-
-    <label for="time">Waqtiga adeegga</label>
-    <select id="time" required>
-      <option value="">Dooro waqtiga</option>
-      <option value="Hadda">Hadda</option>
-      <option value="30 daqiiqo gudahood">30 daqiiqo gudahood</option>
-      <option value="Waqti dambe">Waqti dambe</option>
-    </select>
-
-    <label for="details">Faahfaahin dheeraad ah</label>
-    <textarea id="details" rows="3" placeholder="Wax kasta oo muhiim ah"></textarea>
-
-    <button type="submit" style="margin-top:24px;">
-      DALABKA U DIR WHATSAPP
-    </button>
-
-    <p class="note">
-      Location-kaaga waxaa la helayaa oo keliya marka aad oggolaato. Hubi xogtaada ka hor intaadan dirin dalabka.
-    </p>
   </form>
 
 </main>
 
 <footer>
-  <strong>IGA KEEN</strong>
-  <p>Taxi • Delivery • Safar</p>
-  <p>© 2026 IGA KEEN — Goldogob, Soomaaliya</p>
+  <p><strong>IGA KEEN</strong> — Goldogob, Soomaaliya</p>
+  <p style="margin-top: 4px;">© 2026 Xaqdoorka waa la dhowray.</p>
 </footer>
 
 <script>
 const WHATSAPP_NUMBER = "252907825640";
-let gpsCoordinates = "";
+let selectedService = "Taxi";
+let userGPS = "";
 
-function showForm(service) {
-  document.getElementById("formTitle").textContent = "Dalbo " + service;
-  document.getElementById("orderForm").scrollIntoView({
-    behavior: "smooth"
-  });
+const serviceData = {
+  "Taxi": "Ka hel gaari kuu dhow meel kasta oo aad joogto Goldogob.",
+  "Delivery": "Alaab ama cunto ka dalbo meel kasta naga soo gaarsiin doona.",
+  "Safar": "Boos ka qabso gawaarida u socda magaalooyinka kale."
+};
+
+function selectService(element, serviceName) {
+  // Update Tab active state
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  element.classList.add('active');
+
+  // Update headers
+  selectedService = serviceName;
+  document.getElementById('serviceHeading').textContent = `Adeegga ${serviceName}`;
+  document.getElementById('serviceDesc').textContent = serviceData[serviceName];
 }
 
-function getLocation() {
-  const status = document.getElementById("locationStatus");
-
+function fetchGPS() {
+  const status = document.getElementById('gpsStatus');
   if (!navigator.geolocation) {
-    status.textContent = "Telefoonkaagu ma taageerayo GPS location.";
+    status.textContent = "GPS-ka ma taageerayo telefoonkaaga.";
     return;
   }
-
-  status.textContent = "Location-kaaga ayaa la raadinayaa...";
-
+  status.textContent = "Location-ka waa la raadinayaa...";
+  
   navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      gpsCoordinates = `https://maps.google.com/?q=${lat},${lon}`;
-      status.textContent = "✅ Location-kaaga waa la helay!";
-      status.style.color = "#000000";
+    (pos) => {
+      userGPS = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+      status.textContent = "✅ Location-ka waa la helay!";
     },
-    (error) => {
-      status.textContent = "❌ Waalaga helay location-ka. Fadlan gacanta ku qeer meesha.";
+    () => {
+      status.textContent = "❌ Waalaga helay Location-ka.";
     }
   );
 }
 
-function sendToWhatsApp(event) {
-  event.preventDefault();
+function submitForm(e) {
+  e.preventDefault();
 
-  const title = document.getElementById("formTitle").textContent;
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const pickup = document.getElementById("pickup").value;
-  const destination = document.getElementById("destination").value;
-  const time = document.getElementById("time").value;
-  const details = document.getElementById("details").value;
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const pickup = document.getElementById('pickup').value;
+  const destination = document.getElementById('destination').value;
+  const time = document.getElementById('time').value;
+  const notes = document.getElementById('notes').value;
 
-  let message = `*${title}*\n\n`;
-  message += `👤 *Magaca:* ${name}\n`;
-  message += `📞 *Lambar:* ${phone}\n`;
-  message += `📍 *Laga qaadayo:* ${pickup}\n`;
-  message += `🎯 *U socdaa:* ${destination}\n`;
-  message += `⏰ *Waqtiga:* ${time}\n`;
-
-  if (gpsCoordinates) {
-    message += `🌐 *GPS Location:* ${gpsCoordinates}\n`;
+  let msg = `*DALAB CUSUB: ${selectedService.toUpperCase()}*\n\n`;
+  msg += `👤 *Magaca:* ${name}\n`;
+  msg += `📞 *Lambar:* ${phone}\n`;
+  msg += `📍 *Laga qaadayo:* ${pickup}\n`;
+  msg += `🎯 *U socdaa:* ${destination}\n`;
+  msg += `⏰ *Waqtiga:* ${time}\n`;
+  
+  if (userGPS) {
+    msg += `🌐 *Location:* ${userGPS}\n`;
+  }
+  if (notes) {
+    msg += `📝 *Faahfaahin:* ${notes}\n`;
   }
 
-  if (details) {
-    message += `📝 *Faahfaahin:* ${details}\n`;
-  }
-
-  const encodedUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  window.open(encodedUrl, '_blank');
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
 }
 </script>
 
