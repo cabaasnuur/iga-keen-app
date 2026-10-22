@@ -48,3 +48,141 @@
 #auth-logout {
   width: 100%;
 }
+/* IGA KEEN — Modern authentication */
+
+.auth-screen {
+  min-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e8e8e8;
+  border-radius: 26px;
+  padding: 26px 20px;
+  background: #fff;
+  box-shadow: 0 18px 45px #0000000c;
+}
+
+.auth-brand {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 22px;
+  border-radius: 21px;
+  background: #090909;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 950;
+  letter-spacing: -1px;
+  box-shadow: 0 10px 22px #00000020;
+}
+
+.auth-card h1 {
+  margin: 6px 0 8px;
+  font-size: 29px;
+  line-height: 1.15;
+  letter-spacing: -1.1px;
+}
+
+.auth-description {
+  margin: 0 0 22px;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.auth-card .label {
+  margin-top: 16px;
+}
+
+.auth-card input {
+  min-height: 49px;
+  border-radius: 14px;
+  background: #f8f8f8;
+  padding: 13px 14px;
+}
+
+.auth-card input:focus {
+  background: #fff;
+  border-color: #111;
+  box-shadow: 0 0 0 4px #00000009;
+}
+
+.auth-submit {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 22px;
+  border-radius: 15px;
+}
+
+.auth-switch {
+  display: block;
+  width: 100%;
+  margin-top: 17px;
+  border: 0;
+  background: transparent;
+  color: #171717;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 10px;
+}
+
+.auth-forgot {
+  display: block;
+  margin: 13px 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: #666;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.auth-security-note {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 13px;
+  background: #f5f5f5;
+  color: #777;
+  font-size: 10px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.auth-divider {
+  height: 1px;
+  margin: 20px 0;
+  background: #eee;
+}
+
+.account-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 22px;
+  padding: 22px 18px;
+  background: #fff;
+  box-shadow: 0 12px 35px #0000000a;
+}
+
+.account-card .primary-button,
+.account-card .secondary-button {
+  width: 100%;
+  margin-top: 14px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 360px) {
+  .auth-card {
+    padding: 21px 15px;
+  }
+
+  .auth-card h1 {
+    font-size: 26px;
+  }
+}
