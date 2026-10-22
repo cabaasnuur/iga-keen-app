@@ -8,11 +8,11 @@
 | Ku qor country code-ka, adigoon isticmaalin + ama spaces.
 |
 | Tusaale:
-| const IGA_KEEN_WHATSAPP = "25261XXXXXXX";
+| const IGA_KEEN_WHATSAPP = "252907825640";
 |--------------------------------------------------------------------------
 */
 
-const IGA_KEEN_WHATSAPP = "252XXXXXXXXX";
+const IGA_KEEN_WHATSAPP = "252907825640";
 
 
 /*
