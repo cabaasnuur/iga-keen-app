@@ -642,6 +642,9 @@ $("auth-form")
           password,
 
           options: {
+            emailRedirectTo:
+              "https://cabaasnuur.github.io/iga-keen-app/",
+
             data: {
               full_name: fullName,
               phone: phone
@@ -836,8 +839,7 @@ $("forgot-password")
     try {
 
       const redirectTo =
-        window.location.origin +
-        window.location.pathname;
+        "https://cabaasnuur.github.io/iga-keen-app/";
 
       const {
         error
