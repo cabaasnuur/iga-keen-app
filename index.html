@@ -14,72 +14,48 @@
 </head>
 
 <body>
-
 <div class="app-shell">
 
   <!-- TOP BAR -->
   <header class="topbar">
     <a class="brand" href="#home-view">
       <span class="brand-icon">IK</span>
-
       <span>
         IGA <b>KEEN</b>
         <small>Adeeggaaga kuu dhow</small>
       </span>
     </a>
 
-    <button
-      class="icon-button"
-      id="help-button"
-      type="button"
-      aria-label="Caawimaad"
-    >
+    <button class="icon-button" id="help-button" type="button" aria-label="Caawimaad">
       ?
     </button>
   </header>
 
-
   <main>
 
-    <!-- ================= HOME ================= -->
+    <!-- HOME -->
     <section class="view active" id="home-view">
 
       <div class="welcome-card">
-
         <div class="welcome-copy">
-
           <span class="eyebrow">
-            <i></i>
-            ADEEGYO HAL MEEL AH
+            <i></i> ADEEGYO HAL MEEL AH
           </span>
 
-          <h1>
-            Xaggee
-            <span>kuu qaadnaa?</span>
-          </h1>
+          <h1>Xaggee <span>kuu qaadnaa?</span></h1>
 
           <p>
             Dooro adeegga aad u baahan tahay.
             Dalabkaaga si fudud u dir.
           </p>
 
-          <button
-            class="primary-button"
-            id="start-order-button"
-            type="button"
-          >
-            Dalbo hadda
-            <span>→</span>
+          <button class="primary-button" id="start-order-button" type="button">
+            Dalbo hadda <span>→</span>
           </button>
-
         </div>
 
-        <div class="welcome-mark">
-          IK
-        </div>
-
+        <div class="welcome-mark" aria-hidden="true">IK</div>
       </div>
-
 
       <div class="section-title">
         <div>
@@ -88,50 +64,30 @@
         </div>
       </div>
 
-
       <div class="service-grid">
 
-        <button
-          class="service-tile selected"
-          type="button"
-          data-service="taxi"
-        >
+        <button class="service-tile selected" type="button" data-service="taxi">
           <span class="tile-icon">🚕</span>
           <span class="tile-name">Taxi</span>
           <span class="tile-caption">Gaari kuu yeer</span>
           <span class="tile-arrow">↗</span>
         </button>
 
-
-        <button
-          class="service-tile"
-          type="button"
-          data-service="bajaaj"
-        >
+        <button class="service-tile" type="button" data-service="bajaaj">
           <span class="tile-icon">🛺</span>
           <span class="tile-name">Bajaaj</span>
           <span class="tile-caption">Safar magaalada</span>
           <span class="tile-arrow">↗</span>
         </button>
 
-
-        <button
-          class="service-tile"
-          type="button"
-          data-service="delivery"
-        >
+        <button class="service-tile" type="button" data-service="delivery">
           <span class="tile-icon">📦</span>
           <span class="tile-name">Delivery</span>
           <span class="tile-caption">Wax kuu keen</span>
           <span class="tile-arrow">↗</span>
         </button>
 
-
-        <button
-          class="service-tile"
-          type="button"
-          data-service="safar"
-        >
+        <button class="service-tile" type="button" data-service="safar">
           <span class="tile-icon">🚌</span>
           <span class="tile-name">Safar</span>
           <span class="tile-caption">Magaalo kale u safar</span>
@@ -140,24 +96,14 @@
 
       </div>
 
-
-      <button
-        class="location-promo"
-        id="home-location-button"
-        type="button"
-      >
-
+      <button class="location-promo" id="home-location-button" type="button">
         <span class="promo-icon">⌖</span>
-
         <span>
           <b>Goobtaada ma naqaan?</b>
           <small>Taabo si aad GPS-kaaga u dirto</small>
         </span>
-
         <span class="promo-arrow">→</span>
-
       </button>
-
 
       <div class="section-title why-title">
         <div>
@@ -166,72 +112,54 @@
         </div>
       </div>
 
-
       <div class="how-list">
-
         <div class="how-item">
           <span>1</span>
-
           <div>
             <b>Dooro adeeg</b>
             <small>Taxi, Bajaaj, Delivery ama Safar.</small>
           </div>
         </div>
 
-
         <div class="how-item">
           <span>2</span>
-
           <div>
             <b>Buuxi xogta</b>
-            <small>
-              Geli goobta lagaa qaadayo iyo meesha loo socdo.
-            </small>
+            <small>Geli goobta lagaa qaadayo iyo meesha loo socdo.</small>
           </div>
         </div>
-
 
         <div class="how-item">
           <span>3</span>
-
           <div>
             <b>Dir dalabka</b>
-            <small>
-              Dalabkaaga waxaa lagu kaydinayaa nidaamka IGA KEEN.
-            </small>
+            <small>Dalabkaaga waxaa lagu kaydinayaa nidaamka IGA KEEN.</small>
           </div>
         </div>
-
       </div>
 
     </section>
 
 
-    <!-- ================= AUTH ================= -->
+    <!-- AUTH -->
     <section class="view" id="auth-view">
 
       <div class="auth-card">
 
-        <div class="auth-logo">
-          IK
-        </div>
+        <div class="auth-logo">IK</div>
 
         <span class="overline" id="auth-overline">
-          IGA KEEN ACCOUNT
+          AKOONKA IGA KEEN
         </span>
 
-        <h1 id="auth-title">
-          Soo gal
-        </h1>
+        <h1 id="auth-title">Soo gal akoonkaaga</h1>
 
         <p id="auth-subtitle">
-          Soo gal si aad u dalbato adeegga IGA KEEN.
+          Si aad u dalbato adeeg, marka hore gal ama samee akoon.
         </p>
-
 
         <form id="auth-form">
 
-          <!-- SIGN UP FIELDS -->
           <div id="signup-fields" class="hidden">
 
             <label class="label" for="auth-full-name">
@@ -245,7 +173,6 @@
               placeholder="Magacaaga"
               maxlength="100"
             >
-
 
             <label class="label" for="auth-phone">
               Telefoonka
@@ -262,7 +189,6 @@
 
           </div>
 
-
           <label class="label" for="auth-email">
             Email
           </label>
@@ -274,7 +200,6 @@
             placeholder="example@email.com"
             required
           >
-
 
           <label class="label" for="auth-password">
             Password
@@ -289,27 +214,23 @@
             required
           >
 
-
           <button
             class="primary-button auth-submit"
             id="auth-submit"
             type="submit"
           >
-            Soo gal
-            <span>→</span>
+            Soo gal <span>→</span>
           </button>
 
         </form>
-
 
         <button
           class="text-button"
           id="forgot-password"
           type="button"
         >
-          Password-ka ma illoowday?
+          Password-ka ma ilowday?
         </button>
-
 
         <div
           class="feedback"
@@ -318,17 +239,14 @@
           aria-live="polite"
         ></div>
 
-
         <div class="auth-switch">
-          <span id="auth-switch-text">
-            Account ma lihid?
-          </span>
+          <span id="auth-switch-text">Akoon ma lihid?</span>
 
           <button
-            id="switch-auth-mode"
             type="button"
+            id="switch-auth-mode"
           >
-            Isdiiwaangeli
+            Samee akoon
           </button>
         </div>
 
@@ -337,51 +255,30 @@
     </section>
 
 
-    <!-- ================= ORDER ================= -->
+    <!-- ORDER -->
     <section class="view" id="order-view">
 
-      <button
-        class="back-button"
-        id="back-home"
-        type="button"
-      >
+      <button class="back-button" id="back-home" type="button">
         ← Dib u noqo
       </button>
 
-
       <div class="page-heading">
-
-        <span class="overline">
-          DALAB CUSUB
-        </span>
-
-        <h1>
-          Buuxi dalabkaaga
-        </h1>
-
+        <span class="overline">DALAB CUSUB</span>
+        <h1>Buuxi dalabkaaga</h1>
         <p>
           Geli xog sax ah si adeeg-bixiyuhu kuu helo.
         </p>
-
       </div>
-
 
       <form id="order-form">
 
         <div class="form-card">
 
-          <label
-            class="label"
-            for="service-type"
-          >
+          <label class="label" for="service-type">
             Adeegga aad rabto
           </label>
 
-          <select
-            id="service-type"
-            name="service_type"
-            required
-          >
+          <select id="service-type" name="service_type" required>
             <option value="taxi">🚕 Taxi</option>
             <option value="bajaaj">🛺 Bajaaj</option>
             <option value="delivery">📦 Delivery</option>
@@ -392,11 +289,7 @@
           <div class="form-row">
 
             <div class="input-group">
-
-              <label
-                class="label"
-                for="customer-name"
-              >
+              <label class="label" for="customer-name">
                 Magacaaga
               </label>
 
@@ -408,16 +301,11 @@
                 maxlength="100"
                 required
               >
-
             </div>
 
 
             <div class="input-group">
-
-              <label
-                class="label"
-                for="customer-phone"
-              >
+              <label class="label" for="customer-phone">
                 Telefoonka
               </label>
 
@@ -431,16 +319,12 @@
                 maxlength="30"
                 required
               >
-
             </div>
 
           </div>
 
 
-          <label
-            class="label"
-            for="pickup-address"
-          >
+          <label class="label" for="pickup-address">
             Goobta lagaa qaadayo
           </label>
 
@@ -462,18 +346,12 @@
             Isticmaal GPS-kayga
           </button>
 
-          <p
-            class="field-hint"
-            id="location-message"
-          >
+          <p class="field-hint" id="location-message">
             Ama goobta gacanta ku qor sanduuqa kore.
           </p>
 
 
-          <label
-            class="label"
-            for="destination-address"
-          >
+          <label class="label" for="destination-address">
             Meesha loo socdo / la geynayo
           </label>
 
@@ -486,17 +364,11 @@
           >
 
 
-          <div
-            class="form-row"
-            id="passengers-row"
-          >
+          <div class="form-row" id="passengers-row">
 
             <div class="input-group">
 
-              <label
-                class="label"
-                for="passengers"
-              >
+              <label class="label" for="passengers">
                 Tirada rakaabka
               </label>
 
@@ -515,10 +387,7 @@
 
             <div class="input-group">
 
-              <label
-                class="label"
-                for="scheduled-at"
-              >
+              <label class="label" for="scheduled-at">
                 Waqtiga (ikhtiyaari)
               </label>
 
@@ -533,11 +402,8 @@
           </div>
 
 
-          <label
-            class="label"
-            for="notes"
-          >
-            Faahfaahin dheeraad ah
+          <label class="label" for="notes">
+            Faahfaahin dheeraad ah (ikhtiyaari)
           </label>
 
           <textarea
@@ -552,16 +418,13 @@
 
 
         <div class="notice-card">
-
           <span>ⓘ</span>
 
           <p>
             <b>Ogow:</b>
             Qiimaha Taxi, Bajaaj iyo Safar waxaa isla garta
-            macaamilka iyo darawalka. Khidmadaha gudaha ee
-            IGA KEEN macaamiisha halkan laguma soo bandhigayo.
+            macaamilka iyo darawalka.
           </p>
-
         </div>
 
 
@@ -570,16 +433,13 @@
           id="submit-order"
           type="submit"
         >
-          Dir dalabka
-          <span>→</span>
+          Dir dalabka <span>→</span>
         </button>
-
 
         <p class="form-footnote">
           Marka dalabka la kaydiyo, WhatsApp ayaa kuu furmaya
           si aad ula xiriirto IGA KEEN.
         </p>
-
 
         <div
           class="feedback"
@@ -593,36 +453,26 @@
     </section>
 
 
-    <!-- ================= CONTACT ================= -->
+    <!-- CONTACT -->
     <section class="view" id="contact-view">
 
       <div class="page-heading">
+        <span class="overline">CAAWIMAAD</span>
 
-        <span class="overline">
-          CAWIMAAD
-        </span>
-
-        <h1>
-          Nala soo xiriir
-        </h1>
+        <h1>Nala soo xiriir</h1>
 
         <p>
           Wax su'aal ah ma qabtaa?
           Nala soo xiriir WhatsApp.
         </p>
-
       </div>
 
 
       <div class="contact-card">
 
-        <span class="contact-symbol">
-          ☏
-        </span>
+        <span class="contact-symbol">☏</span>
 
-        <h2>
-          IGA KEEN WhatsApp
-        </h2>
+        <h2>IGA KEEN WhatsApp</h2>
 
         <p>
           U dir fariin si aad wax uga weydiiso
@@ -636,45 +486,34 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          Fur WhatsApp
-          <span>↗</span>
+          Fur WhatsApp <span>↗</span>
         </a>
 
       </div>
 
 
       <div class="mini-info">
-
         <b>Adeegyada</b>
         <p>Taxi · Bajaaj · Delivery · Safar</p>
 
         <b>Goobta adeegga</b>
-        <p>
-          Goldogob iyo meelaha adeeggu ka shaqeeyo.
-        </p>
-
+        <p>Goldogob iyo meelaha adeeggu ka shaqeeyo.</p>
       </div>
 
     </section>
 
 
-    <!-- ================= ACCOUNT ================= -->
+    <!-- ACCOUNT -->
     <section class="view" id="account-view">
 
       <div class="page-heading">
+        <span class="overline">AKOONKAYGA</span>
 
-        <span class="overline">
-          ACCOUNT
-        </span>
-
-        <h1>
-          Akoonkayga
-        </h1>
+        <h1>Ku soo dhawoow</h1>
 
         <p>
-          Maamul xogtaada IGA KEEN.
+          Halkan waxaad ka maamuli kartaa akoonkaaga IGA KEEN.
         </p>
-
       </div>
 
 
@@ -685,34 +524,20 @@
         </div>
 
         <div class="account-info">
-
-          <span class="account-label">
-            STATUS
-          </span>
-
-          <strong id="account-status">
-            Logged in
-          </strong>
-
-          <span
-            id="account-email"
-            class="account-email"
-          >
-            —
-          </span>
-
+          <span>AKOONKAAGA</span>
+          <b id="account-status">Waad soo gashay</b>
+          <small id="account-email">—</small>
         </div>
 
       </div>
 
 
       <button
-        class="primary-button account-order-button"
+        class="primary-button"
         id="account-order-button"
         type="button"
       >
-        Dalab samee
-        <span>→</span>
+        Dalbo adeeg <span>→</span>
       </button>
 
 
@@ -721,26 +546,26 @@
         id="logout-button"
         type="button"
       >
-        Ka bax Account-ka
+        Ka bax akoonka
       </button>
 
 
       <div
         class="feedback"
         id="account-feedback"
+        role="status"
+        aria-live="polite"
       ></div>
 
     </section>
 
 
-    <!-- ================= SUCCESS ================= -->
+    <!-- SUCCESS -->
     <section class="view" id="success-view">
 
       <div class="success-card">
 
-        <div class="success-check">
-          ✓
-        </div>
+        <div class="success-check">✓</div>
 
         <span class="overline">
           WAA LA KAYDIYAY
@@ -759,16 +584,13 @@
           id="order-reference"
         ></div>
 
-
         <button
           class="primary-button"
           id="success-whatsapp"
           type="button"
         >
-          La xiriir WhatsApp
-          <span>↗</span>
+          La xiriir WhatsApp <span>↗</span>
         </button>
-
 
         <button
           class="secondary-button"
@@ -785,11 +607,8 @@
   </main>
 
 
-  <!-- ================= BOTTOM NAV ================= -->
-  <nav
-    class="bottom-nav"
-    aria-label="Navigation hoose"
-  >
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" aria-label="Navigation hoose">
 
     <button
       class="nav-item active"
@@ -800,7 +619,6 @@
       <small>Home</small>
     </button>
 
-
     <button
       class="nav-item"
       type="button"
@@ -810,7 +628,6 @@
       <small>Dalbo</small>
     </button>
 
-
     <button
       class="nav-item"
       type="button"
@@ -819,7 +636,6 @@
       <span>☏</span>
       <small>Xiriir</small>
     </button>
-
 
     <button
       class="nav-item"
@@ -839,6 +655,5 @@
   </footer>
 
 </div>
-
 </body>
 </html>
