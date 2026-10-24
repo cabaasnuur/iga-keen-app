@@ -1,1037 +1,1299 @@
-/* ==========================================================================
-   IGA KEEN V3 — Application Core & Supabase Integration Engine
-   ========================================================================== */
 
-// 1. SUPABASE CLIENT CONFIGURATION
+"use strict";
+
+/* IGA KEEN V2 — Supabase JS v2 */
+
 const SUPABASE_URL = "https://zywwypqddnvslgqztnep.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5d3d5cHFkZG52c2xncXp0bmVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyMzg3OTMsImV4cCI6MjA1NjzgNDc5M30.4q4x8z4-q"; // Existing configured publishable key
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8";
+const IGA_KEEN_WHATSAPP = "252907825640";
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const ADMIN_UID = "85282aac-7813-442f-a51b-6d43e3eccf1e";
+const $ = id => document.getElementById(id);
+const views = [...document.querySelectorAll(".view")];
+const navItems = [...document.querySelectorAll(".nav-item")];
 
-// 2. INTERNATIONALIZATION (TRANSLATIONS)
-const i18n = {
-  so: {
-    welcomeTitle: "Ku soo dhawaaw IGA KEEN",
-    welcomeDesc: "Adeegga gaadiidka & delivery-ga ee ugu dhakhsaha badan",
-    login: "Soo Gal",
-    signup: "Is-diiwaangeli",
-    email: "Email",
-    password: "Password",
-    userType: "Nooca Isticmaalaha",
-    customer: "Macmiil",
-    driver: "Darawal",
-    fullName: "Magaca Buuxa",
-    phone: "Telefoon",
-    forgotPassword: "Haraw ka dhacday kalmada sirta?",
-    navHome: "Guri",
-    navOrders: "Dalabyada",
-    navCommunity: "Bulshada",
-    navNotif: "Ogeysiis",
-    navAccount: "Akoon",
-    servicesTitle: "Maxaad u baahan tahay?",
-    taxiDesc: "Magaalada dhexdeeda si raaxo leh",
-    bajaajDesc: "Dhaqso & qiimo jaban",
-    deliveryDesc: "Package & waraaqahaaga",
-    safarDesc: "Magalooyinka kale & gobollada",
-    recentOrders: "Dalabyadii Ugu Dambeeyay",
-    viewAll: "Dhammaan",
-    availableOrders: "Dalabyada Banaan",
-    myJobs: "Shaqooyinkeyga",
-    payFee: "Bixi Ajarka IGA KEEN",
-    submitFee: "Dhiib Fee-ga",
-    paymentRef: "Tixraaca Lacag bixinta",
-    offlineMsg: "Internet connection-ka waa go'an yahay.",
-    servicePrice: "Qiimaha Adeegga:",
-    agreedPrice: "Darawalka ayaad ku heshiinaysaan",
-    igakeenFee: "Ajar IGA KEEN:",
-    confirmOrder: "Xaqiiji Dalabka",
-    active: "Socda",
-    completed: "Dhameystiran",
-    cancelled: "Kansal leh",
-    logout: "Ka bax Akoonka",
-    preferences: "Dookhyada App-ka",
-    theme: "Muuqaalka (Theme)",
-    language: "Luuqada / Language",
-    account: "Akoonka",
-    editProfile: "Wax ka baddal Profile",
-    saveChanges: "Kaydi Baddalida",
-    newPost: "Post Cusub",
-    publishPost: "Faafi Post-ka",
-    markRead: "Akhriyay Dhammaan"
-  },
-  en: {
-    welcomeTitle: "Welcome to IGA KEEN",
-    welcomeDesc: "The fastest local transport & delivery platform",
-    login: "Log In",
-    signup: "Sign Up",
-    email: "Email",
-    password: "Password",
-    userType: "Account Type",
-    customer: "Customer",
-    driver: "Driver",
-    fullName: "Full Name",
-    phone: "Phone Number",
-    forgotPassword: "Forgot Password?",
-    navHome: "Home",
-    navOrders: "Orders",
-    navCommunity: "Community",
-    navNotif: "Alerts",
-    navAccount: "Account",
-    servicesTitle: "What do you need?",
-    taxiDesc: "Comfortable city rides",
-    bajaajDesc: "Quick & affordable rickshaw",
-    deliveryDesc: "Parcels & documents delivery",
-    safarDesc: "Inter-city & long travel",
-    recentOrders: "Recent Orders",
-    viewAll: "View All",
-    availableOrders: "Available Orders",
-    myJobs: "My Jobs",
-    payFee: "Pay IGA KEEN Fee",
-    submitFee: "Submit Payment",
-    paymentRef: "Payment Reference",
-    offlineMsg: "No internet connection.",
-    servicePrice: "Service Price:",
-    agreedPrice: "Agreed with driver",
-    igakeenFee: "IGA KEEN Fee:",
-    confirmOrder: "Confirm Order",
-    active: "Active",
-    completed: "Completed",
-    cancelled: "Cancelled",
-    logout: "Log Out",
-    preferences: "Preferences",
-    theme: "Theme",
-    language: "Language",
-    account: "Account",
-    editProfile: "Edit Profile",
-    saveChanges: "Save Changes",
-    newPost: "New Post",
-    publishPost: "Publish Post",
-    markRead: "Mark All Read"
-  },
-  ar: {
-    welcomeTitle: "مرحباً بك في IGA KEEN",
-    welcomeDesc: "أسرع منصة للنقل والتوصيل المحلي",
-    login: "تسجيل الدخول",
-    signup: "إنشاء حساب",
-    email: "البريد الإلكتروني",
-    password: "كلمة المرور",
-    userType: "نوع الحساب",
-    customer: "عميل",
-    driver: "سائق",
-    fullName: "الاسم الكامل",
-    phone: "رقم الهاتف",
-    forgotPassword: "نسيت كلمة المرور؟",
-    navHome: "الرئيسية",
-    navOrders: "الطلبات",
-    navCommunity: "المجتمع",
-    navNotif: "الإشعارات",
-    navAccount: "حسابي",
-    servicesTitle: "ماذا تحتاج اليوم؟",
-    taxiDesc: "تنقل مريح داخل المدينة",
-    bajaajDesc: "تكتك سريع وبسعر مناسب",
-    deliveryDesc: "توصيل الطرود والوثائق",
-    safarDesc: "رحلات بين المدن والمحافظات",
-    recentOrders: "أحدث الطلبات",
-    viewAll: "عرض الكل",
-    availableOrders: "الطلبات المتاحة",
-    myJobs: "مهامي",
-    payFee: "دفع رسوم IGA KEEN",
-    submitFee: "تأكيد الدفع",
-    paymentRef: "رقم المرجع والدفع",
-    offlineMsg: "لا يوجد اتصال بالإنترنت.",
-    servicePrice: "سعر الخدمة:",
-    agreedPrice: "بالاتفاق مع السائق",
-    igakeenFee: "رسوم IGA KEEN:",
-    confirmOrder: "تأكيد الطلب",
-    active: "نشط",
-    completed: "مكتمل",
-    cancelled: "ملغى",
-    logout: "تسجيل الخروج",
-    preferences: "التفضيلات",
-    theme: "المظهر",
-    language: "اللغة",
-    account: "الحساب",
-    editProfile: "تعديل الملف الشخصي",
-    saveChanges: "حفظ التغييرات",
-    newPost: "منشور جديد",
-    publishPost: "نشر المنشور",
-    markRead: "تحديد الكل كقراءة"
-  }
+const SERVICE_NAMES = {
+  taxi: "Taxi",
+  bajaaj: "Bajaaj",
+  delivery: "Delivery",
+  safar: "Safar"
 };
 
-// 3. GLOBAL STATE
-let appState = {
-  user: null,
-  profile: null,
-  driverProfile: null,
-  role: 'customer', // customer, driver, admin
-  language: localStorage.getItem('igakeen_lang') || 'so',
-  theme: localStorage.getItem('igakeen_theme') || 'light',
-  serviceFees: {
-    taxi: { customer_fee: 0, provider_fee: 0.30 },
-    bajaaj: { customer_fee: 0, provider_fee: 0.20 },
-    delivery: { customer_fee: 0.15, provider_fee: 0.20 },
-    safar: { customer_fee: 0, provider_fee: 1.50 }
-  },
-  activeChatOrderId: null,
-  chatRealtimeSub: null
+const FEES = {
+  taxi: { customer: 0, provider: 0.30 },
+  bajaaj: { customer: 0, provider: 0.20 },
+  delivery: { customer: 0.15, provider: 0.20 },
+  safar: { customer: 0, provider: 1.50 }
 };
 
-// 4. INITIALIZATION
-document.addEventListener("DOMContentLoaded", async () => {
-  initTheme();
-  initLanguage();
-  initNetworkListeners();
-  await loadServiceFees();
-  initAuthListener();
-});
+const STATUS_NAMES = {
+  pending: "Sugaya",
+  new: "Cusub",
+  accepted: "La aqbalay",
+  assigned: "Darawal loo xilsaaray",
+  confirmed: "La xaqiijiyey",
+  in_progress: "Socda",
+  completed: "Dhammaaday",
+  cancelled: "La joojiyey",
+  rejected: "La diiday"
+};
 
-// Network Connection Handlers
-function initNetworkListeners() {
-  window.addEventListener('offline', () => {
-    document.getElementById('offline-banner').classList.remove('hidden');
-  });
-  window.addEventListener('online', () => {
-    document.getElementById('offline-banner').classList.add('hidden');
-    showToast("Connection-ka waa soo noqday.");
-  });
-}
+let db = null;
+let session = null;
+let profile = null;
+let gps = { latitude: null, longitude: null };
+let currentChatOrder = null;
+let currentChatRecipient = null;
+let chatChannel = null;
+let orderChannel = null;
+let notificationChannel = null;
+let authMode = "login";
+let toastTimer = null;
+let orderCache = [];
+let driverCache = null;
+let loadingOrders = false;
 
-// Language Engine
-function initLanguage() {
-  const lang = appState.language;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  document.getElementById('setting-language').value = lang;
-
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (i18n[lang] && i18n[lang][key]) {
-      el.textContent = i18n[lang][key];
-    }
-  });
-}
-
-function changeLanguage(newLang) {
-  appState.language = newLang;
-  localStorage.setItem('igakeen_lang', newLang);
-  initLanguage();
-}
-
-// Theme Engine
-function initTheme() {
-  const theme = appState.theme;
-  if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-  document.getElementById('setting-theme').value = theme;
-}
-
-function changeTheme(newTheme) {
-  appState.theme = newTheme;
-  localStorage.setItem('igakeen_theme', newTheme);
-  initTheme();
-}
-
-// Toast Notifications
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast-msg toast-${type}`;
-  toast.textContent = message;
-  container.appendChild(toast);
-
-  setTimeout(() => {
-    toast.remove();
-  }, 3500);
-}
-
-// 5. SERVICE FEES LOADING
-async function loadServiceFees() {
-  try {
-    const { data, error } = await supabaseClient.from('service_fees').select('*');
-    if (!error && data && data.length > 0) {
-      data.forEach(item => {
-        if (appState.serviceFees[item.service_type]) {
-          appState.serviceFees[item.service_type] = {
-            customer_fee: parseFloat(item.customer_fee || 0),
-            provider_fee: parseFloat(item.provider_fee || 0)
-          };
-          // Update Fee Badges UI
-          const badge = document.getElementById(`fee-badge-${item.service_type}`);
-          if (badge) {
-            badge.textContent = `Fee: $${item.provider_fee}`;
-          }
-        }
-      });
-    }
-  } catch (err) {
-    console.error("Error loading service fees:", err);
-  }
-}
-
-// 6. AUTHENTICATION & SESSION MANAGEMENT
-function initAuthListener() {
-  supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    if (session && session.user) {
-      appState.user = session.user;
-      await fetchUserProfile();
-      setupMainUI();
-      setupRealtimeSubscriptions();
-    } else {
-      appState.user = null;
-      appState.profile = null;
-      appState.driverProfile = null;
-      showView('view-auth');
-      document.getElementById('app-bottom-nav').classList.add('hidden');
-    }
-  });
-}
-
-async function fetchUserProfile() {
-  if (!appState.user) return;
-  const userId = appState.user.id;
-
-  // Check Admin Status
-  if (userId === ADMIN_UID) {
-    appState.role = 'admin';
-    document.getElementById('admin-entry-button').classList.remove('hidden');
-  }
-
-  // Fetch Driver Profile if exists
-  const { data: driverData } = await supabaseClient
-    .from('drivers')
-    .select('*')
-    .eq('user_id', userId)
-    .maybeSingle();
-
-  if (driverData) {
-    appState.driverProfile = driverData;
-    if (appState.role !== 'admin') {
-      appState.role = 'driver';
-    }
-  } else if (appState.role !== 'admin') {
-    appState.role = 'customer';
-  }
-
-  // Update UI Header & Badges
-  document.getElementById('user-role-badge').textContent = appState.role.toUpperCase();
-  document.getElementById('profile-fullname-display').textContent = appState.user.email.split('@')[0];
-  document.getElementById('profile-email-display').textContent = appState.user.email;
-  document.getElementById('profile-role-tag').textContent = appState.role;
-}
-
-function setupMainUI() {
-  document.getElementById('app-bottom-nav').classList.remove('hidden');
-
-  if (appState.role === 'driver') {
-    switchNav('home');
-    renderDriverHomeView();
-  } else if (appState.role === 'admin') {
-    switchNav('admin');
-  } else {
-    switchNav('home');
-    renderCustomerHomeView();
-  }
-}
-
-// Auth Actions
-async function handleLogin(e) {
-  e.preventDefault();
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-
-  const btn = document.getElementById('btn-login-submit');
-  btn.disabled = true;
-
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  btn.disabled = false;
-
-  if (error) {
-    showToast("Soo galka waa ku guuldareystay: " + error.message, "danger");
-  } else {
-    showToast("Guul! Waad soo gashay.");
-  }
-}
-
-async function handleSignup(e) {
-  e.preventDefault();
-  const email = document.getElementById('signup-email').value;
-  const password = document.getElementById('signup-password').value;
-  const fullName = document.getElementById('signup-fullname').value;
-  const phone = document.getElementById('signup-phone').value;
-  const isDriver = document.querySelector('input[name="account_type"]:checked').value === 'driver';
-
-  const btn = document.getElementById('btn-signup-submit');
-  btn.disabled = true;
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { full_name: fullName, phone: phone, role: isDriver ? 'driver' : 'customer' }
-    }
-  });
-
-  if (error) {
-    btn.disabled = false;
-    showToast("Is-diiwaangelintu waa ku guuldareysatay: " + error.message, "danger");
-    return;
-  }
-
-  if (isDriver && data.user) {
-    const serviceType = document.getElementById('signup-driver-service').value;
-    const vehicleDesc = document.getElementById('signup-driver-vehicle').value;
-
-    await supabaseClient.from('drivers').insert({
-      user_id: data.user.id,
-      full_name: fullName,
-      phone: phone,
-      service_type: serviceType,
-      vehicle_description: vehicleDesc,
-      approval_status: 'pending'
-    });
-  }
-
-  btn.disabled = false;
-  showToast("Akoonkaaga waa la abuuray!");
-}
-
-async function handleLogout() {
-  await supabaseClient.auth.signOut();
-  showToast("Waad ka baxday akoonka.");
-}
-
-function switchAuthTab(tab) {
-  if (tab === 'login') {
-    document.getElementById('tab-login').classList.add('active');
-    document.getElementById('tab-signup').classList.remove('active');
-    document.getElementById('form-login').classList.remove('hidden');
-    document.getElementById('form-signup').classList.add('hidden');
-  } else {
-    document.getElementById('tab-signup').classList.add('active');
-    document.getElementById('tab-login').classList.remove('active');
-    document.getElementById('form-signup').classList.remove('hidden');
-    document.getElementById('form-login').classList.add('hidden');
-  }
-}
-
-function toggleDriverSignupFields(show) {
-  const fields = document.getElementById('driver-signup-fields');
-  if (show) fields.classList.remove('hidden');
-  else fields.classList.add('hidden');
-}
-
-// 7. NAVIGATION SYSTEM
-function switchNav(targetView) {
-  document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
-  document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-
-  const navBtn = document.getElementById(`nav-btn-${targetView}`);
-  if (navBtn) navBtn.classList.add('active');
-
-  if (targetView === 'home') {
-    if (appState.role === 'driver') {
-      showView('view-driver-home');
-      renderDriverHomeView();
-    } else {
-      showView('view-customer-home');
-      renderCustomerHomeView();
-    }
-  } else if (targetView === 'orders') {
-    showView('view-orders');
-    renderOrdersList();
-  } else if (targetView === 'community') {
-    showView('view-community');
-    renderCommunityFeed();
-  } else if (targetView === 'notifications') {
-    showView('view-notifications');
-    renderNotificationsList();
-  } else if (targetView === 'account') {
-    showView('view-account');
-  } else if (targetView === 'admin') {
-    showView('view-admin');
-    renderAdminDashboard();
-  }
-}
-
-function showView(viewId) {
-  document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden'));
-  document.getElementById(viewId).classList.remove('hidden');
-}
-
-// 8. CUSTOMER HOME & ORDER CREATION
-async function renderCustomerHomeView() {
-  if (!appState.user) return;
-  document.getElementById('home-user-name').textContent = appState.user.email.split('@')[0];
-
-  // Render recent orders summary
-  const { data: orders } = await supabaseClient
-    .from('orders')
-    .select('*')
-    .eq('user_id', appState.user.id)
-    .order('created_at', { ascending: false })
-    .limit(3);
-
-  const container = document.getElementById('customer-active-orders-summary');
-  if (!orders || orders.length === 0) {
-    container.innerHTML = `<p class="text-sm text-muted text-center p-3">Ma jiraan dalabyo dhowaan samaysay.</p>`;
-    return;
-  }
-
-  container.innerHTML = orders.map(ord => renderOrderCardHTML(ord)).join('');
-}
-
-function openOrderModal(serviceType) {
-  document.getElementById('ord-service-type').value = serviceType;
-  document.getElementById('order-modal-title').textContent = `Dalbo ${serviceType.toUpperCase()}`;
-
-  const safarDateTime = document.getElementById('field-safar-datetime');
-  if (serviceType === 'safar') {
-    safarDateTime.classList.remove('hidden');
-  } else {
-    safarDateTime.classList.add('hidden');
-  }
-
-  const fees = appState.serviceFees[serviceType] || { customer_fee: 0, provider_fee: 0.20 };
-  document.getElementById('ord-calculated-fee').textContent = `$${fees.provider_fee.toFixed(2)}`;
-
-  document.getElementById('modal-order-create').classList.remove('hidden');
-}
-
-async function submitNewOrder(e) {
-  e.preventDefault();
-  const serviceType = document.getElementById('ord-service-type').value;
-  const pickup = document.getElementById('ord-pickup-address').value;
-  const destination = document.getElementById('ord-destination-address').value;
-  const phone = document.getElementById('ord-customer-phone').value;
-  const passengers = parseInt(document.getElementById('ord-passengers').value || '1');
-  const notes = document.getElementById('ord-notes').value;
-  const scheduledAt = document.getElementById('ord-scheduled-at').value;
-
-  const btn = document.getElementById('btn-submit-order');
-  btn.disabled = true;
-
-  const fees = appState.serviceFees[serviceType] || { customer_fee: 0, provider_fee: 0.20 };
-  const orderNumber = "IK-" + Math.floor(100000 + Math.random() * 900000);
-
-  const payload = {
-    order_number: orderNumber,
-    service_type: serviceType,
-    customer_name: appState.user.email.split('@')[0],
-    customer_phone: phone,
-    pickup_address: pickup,
-    destination_address: destination,
-    passengers: passengers,
-    notes: notes,
-    status: 'new',
-    customer_fee: fees.customer_fee,
-    provider_fee: fees.provider_fee,
-    currency: 'USD',
-    user_id: appState.user.id,
-    scheduled_at: scheduledAt || new Date().toISOString()
-  };
-
-  const { error } = await supabaseClient.from('orders').insert(payload);
-  btn.disabled = false;
-
-  if (error) {
-    showToast("Dalabka lama diri karin. Fadlan mar kale isku day.", "danger");
-  } else {
-    showToast("Dalabkaaga waa la diray si guul leh!");
-    closeModal('modal-order-create');
-    switchNav('orders');
-  }
-}
-
-// Geolocation Support
-function fetchCurrentGeolocation(fieldPrefix) {
-  if (!navigator.geolocation) {
-    showToast("GPS-ka ma taageero browser-kaaga. Geli ciwaanka gacanta.", "danger");
-    return;
-  }
-
-  showToast("Laga soo helayo goobtaada...");
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      document.getElementById(`${fieldPrefix}-lat`).value = pos.coords.latitude;
-      document.getElementById(`${fieldPrefix}-lng`).value = pos.coords.longitude;
-      document.getElementById(`${fieldPrefix}-address`).value = `Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}`;
-      showToast("Goobtaada waa la helay!");
-    },
-    (err) => {
-      showToast("Lama heli karin GPS-ka. Fadlan qor ciwaanka gacanta.", "danger");
+if (window.supabase?.createClient) {
+  db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
     }
   );
 }
 
-// 9. DRIVER DASHBOARD LOGIC
-async function renderDriverHomeView() {
-  if (!appState.driverProfile) return;
+function showView(id) {
+  const target = $(id);
+  if (!target) return;
 
-  const drv = appState.driverProfile;
-  document.getElementById('driver-display-name').textContent = drv.full_name;
-  document.getElementById('driver-vehicle-info').textContent = `${drv.service_type.toUpperCase()} • ${drv.vehicle_description || 'No Vehicle Info'}`;
+  views.forEach(view => {
+    view.classList.toggle("active", view.id === id);
+  });
 
-  const banner = document.getElementById('driver-approval-banner');
-  const txt = document.getElementById('driver-approval-text');
+  navItems.forEach(item => {
+    item.classList.toggle("active", item.dataset.view === id);
+  });
 
-  if (drv.approval_status === 'approved') {
-    banner.className = 'status-alert alert-approved mt-2';
-    txt.textContent = "Akoonkaaga waa la ansixiyay! Waad aqbali kartaa dalabyada.";
-  } else if (drv.approval_status === 'rejected') {
-    banner.className = 'status-alert alert-rejected mt-2';
-    txt.textContent = "Aan la ansixin. Fadlan la xiriir maamulka IGA KEEN.";
-  }
-
-  switchDriverOrdersTab('available');
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-async function switchDriverOrdersTab(type) {
-  document.getElementById('driver-tab-available').classList.toggle('active', type === 'available');
-  document.getElementById('driver-tab-assigned').classList.toggle('active', type === 'assigned');
+function notify(message) {
+  const toast = $("toast");
+  if (!toast) return;
 
-  const container = document.getElementById('driver-orders-container');
+  toast.textContent = message;
+  toast.classList.add("show");
 
-  if (type === 'available') {
-    const { data: orders } = await supabaseClient
-      .from('orders')
-      .select('*')
-      .eq('status', 'new')
-      .order('created_at', { ascending: false });
-
-    if (!orders || orders.length === 0) {
-      container.innerHTML = `<p class="text-sm text-muted text-center p-3">Hadda ma jiraan dalabyo cusub oo banaan.</p>`;
-      return;
-    }
-    container.innerHTML = orders.map(ord => renderDriverOrderCardHTML(ord)).join('');
-  } else {
-    const { data: orders } = await supabaseClient
-      .from('orders')
-      .select('*')
-      .eq('driver_id', appState.driverProfile.id)
-      .order('created_at', { ascending: false });
-
-    if (!orders || orders.length === 0) {
-      container.innerHTML = `<p class="text-sm text-muted text-center p-3">Ma haysatid shaqooyin adiga kuu gaar ah.</p>`;
-      return;
-    }
-    container.innerHTML = orders.map(ord => renderDriverOrderCardHTML(ord)).join('');
-  }
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3500);
 }
 
-// Driver Order Acceptance & Provider Fee Trigger
-function promptDriverAcceptance(orderId, requiredFee) {
-  if (!appState.driverProfile || appState.driverProfile.approval_status !== 'approved') {
-    showToast("Kaliya darawallada la ansixiyay ayaa aqbali kara dalabyada.", "danger");
+function feedback(id, message, type = "info") {
+  const element = $(id);
+  if (!element) return;
+
+  element.textContent = message;
+  element.className = `feedback show ${type}`;
+}
+
+function clearFeedback(id) {
+  const element = $(id);
+  if (!element) return;
+
+  element.textContent = "";
+  element.className = "feedback";
+}
+
+function money(value) {
+  return "$" + Number(value || 0).toFixed(2);
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function serviceName(value) {
+  return SERVICE_NAMES[String(value || "").toLowerCase()] ||
+    String(value || "Adeeg");
+}
+
+function statusName(value) {
+  return STATUS_NAMES[String(value || "").toLowerCase()] ||
+    String(value || "Sugaya");
+}
+
+function setBusy(button, busy, busyText, normalText) {
+  if (!button) return;
+  button.disabled = busy;
+  button.textContent = busy ? busyText : normalText;
+}
+
+function requireDatabase() {
+  if (!db) {
+    notify("Supabase lama xiriirin. Hubi internet-ka iyo configuration-ka.");
+    return false;
+  }
+  return true;
+}
+
+function requireLogin() {
+  if (!session?.user) {
+    notify("Marka hore soo gal ama samee akoon.");
+    showView("auth-view");
+    return false;
+  }
+  return true;
+}
+
+function whatsappUrl(message) {
+  return `https://wa.me/${IGA_KEEN_WHATSAPP}?text=${encodeURIComponent(message)}`;
+}
+
+function openWhatsApp(message) {
+  window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
+}
+
+/* Navigation */
+
+navItems.forEach(item => {
+  item.addEventListener("click", async () => {
+    const view = item.dataset.view;
+
+    if (view === "order-view" && !session) {
+      showView("auth-view");
+      return;
+    }
+
+    if (view === "orders-view" && session) {
+      showView(view);
+      await loadOrders();
+      return;
+    }
+
+    if (view === "notifications-view" && session) {
+      showView(view);
+      await loadNotifications();
+      return;
+    }
+
+    if (view === "driver-view" && session) {
+      showView(view);
+      await loadDriverArea();
+      return;
+    }
+
+    showView(view);
+  });
+});
+
+$("home-order").addEventListener("click", () => {
+  if (!requireLogin()) return;
+  showView("order-view");
+});
+
+document.querySelectorAll("[data-service]").forEach(button => {
+  button.addEventListener("click", () => {
+    if (!requireLogin()) return;
+    selectService(button.dataset.service);
+  });
+});
+
+$("help-btn").addEventListener("click", () => showView("contact-view"));
+$("header-notifications").addEventListener("click", async () => {
+  if (!requireLogin()) return;
+  showView("notifications-view");
+  await loadNotifications();
+});
+
+$("account-order-btn").addEventListener("click", () => {
+  if (!requireLogin()) return;
+  showView("order-view");
+});
+
+$("account-driver-btn").addEventListener("click", async () => {
+  if (!requireLogin()) return;
+  showView("driver-view");
+  await loadDriverArea();
+});
+
+$("account-login-btn").addEventListener("click", () => {
+  authMode = "login";
+  updateAuthMode();
+  showView("auth-view");
+});
+
+$("refresh-orders").addEventListener("click", loadOrders);
+$("refresh-notifications").addEventListener("click", loadNotifications);
+$("refresh-driver").addEventListener("click", loadDriverArea);
+
+$("contact-whatsapp").href = whatsappUrl(
+  "Asc IGA KEEN, waxaan u baahanahay caawimaad."
+);
+
+$("year").textContent = new Date().getFullYear();
+
+/* Authentication */
+
+function updateAuthMode() {
+  const signup = authMode === "signup";
+
+  $("signup-fields").classList.toggle("hidden", !signup);
+  $("auth-title").textContent = signup
+    ? "Samee akoon cusub"
+    : "Soo gal akoonkaaga";
+
+  $("auth-desc").textContent = signup
+    ? "Geli xogtaada si aad u samaysato akoon."
+    : "Soo gal si aad u isticmaasho adeegyada IGA KEEN.";
+
+  $("auth-submit").textContent = signup
+    ? "Samee akoon →"
+    : "Soo gal →";
+
+  $("switch-caption").textContent = signup
+    ? "Hore akoon ma u lahayd?"
+    : "Akoon ma lihid?";
+
+  $("switch-auth").textContent = signup
+    ? "Soo gal"
+    : "Samee akoon";
+
+  $("password").autocomplete = signup
+    ? "new-password"
+    : "current-password";
+
+  $("full-name").required = signup;
+  $("auth-phone").required = signup;
+}
+
+$("switch-auth").addEventListener("click", () => {
+  authMode = authMode === "login" ? "signup" : "login";
+  clearFeedback("auth-feedback");
+  updateAuthMode();
+});
+
+$("account-role").addEventListener("change", () => {
+  $("provider-fields").classList.toggle(
+    "hidden",
+    $("account-role").value !== "provider"
+  );
+});
+
+$("forgot-password").addEventListener("click", async () => {
+  if (!requireDatabase()) return;
+
+  const email = $("email").value.trim();
+  if (!email) {
+    feedback(
+      "auth-feedback",
+      "Marka hore geli email-kaaga.",
+      "error"
+    );
     return;
   }
 
-  document.getElementById('fee-order-id').value = orderId;
-  document.getElementById('fee-modal-amount').textContent = parseFloat(requiredFee || 0).toFixed(2);
-  document.getElementById('modal-submit-fee').classList.remove('hidden');
-}
-
-async function handleFeePaymentSubmit(e) {
-  e.preventDefault();
-  const orderId = document.getElementById('fee-order-id').value;
-  const ref = document.getElementById('fee-payment-ref').value;
-  const note = document.getElementById('fee-payment-note').value;
-
-  const { error } = await supabaseClient.from('driver_fee_payments').insert({
-    order_id: orderId,
-    driver_id: appState.driverProfile.id,
-    submitted_by: appState.user.id,
-    amount: parseFloat(document.getElementById('fee-modal-amount').textContent),
-    currency: 'USD',
-    payment_reference: ref,
-    payment_note: note,
-    status: 'pending'
+  const { error } = await db.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href.split("#")[0]
   });
 
   if (error) {
-    showToast("Lacag bixinta lama gudbin karin: " + error.message, "danger");
-  } else {
-    showToast("Ajarkii waad gudbisay! Maamulka ayaa dib-u-eegaya xaqiijinta.");
-    closeModal('modal-submit-fee');
-    // Call existing secure RPC function if database supports direct assignment
-    try {
-      await supabaseClient.rpc('igakeen_accept_order', { p_order_id: orderId });
-    } catch (err) {
-      console.log("RPC fallback logic handled backend side.");
+    feedback("auth-feedback", error.message, "error");
+    return;
+  }
+
+  feedback(
+    "auth-feedback",
+    "Haddii email-kaasi akoon leeyahay, raac tilmaamaha password-ka dib loogu dejinayo.",
+    "success"
+  );
+});
+
+$("auth-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  clearFeedback("auth-feedback");
+
+  if (!requireDatabase()) return;
+
+  const email = $("email").value.trim().toLowerCase();
+  const password = $("password").value;
+
+  if (password.length < 8) {
+    feedback(
+      "auth-feedback",
+      "Password-ku waa inuu ugu yaraan 8 xaraf noqdaa.",
+      "error"
+    );
+    return;
+  }
+
+  const button = $("auth-submit");
+  setBusy(button, true, "Sug...", authMode === "signup"
+    ? "Samee akoon →"
+    : "Soo gal →");
+
+  try {
+    if (authMode === "login") {
+      const { error } = await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      feedback("auth-feedback", "Waad soo gashay.", "success");
+      await syncSession();
+      showView("home-view");
+      notify("Soo dhawoow IGA KEEN.");
+      return;
     }
-    switchDriverOrdersTab('assigned');
+
+    const fullName = $("full-name").value.trim();
+    const phone = $("auth-phone").value.trim();
+    const role = $("account-role").value;
+    const providerService = $("provider-service").value;
+    const vehicle = $("vehicle").value.trim();
+
+    if (!fullName || !phone) {
+      throw new Error("Geli magacaaga iyo telefoonkaaga.");
+    }
+
+    const metadata = {
+      full_name: fullName,
+      phone,
+      role
+    };
+
+    const { data, error } = await db.auth.signUp({
+      email,
+      password,
+      options: { data: metadata }
+    });
+
+    if (error) throw error;
+
+    if (data.user && data.session) {
+      const { error: profileError } = await db
+        .from("profiles")
+        .upsert({
+          id: data.user.id,
+          full_name: fullName,
+          phone,
+          role
+        }, { onConflict: "id" });
+
+      if (profileError) {
+        console.error("Profile setup:", profileError.message);
+      }
+
+      if (role === "provider") {
+        // Provider approval and driver-table creation belong to
+        // the trusted database/admin workflow.
+        console.info("Provider registration requested:", {
+          providerService,
+          vehicle
+        });
+      }
+
+      await syncSession();
+      showView("account-view");
+      notify("Akoonka waa la sameeyay.");
+    } else {
+      feedback(
+        "auth-feedback",
+        "Akoonka waa la sameeyay. Haddii email confirmation-ku shidan yahay, fur email-kaaga si aad u xaqiijiso akoonka.",
+        "success"
+      );
+    }
+  } catch (error) {
+    feedback(
+      "auth-feedback",
+      error.message || "Akoonka lama samayn. Mar kale isku day.",
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = authMode === "signup"
+      ? "Samee akoon →"
+      : "Soo gal →";
   }
-}
+});
 
-// 10. ORDERS VIEW & RENDERING HELPER
-async function renderOrdersList(filter = 'active') {
-  const container = document.getElementById('orders-full-list');
-  let query = supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+$("logout-btn").addEventListener("click", async () => {
+  if (!requireDatabase()) return;
 
-  if (appState.role === 'customer') {
-    query = query.eq('user_id', appState.user.id);
-  } else if (appState.role === 'driver' && appState.driverProfile) {
-    query = query.eq('driver_id', appState.driverProfile.id);
+  const { error } = await db.auth.signOut();
+
+  if (error) {
+    feedback("account-feedback", error.message, "error");
+    return;
   }
 
-  if (filter === 'active') {
-    query = query.in('status', ['new', 'contacted', 'confirmed', 'in_progress']);
+  await syncSession();
+  showView("home-view");
+  notify("Waad ka baxday akoonka.");
+});
+
+async function syncSession() {
+  if (!db) return;
+
+  const { data } = await db.auth.getSession();
+  session = data.session;
+  profile = null;
+
+  if (session?.user) {
+    const { data: row, error } = await db
+      .from("profiles")
+      .select("id, full_name, phone, role, avatar_url")
+      .eq("id", session.user.id)
+      .maybeSingle();
+
+    if (!error) profile = row;
+  }
+
+  renderAccount();
+
+  if (session?.user) {
+    await loadNotificationCount();
+    subscribeToNotifications();
   } else {
-    query = query.eq('status', filter);
+    $("notification-count").classList.add("hidden");
+    unsubscribeRealtime();
+    orderCache = [];
+    driverCache = null;
   }
+}
 
-  const { data: orders } = await query;
+function renderAccount() {
+  const user = session?.user;
+  const name = profile?.full_name ||
+    user?.user_metadata?.full_name ||
+    "Isticmaale";
 
-  if (!orders || orders.length === 0) {
-    container.innerHTML = `<p class="text-sm text-muted text-center p-4">Ma jiraan dalabyo laga helay qaybtan.</p>`;
+  $("account-name").textContent = user ? name : "Soo gal akoonkaaga";
+  $("account-email").textContent = user?.email || "Akown lama gelin";
+  $("account-role-label").textContent = user
+    ? (profile?.role === "provider" || profile?.role === "driver"
+      ? "Adeeg-bixiye"
+      : profile?.role === "admin"
+        ? "Maamule"
+        : "Macmiil")
+    : "";
+
+  $("logout-btn").classList.toggle("hidden", !user);
+  $("account-login-btn").classList.toggle("hidden", !!user);
+
+  if (user) {
+    $("customer-name").value = name === "Isticmaale" ? "" : name;
+    $("customer-phone").value = profile?.phone || "";
+  }
+}
+
+if (db) {
+  db.auth.onAuthStateChange((_event, newSession) => {
+    session = newSession;
+
+    // Defer database work until after the auth callback completes.
+    setTimeout(() => syncSession(), 0);
+  });
+
+  syncSession();
+} else {
+  notify("Supabase library ma furmin. Hubi internet-ka.");
+}
+
+/* Order form and GPS */
+
+function selectService(service) {
+  const normalized = String(service).toLowerCase();
+
+  if (!SERVICE_NAMES[normalized]) return;
+
+  $("service-type").value = normalized;
+  $("passengers-label").classList.toggle(
+    "hidden",
+    normalized === "delivery"
+  );
+  $("delivery-fields").classList.toggle(
+    "hidden",
+    normalized !== "delivery"
+  );
+
+  const fee = FEES[normalized];
+  $("order-fee").textContent =
+    `Macmiilka: ${money(fee.customer)} · Adeeg-bixiyaha: ${money(fee.provider)}`;
+
+  $("fee-explanation").textContent = normalized === "delivery"
+    ? "Delivery: macmiilku wuxuu bixiyaa $0.15, adeeg-bixiyuhuna $0.20."
+    : `Fee-ga adeeg-bixiyaha: ${money(fee.provider)}. Macmiilku fee ma bixinayo.`;
+
+  clearFeedback("order-feedback");
+  showView("order-view");
+}
+
+$("service-type").addEventListener("change", () => {
+  selectService($("service-type").value);
+});
+
+$("gps-btn").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    $("gps-message").textContent =
+      "GPS lama taageero. Goobta gacanta ku qor.";
     return;
   }
 
-  container.innerHTML = orders.map(ord => renderOrderCardHTML(ord)).join('');
-}
+  $("gps-btn").disabled = true;
+  $("gps-message").textContent = "GPS ayaa la raadinayaa...";
 
-function renderOrderCardHTML(ord) {
-  return `
-    <div class="order-card" onclick="openOrderDetailModal('${ord.id}')">
-      <div class="order-card-header">
-        <span class="order-num">#${ord.order_number || ord.id.slice(0, 8)}</span>
-        <span class="status-badge status-${ord.status}">${ord.status}</span>
-      </div>
-      <div class="order-route">
-        <div class="route-step">
-          <i class="fa-solid fa-circle text-accent"></i>
-          <span>${ord.pickup_address}</span>
-        </div>
-        <div class="route-step">
-          <i class="fa-solid fa-location-dot text-danger"></i>
-          <span>${ord.destination_address}</span>
-        </div>
-      </div>
-      <div class="flex justify-between items-center text-xs text-muted mt-2">
-        <span>${ord.service_type.toUpperCase()} • $${ord.provider_fee} Fee</span>
-        <span>${new Date(ord.created_at).toLocaleDateString()}</span>
-      </div>
-    </div>
-  `;
-}
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      gps.latitude = position.coords.latitude;
+      gps.longitude = position.coords.longitude;
 
-function renderDriverOrderCardHTML(ord) {
-  return `
-    <div class="order-card">
-      <div class="order-card-header">
-        <span class="order-num">#${ord.order_number || ord.id.slice(0, 8)}</span>
-        <span class="status-badge status-${ord.status}">${ord.status}</span>
-      </div>
-      <div class="order-route">
-        <div class="route-step">
-          <i class="fa-solid fa-circle text-accent"></i>
-          <span>${ord.pickup_address}</span>
-        </div>
-        <div class="route-step">
-          <i class="fa-solid fa-location-dot text-danger"></i>
-          <span>${ord.destination_address}</span>
-        </div>
-      </div>
-      <div class="mt-2 flex gap-2">
-        ${ord.status === 'new' ? `
-          <button class="btn btn-sm btn-primary w-full" onclick="promptDriverAcceptance('${ord.id}', '${ord.provider_fee}')">
-            Aqbal Dalabka (Fee: $${ord.provider_fee})
-          </button>
-        ` : `
-          <button class="btn btn-sm btn-primary w-full" onclick="openInAppChat('${ord.id}', '${ord.customer_name}')">
-            <i class="fa-solid fa-comments"></i> Chat Macmiilka
-          </button>
-        `}
-      </div>
-    </div>
-  `;
-}
+      $("gps-message").textContent =
+        `Goobta waa la helay (${gps.latitude.toFixed(5)}, ${gps.longitude.toFixed(5)}).`;
 
-// 11. IN-APP REALTIME CHAT ENGINE
-async function openInAppChat(orderId, peerName) {
-  appState.activeChatOrderId = orderId;
-  document.getElementById('chat-peer-name').textContent = peerName || "Macmiil/Darawal";
-  document.getElementById('chat-order-number').textContent = `Order #${orderId.slice(0, 8)}`;
-  document.getElementById('view-chat-modal').classList.remove('hidden');
+      if (!$("pickup").value.trim()) {
+        $("pickup").value = "Goobta GPS-kayga";
+      }
 
-  await loadChatMessages(orderId);
-  subscribeToOrderChatRealtime(orderId);
-}
+      $("gps-btn").disabled = false;
+    },
+    error => {
+      const messages = {
+        1: "GPS waa la diiday. Oggolow Location-ka ama gacanta ku qor.",
+        2: "Goobta lama helin. Hubi GPS-ka oo mar kale isku day.",
+        3: "GPS-ku waqti ayuu qaatay. Mar kale isku day."
+      };
 
-function closeChatModal() {
-  document.getElementById('view-chat-modal').classList.add('hidden');
-  appState.activeChatOrderId = null;
-  if (appState.chatRealtimeSub) {
-    supabaseClient.removeChannel(appState.chatRealtimeSub);
+      $("gps-message").textContent =
+        messages[error.code] || "GPS lama helin.";
+      $("gps-btn").disabled = false;
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 60000
+    }
+  );
+});
+
+$("order-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  clearFeedback("order-feedback");
+
+  if (!requireLogin() || !requireDatabase()) return;
+
+  const button = $("submit-order");
+  const service = $("service-type").value;
+  const scheduled = $("scheduled-at").value;
+
+  const payload = {
+    user_id: session.user.id,
+    service_type: service,
+    customer_name: $("customer-name").value.trim(),
+    customer_phone: $("customer-phone").value.trim(),
+    pickup_address: $("pickup").value.trim(),
+    destination_address: $("destination").value.trim(),
+    notes: [
+      service === "delivery"
+        ? `Nooca alaabta: ${$("delivery-item").value}`
+        : "",
+      $("notes").value.trim()
+    ].filter(Boolean).join("\n") || null,
+    passengers: service === "delivery"
+      ? null
+      : Number.parseInt($("passengers").value, 10) || 1,
+    pickup_latitude: gps.latitude,
+    pickup_longitude: gps.longitude
+  };
+
+  if (scheduled) {
+    const date = new Date(scheduled);
+
+    if (Number.isNaN(date.getTime()) || date <= new Date()) {
+      feedback(
+        "order-feedback",
+        "Waqtiga aad dooratay sax ma aha ama waa waqti hore.",
+        "error"
+      );
+      return;
+    }
+
+    payload.scheduled_at = date.toISOString();
   }
-}
 
-async function loadChatMessages(orderId) {
-  const { data: messages } = await supabaseClient
-    .from('order_messages')
-    .select('*')
-    .eq('order_id', orderId)
-    .order('created_at', { ascending: true });
-
-  const box = document.getElementById('chat-messages-box');
-  if (!messages || messages.length === 0) {
-    box.innerHTML = `<p class="text-xs text-muted text-center my-auto">Bilow wada hadalka tooska ah...</p>`;
+  if (!payload.customer_name || !payload.customer_phone ||
+      !payload.pickup_address || !payload.destination_address) {
+    feedback(
+      "order-feedback",
+      "Buuxi magaca, telefoonka iyo labada goobood.",
+      "error"
+    );
     return;
   }
 
-  box.innerHTML = messages.map(msg => {
-    const isMine = msg.sender_id === appState.user.id;
+  setBusy(button, true, "Waa la kaydinayaa...", "Dir dalabka →");
+
+  try {
+    const { data, error } = await db
+      .from("orders")
+      .insert(payload)
+      .select("id, service_type, status, created_at")
+      .single();
+
+    if (error) throw error;
+
+    feedback(
+      "order-feedback",
+      "Dalabka waa la kaydiyey. Waxaad ka arki kartaa qaybta Dalabyo.",
+      "success"
+    );
+
+    $("order-form").reset();
+    gps = { latitude: null, longitude: null };
+    $("gps-message").textContent = "Goobta gacanta ayaad sidoo kale u qori kartaa.";
+    selectService(service);
+
+    feedback(
+      "order-feedback",
+      `Dalabka waa la kaydiyey. Lambarka dalabka: ${data.id}.`,
+      "success"
+    );
+
+    await loadOrders();
+    showView("orders-view");
+    notify("Dalabkaaga waa la gudbiyey.");
+  } catch (error) {
+    console.error("Order insert:", error);
+
+    feedback(
+      "order-feedback",
+      `Dalabka lama kaydin: ${error.message || "Khalad ayaa dhacay."} Hubi columns-ka iyo RLS policies-ka Supabase.`,
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Dir dalabka →";
+  }
+});
+
+/* Customer order list */
+
+async function loadOrders() {
+  if (!requireLogin() || !requireDatabase() || loadingOrders) return;
+
+  loadingOrders = true;
+  $("orders-list").innerHTML =
+    '<p class="empty">Dalabyada ayaa la soo qaadanayaa...</p>';
+
+  try {
+    const { data, error } = await db
+      .from("orders")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+
+    orderCache = data || [];
+    renderOrders();
+  } catch (error) {
+    console.error("Load orders:", error);
+    $("orders-list").innerHTML =
+      `<p class="empty">${escapeHTML(error.message || "Dalabyada lama soo qaadan.")}</p>`;
+  } finally {
+    loadingOrders = false;
+  }
+}
+
+function renderOrders() {
+  if (!orderCache.length) {
+    $("orders-list").innerHTML =
+      '<p class="empty">Weli dalab ma lihid. Taabo Dalbo si aad u bilowdo.</p>';
+    return;
+  }
+
+  $("orders-list").innerHTML = orderCache.map(order => {
+    const status = String(order.status || "pending").toLowerCase();
+    const canChat = Boolean(order.driver_id) &&
+      !["cancelled", "rejected"].includes(status);
+
     return `
-      <div class="chat-bubble ${isMine ? 'mine' : 'peer'}">
-        <div>${msg.body}</div>
-        <div class="chat-time">${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-      </div>
+      <article class="order-card">
+        <div class="card-top">
+          <div>
+            <h3>${escapeHTML(serviceName(order.service_type))}</h3>
+            <small>Dalab #${escapeHTML(order.id)}</small>
+          </div>
+          <span class="status-pill">${escapeHTML(statusName(status))}</span>
+        </div>
+        <p><b>Laga qaadayo:</b> ${escapeHTML(order.pickup_address)}</p>
+        <p><b>Loo socdo:</b> ${escapeHTML(order.destination_address)}</p>
+        <p><b>Taariikh:</b> ${escapeHTML(
+          order.created_at ? new Date(order.created_at).toLocaleString() : "—"
+        )}</p>
+        <div class="card-actions">
+          ${canChat
+            ? `<button class="primary-action" data-chat-order="${escapeHTML(order.id)}">La hadal darawalka</button>`
+            : `<button data-chat-order="${escapeHTML(order.id)}">Fur chat-ka</button>`}
+          ${order.pickup_latitude != null && order.pickup_longitude != null
+            ? `<button data-map-order="${escapeHTML(order.id)}">Eeg goobta</button>`
+            : ""}
+        </div>
+      </article>
     `;
-  }).join('');
+  }).join("");
 
-  box.scrollTop = box.scrollHeight;
-}
-
-async function sendChatMessage() {
-  const input = document.getElementById('chat-input-field');
-  const body = input.value.trim();
-  if (!body || !appState.activeChatOrderId) return;
-
-  input.value = '';
-
-  const { error } = await supabaseClient.from('order_messages').insert({
-    order_id: appState.activeChatOrderId,
-    sender_id: appState.user.id,
-    body: body
+  $("orders-list").querySelectorAll("[data-chat-order]").forEach(button => {
+    button.addEventListener("click", () => openOrderChat(button.dataset.chatOrder));
   });
 
+  $("orders-list").querySelectorAll("[data-map-order]").forEach(button => {
+    button.addEventListener("click", () => {
+      const order = orderCache.find(
+        item => String(item.id) === button.dataset.mapOrder
+      );
+      if (!order) return;
+
+      const url = `https://maps.google.com/?q=${order.pickup_latitude},${order.pickup_longitude}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+  });
+}
+
+/* In-app chat */
+
+async function openOrderChat(orderId) {
+  if (!requireLogin() || !requireDatabase()) return;
+
+  const order = orderCache.find(
+    item => String(item.id) === String(orderId)
+  );
+
+  if (!order) {
+    notify("Dalabkan lama helin. Cusboonaysii liiska.");
+    return;
+  }
+
+  currentChatOrder = order;
+  currentChatRecipient = null;
+
+  $("chat-panel").classList.remove("hidden");
+  $("chat-title").textContent =
+    `${serviceName(order.service_type)} · #${order.id}`;
+  $("chat-list").innerHTML =
+    '<p class="empty">Fariimaha ayaa la soo qaadanayaa...</p>';
+
+  /*
+   * This app expects orders.driver_id to contain the driver's
+   * UUID from auth.users. If your schema uses a different mapping,
+   * adjust this mapping and the corresponding RLS policy.
+   */
+  if (order.driver_id && order.user_id === session.user.id) {
+    currentChatRecipient = order.driver_id;
+  }
+
+  await loadChatMessages();
+
+  if (chatChannel) {
+    await db.removeChannel(chatChannel);
+    chatChannel = null;
+  }
+
+  chatChannel = db
+    .channel(`iga-chat-${order.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "order_messages",
+        filter: `order_id=eq.${order.id}`
+      },
+      () => loadChatMessages()
+    )
+    .subscribe();
+
+  $("chat-panel").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+async function loadChatMessages() {
+  if (!currentChatOrder || !session) return;
+
+  try {
+    const { data, error } = await db
+      .from("order_messages")
+      .select("id, order_id, sender_id, recipient_id, body, created_at")
+      .eq("order_id", currentChatOrder.id)
+      .order("created_at", { ascending: true })
+      .limit(200);
+
+    if (error) throw error;
+
+    if (!data?.length) {
+      $("chat-list").innerHTML =
+        '<p class="empty">Weli fariin ma jirto. Haddii darawal loo xilsaaray, waxaad halkan ku wada hadli kartaan.</p>';
+      return;
+    }
+
+    $("chat-list").innerHTML = data.map(message => {
+      const mine = message.sender_id === session.user.id;
+
+      return `
+        <div class="chat-message ${mine ? "mine" : ""}">
+          <p>${escapeHTML(message.body)}</p>
+          <small>${mine ? "Adiga" : "Isticmaale kale"} · ${escapeHTML(
+            message.created_at
+              ? new Date(message.created_at).toLocaleString()
+              : ""
+          )}</small>
+        </div>
+      `;
+    }).join("");
+
+    $("chat-list").scrollTop = $("chat-list").scrollHeight;
+  } catch (error) {
+    console.error("Load chat:", error);
+    $("chat-list").innerHTML =
+      `<p class="empty">Fariimaha lama soo qaadan: ${escapeHTML(error.message)}</p>`;
+  }
+}
+
+$("chat-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  clearFeedback("chat-feedback");
+
+  if (!requireLogin() || !requireDatabase() || !currentChatOrder) return;
+
+  const body = $("chat-input").value.trim();
+  if (!body) return;
+
+  /*
+   * A customer can message only the assigned driver.
+   * A driver must message the customer who owns the order.
+   * Database RLS must enforce this independently.
+   */
+  let recipientId = currentChatRecipient;
+
+  if (currentChatOrder.driver_id === session.user.id) {
+    recipientId = currentChatOrder.user_id;
+  }
+
+  if (!recipientId) {
+    feedback(
+      "chat-feedback",
+      "Weli darawal looma xilsaarin dalabkan. Chat-ku wuxuu shaqaynayaa marka labada dhinac la isku xiro.",
+      "error"
+    );
+    return;
+  }
+
+  const button = $("send-chat");
+  setBusy(button, true, "Waa la dirayaa...", "Dir fariinta →");
+
+  try {
+    const { error } = await db.from("order_messages").insert({
+      order_id: currentChatOrder.id,
+      sender_id: session.user.id,
+      recipient_id: recipientId,
+      body
+    });
+
+    if (error) throw error;
+
+    $("chat-input").value = "";
+    feedback("chat-feedback", "Fariinta waa la diray.", "success");
+    await loadChatMessages();
+  } catch (error) {
+    console.error("Send chat:", error);
+    feedback(
+      "chat-feedback",
+      `Fariinta lama dirin: ${error.message || "Khalad ayaa dhacay."} Hubi RLS policies-ka iyo realtime settings-ka.`,
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Dir fariinta →";
+  }
+});
+
+$("close-chat").addEventListener("click", async () => {
+  $("chat-panel").classList.add("hidden");
+  currentChatOrder = null;
+  currentChatRecipient = null;
+
+  if (chatChannel && db) {
+    await db.removeChannel(chatChannel);
+    chatChannel = null;
+  }
+});
+
+/* Notifications */
+
+async function loadNotificationCount() {
+  if (!session || !db) return;
+
+  const { count, error } = await db
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", session.user.id)
+    .is("read_at", null);
+
   if (error) {
-    showToast("Fariinta lama diri karin.", "danger");
-  }
-}
-
-function handleChatKeyPress(e) {
-  if (e.key === 'Enter') sendChatMessage();
-}
-
-function subscribeToOrderChatRealtime(orderId) {
-  if (appState.chatRealtimeSub) {
-    supabaseClient.removeChannel(appState.chatRealtimeSub);
+    console.warn("Notification count:", error.message);
+    return;
   }
 
-  appState.chatRealtimeSub = supabaseClient
-    .channel(`public:order_messages:order_id=eq.${orderId}`)
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'order_messages', filter: `order_id=eq.${orderId}` }, payload => {
-      loadChatMessages(orderId);
-    })
+  const badge = $("notification-count");
+  badge.textContent = String(count || 0);
+  badge.classList.toggle("hidden", !count);
+}
+
+async function loadNotifications() {
+  if (!requireLogin() || !requireDatabase()) return;
+
+  $("notifications-list").innerHTML =
+    '<p class="empty">Ogeysiisyada ayaa la soo qaadanayaa...</p>';
+
+  const { data, error } = await db
+    .from("notifications")
+    .select("id, title, body, notification_type, order_id, read_at, created_at")
+    .eq("user_id", session.user.id)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    $("notifications-list").innerHTML =
+      `<p class="empty">${escapeHTML(error.message)}</p>`;
+    return;
+  }
+
+  if (!data?.length) {
+    $("notifications-list").innerHTML =
+      '<p class="empty">Weli ogeysiis ma jiro.</p>';
+    return;
+  }
+
+  $("notifications-list").innerHTML = data.map(item => `
+    <article class="notification-card">
+      <div class="card-top">
+        <h3>${escapeHTML(item.title)}</h3>
+        <span class="status-pill">${item.read_at ? "La akhriyey" : "Cusub"}</span>
+      </div>
+      <p>${escapeHTML(item.body || "")}</p>
+      <small class="muted">${escapeHTML(
+        item.created_at ? new Date(item.created_at).toLocaleString() : ""
+      )}</small>
+    </article>
+  `).join("");
+
+  await loadNotificationCount();
+}
+
+$("mark-notifications-read").addEventListener("click", async () => {
+  if (!requireLogin() || !requireDatabase()) return;
+
+  const { error } = await db
+    .from("notifications")
+    .update({ read_at: new Date().toISOString() })
+    .eq("user_id", session.user.id)
+    .is("read_at", null);
+
+  if (error) {
+    notify(`Ogeysiisyada lama cusboonaysiin: ${error.message}`);
+    return;
+  }
+
+  await loadNotifications();
+  notify("Ogeysiisyada waa la akhriyey.");
+});
+
+function subscribeToNotifications() {
+  if (!db || !session) return;
+
+  if (notificationChannel) {
+    db.removeChannel(notificationChannel);
+    notificationChannel = null;
+  }
+
+  notificationChannel = db
+    .channel(`iga-notifications-${session.user.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${session.user.id}`
+      },
+      () => {
+        loadNotificationCount();
+        notify("Ogeysiis cusub ayaa kuu yimid.");
+      }
+    )
     .subscribe();
 }
 
-// 12. COMMUNITY SOCIAL FEED ENGINE
-async function renderCommunityFeed() {
-  const container = document.getElementById('community-feed');
-  const { data: posts, error } = await supabaseClient
-    .from('community_posts')
-    .select('*')
-    .order('created_at', { ascending: false });
+/* Driver section */
 
-  if (error || !posts || posts.length === 0) {
-    container.innerHTML = `<p class="text-sm text-muted text-center p-4">Ma jiraan boosasho bulsho oo dhowaan la soo dhigay.</p>`;
+async function loadDriverArea() {
+  if (!requireLogin() || !requireDatabase()) return;
+
+  $("driver-status").textContent = "Xogta adeeg-bixiyaha ayaa la hubinayaa...";
+  $("available-orders").innerHTML =
+    '<p class="empty">Dalabyada ayaa la soo qaadanayaa...</p>';
+
+  try {
+    const { data: driver, error: driverError } = await db
+      .from("drivers")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    if (driverError) throw driverError;
+
+    driverCache = driver;
+
+    if (!driver) {
+      $("driver-status").textContent =
+        "Akoonkaaga darawal lama helin ama weli lama diiwaangelin. La xiriir maamulka IGA KEEN si laguu ansixiyo.";
+      $("available-orders").innerHTML =
+        '<p class="empty">Ma jiraan dalabyo kuu diyaar ah ilaa akoonka darawalka la xaqiijiyo.</p>';
+      return;
+    }
+
+    const approved = driver.is_approved === true ||
+      driver.status === "approved";
+
+    if (!approved) {
+      $("driver-status").textContent =
+        "Akoonka darawalka weli lama ansixin. Ma aqbali kartid dalabyo ilaa maamulka ku ansixiyo.";
+      $("available-orders").innerHTML =
+        '<p class="empty">Sug ansixinta maamulka.</p>';
+      return;
+    }
+
+    $("driver-status").textContent =
+      `Akoonka darawalka waa la aqbalay. Adeegga: ${serviceName(
+        driver.service_type || "taxi"
+      )}.`;
+
+    await loadAvailableOrders(driver);
+  } catch (error) {
+    console.error("Driver area:", error);
+    $("driver-status").textContent =
+      `Qaybta darawalka lama soo qaadan: ${error.message}. Hubi schema-ga drivers iyo RLS.`;
+  }
+}
+
+async function loadAvailableOrders(driver) {
+  const { data, error } = await db
+    .from("orders")
+    .select("*")
+    .in("status", ["pending", "new"])
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    $("available-orders").innerHTML =
+      `<p class="empty">${escapeHTML(error.message)}</p>`;
     return;
   }
 
-  container.innerHTML = posts.map(post => `
-    <div class="post-card">
-      <div class="post-author">
-        <div class="post-author-img">${(post.author_name || 'U')[0]}</div>
-        <div>
-          <h5 class="font-bold text-sm">${post.author_name || 'Xubinta Bulshada'}</h5>
-          <span class="text-xs text-muted">${new Date(post.created_at).toLocaleDateString()}</span>
-        </div>
+  const service = String(driver.service_type || "").toLowerCase();
+
+  const filtered = (data || []).filter(order =>
+    String(order.service_type || "").toLowerCase() === service
+  );
+
+  if (!filtered.length) {
+    $("available-orders").innerHTML =
+      '<p class="empty">Weli ma jiraan dalabyo ku habboon adeeggaaga.</p>';
+    return;
+  }
+
+  $("available-orders").innerHTML = filtered.map(order => `
+    <article class="order-card">
+      <div class="card-top">
+        <h3>${escapeHTML(serviceName(order.service_type))}</h3>
+        <span class="status-pill">${escapeHTML(statusName(order.status))}</span>
       </div>
-      <div class="post-body">${post.body}</div>
-      ${post.image_url ? `<img src="${post.image_url}" class="post-media" alt="Post media" />` : ''}
-      <div class="post-actions">
-        <button class="post-action-btn" onclick="togglePostLike('${post.id}')">
-          <i class="fa-solid fa-heart"></i>
-          <span>${post.likes_count || 0} Likes</span>
+      <p><b>Dalab:</b> #${escapeHTML(order.id)}</p>
+      <p><b>Telefoon:</b> ${escapeHTML(order.customer_phone || "—")}</p>
+      <p><b>Laga qaadayo:</b> ${escapeHTML(order.pickup_address)}</p>
+      <p><b>Loo socdo:</b> ${escapeHTML(order.destination_address)}</p>
+      <div class="card-actions">
+        <button class="primary-action" data-accept-order="${escapeHTML(order.id)}">
+          Codso aqbalidda
         </button>
       </div>
-    </div>
-  `).join('');
-}
+    </article>
+  `).join("");
 
-function openNewPostModal() {
-  document.getElementById('modal-new-post').classList.remove('hidden');
-}
-
-async function handleNewPostSubmit(e) {
-  e.preventDefault();
-  const body = document.getElementById('post-body-text').value;
-  const imageUrl = document.getElementById('post-image-url').value;
-
-  const { error } = await supabaseClient.from('community_posts').insert({
-    user_id: appState.user.id,
-    author_name: appState.user.email.split('@')[0],
-    body: body,
-    image_url: imageUrl || null
+  $("available-orders").querySelectorAll("[data-accept-order]").forEach(button => {
+    button.addEventListener("click", async () => {
+      await requestOrderAcceptance(button.dataset.acceptOrder);
+    });
   });
+}
 
-  if (error) {
-    showToast("Post-ka lama daabuci karin: " + error.message, "danger");
-  } else {
-    showToast("Post-kaaga waa la faafiyay!");
-    closeModal('modal-new-post');
-    renderCommunityFeed();
+async function requestOrderAcceptance(orderId) {
+  if (!driverCache || !session) return;
+
+  /*
+   * This is a database RPC call, not a direct status update.
+   * The server must verify approval, fee payment, and availability.
+   * The exact RPC argument names must match your deployed SQL function.
+   */
+  const button = document.querySelector(
+    `[data-accept-order="${CSS.escape(String(orderId))}"]`
+  );
+
+  if (button) button.disabled = true;
+
+  try {
+    const { error } = await db.rpc("igakeen_accept_order", {
+      p_order_id: orderId
+    });
+
+    if (error) throw error;
+
+    notify("Codsiga aqbalidda waa la diray.");
+    await loadDriverArea();
+  } catch (error) {
+    console.error("Accept order RPC:", error);
+    notify(
+      `Dalabka lama aqbalin: ${error.message}. Hubi magaca iyo parameters-ka RPC-ga igakeen_accept_order.`
+    );
+    if (button) button.disabled = false;
   }
 }
 
-// 13. NOTIFICATIONS ENGINE
-async function renderNotificationsList() {
-  const container = document.getElementById('notifications-list');
-  const { data: notifs } = await supabaseClient
-    .from('notifications')
-    .select('*')
-    .eq('user_id', appState.user.id)
-    .order('created_at', { ascending: false });
+/* Driver fee evidence submission */
 
-  if (!notifs || notifs.length === 0) {
-    container.innerHTML = `<p class="text-sm text-muted text-center p-4">Ma haysatid wax ogeysiis ah.</p>`;
+$("fee-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  clearFeedback("fee-feedback");
+
+  if (!requireLogin() || !requireDatabase()) return;
+
+  if (!driverCache?.id) {
+    feedback(
+      "fee-feedback",
+      "Akoonka darawalka lama helin ama lama ansixin.",
+      "error"
+    );
     return;
   }
 
-  container.innerHTML = notifs.map(n => `
-    <div class="settings-item">
-      <div class="settings-label">
-        <i class="fa-solid fa-bell text-accent"></i>
-        <div>
-          <div class="font-bold text-sm">${n.title || 'Ogeysiis'}</div>
-          <div class="text-xs text-muted">${n.message || n.body}</div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
+  const orderId = $("fee-order").value;
+  const reference = $("fee-reference").value.trim();
+  const note = $("fee-note").value.trim();
 
-// 14. ADMIN DASHBOARD CONTROLLER
-async function renderAdminDashboard() {
-  if (appState.role !== 'admin') {
-    showToast("Access Denied.", "danger");
-    switchNav('home');
+  if (!orderId || !reference) {
+    feedback(
+      "fee-feedback",
+      "Dooro dalab oo geli tixraaca lacag-bixinta.",
+      "error"
+    );
     return;
   }
 
-  // Fetch Summary Metrics
-  const { count: totalOrders } = await supabaseClient.from('orders').select('*', { count: 'exact', head: true });
-  const { count: pendingDrivers } = await supabaseClient.from('drivers').select('*', { count: 'exact', head: true }).eq('approval_status', 'pending');
-  const { count: pendingFees } = await supabaseClient.from('driver_fee_payments').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+  const order = orderCache.find(
+    item => String(item.id) === String(orderId)
+  );
 
-  document.getElementById('adm-stat-total-orders').textContent = totalOrders || 0;
-  document.getElementById('adm-stat-pending-drivers').textContent = pendingDrivers || 0;
-  document.getElementById('adm-stat-pending-fees').textContent = pendingFees || 0;
+  const fee = FEES[String(order?.service_type || "").toLowerCase()];
 
-  switchAdminTab('drivers');
-}
-
-async function switchAdminTab(tab) {
-  document.querySelectorAll('.scrollable-tabs .segment-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(`adm-tab-${tab}`).classList.add('active');
-
-  const content = document.getElementById('admin-tab-content');
-
-  if (tab === 'drivers') {
-    const { data: pending } = await supabaseClient.from('drivers').select('*').eq('approval_status', 'pending');
-    if (!pending || pending.length === 0) {
-      content.innerHTML = `<p class="text-sm text-muted text-center p-3">Ma jiraan darawallo ka dhowrayo ansixin.</p>`;
-      return;
-    }
-    content.innerHTML = pending.map(drv => `
-      <div class="settings-item mb-2">
-        <div>
-          <div class="font-bold">${drv.full_name}</div>
-          <div class="text-xs text-muted">${drv.service_type} • ${drv.phone}</div>
-        </div>
-        <div class="flex gap-1">
-          <button class="btn btn-sm btn-primary" onclick="adminApproveDriver('${drv.id}', 'approved')">Ansixi</button>
-          <button class="btn btn-sm btn-danger" onclick="adminApproveDriver('${drv.id}', 'rejected')">Diid</button>
-        </div>
-      </div>
-    `).join('');
-  } else if (tab === 'fees') {
-    const { data: fees } = await supabaseClient.from('driver_fee_payments').select('*').eq('status', 'pending');
-    if (!fees || fees.length === 0) {
-      content.innerHTML = `<p class="text-sm text-muted text-center p-3">Ma jiraan lacag bixinno fee oo la xaqiijinayo.</p>`;
-      return;
-    }
-    content.innerHTML = fees.map(f => `
-      <div class="settings-item mb-2">
-        <div>
-          <div class="font-bold">Fee: $${f.amount}</div>
-          <div class="text-xs text-muted">Ref: ${f.payment_reference}</div>
-        </div>
-        <button class="btn btn-sm btn-primary" onclick="adminConfirmFee('${f.id}')">Xaqiiji Fee-ga</button>
-      </div>
-    `).join('');
+  if (!fee) {
+    feedback(
+      "fee-feedback",
+      "Fee-ga dalabkan lama xaqiijin karo. Cusboonaysii dalabyada.",
+      "error"
+    );
+    return;
   }
-}
 
-async function adminApproveDriver(driverId, status) {
-  const { error } = await supabaseClient
-    .from('drivers')
-    .update({ approval_status: status })
-    .eq('id', driverId);
+  const button = $("fee-submit");
+  setBusy(button, true, "Waa la gudbinayaa...", "Gudbi caddeynta →");
 
-  if (!error) {
-    showToast(`Darawalka status-kiisa waxaa laga dhigay: ${status}`);
-    renderAdminDashboard();
+  try {
+    const { error } = await db.from("driver_fee_payments").insert({
+      order_id: orderId,
+      driver_id: driverCache.id,
+      submitted_by: session.user.id,
+      amount: fee.provider,
+      currency: "USD",
+      payment_reference: reference,
+      payment_note: note || null,
+      status: "pending"
+    });
+
+    if (error) throw error;
+
+    $("fee-form").reset();
+    feedback(
+      "fee-feedback",
+      "Caddeynta waa la gudbiyey. Maamulka ayaa hubinaya; tani macnaheedu ma aha in lacag-bixinta la xaqiijiyey.",
+      "success"
+    );
+  } catch (error) {
+    console.error("Fee submission:", error);
+    feedback(
+      "fee-feedback",
+      `Caddeynta lama gudbin: ${error.message}. Hubi schema-ga iyo RLS policies-ka driver_fee_payments.`,
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Gudbi caddeynta →";
   }
+});
+
+/* Realtime cleanup */
+
+function unsubscribeRealtime() {
+  if (!db) return;
+
+  [chatChannel, orderChannel, notificationChannel]
+    .filter(Boolean)
+    .forEach(channel => db.removeChannel(channel));
+
+  chatChannel = null;
+  orderChannel = null;
+  notificationChannel = null;
 }
 
-async function adminConfirmFee(paymentId) {
-  const { error } = await supabaseClient
-    .from('driver_fee_payments')
-    .update({ status: 'confirmed' })
-    .eq('id', paymentId);
+window.addEventListener("online", () => {
+  notify("Internet-ku wuu soo noqday.");
+});
 
-  if (!error) {
-    showToast("Fee payment confirmed!");
-    renderAdminDashboard();
-  }
-}
+window.addEventListener("offline", () => {
+  notify("Internet ma jiro. Hubi isku xirkaaga.");
+});
 
-// 15. GLOBAL REALTIME SUBSCRIPTIONS
-function setupRealtimeSubscriptions() {
-  supabaseClient
-    .channel('public:notifications')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, payload => {
-      if (payload.new.user_id === appState.user.id) {
-        showToast("Ogeysiis cusub: " + payload.new.title);
-      }
-    })
-    .subscribe();
-}
+window.addEventListener("beforeunload", () => {
+  unsubscribeRealtime();
+});
 
-// Utility Modal Closers
-function closeModal(modalId) {
-  document.getElementById(modalId).classList.add('hidden');
-}
+/* Initial state */
 
-function openResetModal() {
-  document.getElementById('modal-reset-password').classList.remove('hidden');
-}
-
-async function handlePasswordResetSubmit(e) {
-  e.preventDefault();
-  const email = document.getElementById('reset-pwd-email').value;
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
-  if (error) {
-    showToast("Lama diri karin link-ga dib u habaynta.", "danger");
-  } else {
-    showToast("Link-ga dib u habaynta waxaa loo diray email-kaaga.");
-    closeModal('modal-reset-password');
-  }
-}
+updateAuthMode();
+selectService("taxi");
