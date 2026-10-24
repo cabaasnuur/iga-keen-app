@@ -7,6 +7,7 @@ const SUPABASE_URL = 'https://zywwypqddnvslgqztnep.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8';
 
 const ADMIN_UID = '85282aac-7813-442f-a51b-6d43e3eccf1e';
+const FALLBACK_UUID = '00000000-0000-0000-0000-000000000000'; // Ilaaliye haddii user.id maqan yahay
 
 const { createClient } = window.supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
@@ -38,7 +39,8 @@ const state = {
   chatOrder: null,
   chatMessages: [],
   authMode: 'login',
-  recoveryMode: false
+  recoveryMode: false,
+  currentOrder: null
 };
 
 /* =========================================================
@@ -46,463 +48,158 @@ const state = {
    ========================================================= */
 const I18N = {
   so: {
-    'auth.tagline': 'Adeeggaaga meel kasta.',
-    'auth.login': 'Gelid',
-    'auth.signup': 'Diiwaangelin',
-    'auth.email': 'Email',
-    'auth.password': 'Password',
-    'auth.forgot': 'Password ma illoowday?',
-    'auth.fullName': 'Magaca oo buuxa',
-    'auth.phone': 'Telefoon',
-    'auth.iam': 'Macmiil mise Darawal?',
-    'role.customer': 'Macmiil',
-    'role.driver': 'Darawal',
-    'driver.serviceType': 'Adeegga',
-    'driver.vehicle': 'Faahfaahinta gaariga',
-    'driver.pendingHint': 'Darawallada cusub waxaa ansixiya maamulka ka hor inta aanay dalabyo qaadan.',
-    'nav.home': 'Bogga',
-    'nav.orders': 'Dalabyo',
-    'nav.community': 'Bulsho',
-    'nav.notifications': 'Ogeysiis',
-    'nav.account': 'Akoon',
-    'nav.chat': 'Sheeko',
-    'nav.dashboard': 'Dashboard',
-    'nav.drivers': 'Darawalo',
-    'nav.fees': 'Fees',
-    'nav.settings': 'Dejinta',
-    'home.heroTitle': 'Maxaad u baahan tahay?',
-    'home.heroSub': 'Dooro adeegga, waxaan ku xiriirinaynaa darawal u dhow.',
-    'home.services': 'Adeegyada',
-    'home.recent': 'Dalabyadaada ugu dambeeyay',
-    'home.viewAll': 'Dhammaan',
-    'service.taxi': 'Taxi',
-    'service.bajaaj': 'Bajaaj',
-    'service.delivery': 'Delivery',
-    'service.safar': 'Safar',
-    'service.taxi.desc': 'Safar degdeg ah oo ammaan ah',
-    'service.bajaaj.desc': 'Safar gaaban oo jaban',
-    'service.delivery.desc': 'Dir alaab si ammaan ah',
-    'service.safar.desc': 'Safar dheer oo la qorsheeyay',
-    'common.loading': 'Waa la soo dejinayaa...',
-    'common.error': 'Khalad ayaa dhacay. Fadlan mar kale isku day.',
-    'common.retry': 'Isku day',
-    'common.cancel': 'Jooji',
-    'common.save': 'Kaydi',
-    'common.send': 'Dir',
-    'common.close': 'Xir',
-    'common.confirm': 'Xaqiiji',
-    'common.reject': 'Diid',
-    'common.back': 'Dib u noqo',
-    'common.empty': 'Wax ma jiraan',
-    'common.all': 'Dhammaan',
-    'common.active': 'Firfircoon',
-    'common.completed': 'Dhammaaday',
-    'common.cancelled': 'La joojiyay',
-    'common.new': 'Cusub',
-    'common.online': 'Online',
-    'common.offline': 'Offline',
-    'common.approved': 'La ansixiyay',
-    'common.pending': 'Sugitaan',
-    'common.rejected': 'La diiday',
-    'common.unread': 'Aan la akhrin',
-    'common.read': 'La akhriyay',
-    'order.create': 'Dalab samee',
-    'order.pickup': 'Goobta qaadista',
-    'order.destination': 'Goobta gaadhista',
-    'order.departure': 'Goobta bixista',
-    'order.phone': 'Telefoon',
-    'order.passengers': 'Tirada rakaabka',
-    'order.notes': 'Faahfaahin dheeraad ah',
-    'order.scheduled': 'Waqtiga safarka',
-    'order.receiver': 'Qaataha / Xiriirka',
-    'order.submit': 'Dir dalabka',
-    'order.detail': 'Faahfaahinta dalabka',
-    'order.chat': 'La sheekee darawalka',
-    'order.accept': 'Aqbal dalabka',
-    'order.feePay': 'Fee bixi',
-    'order.feeRequired': 'Fee loo baahan yahay',
-    'order.feeSubmitted': 'Fee la gudbiyay — sugitaan maamul',
-    'order.feeConfirmed': 'Fee la xaqiijiyay',
-    'order.noDriver': 'Weli darawal lama xiriirin',
-    'order.status': 'Xaaladda',
-    'order.orderNumber': 'Lambarka dalabka',
-    'location.current': 'Isticmaal goobta hadda',
-    'location.locating': 'Goobta waa la raadinayaa...',
-    'location.denied': 'Goobta lama helin. Geli cinwaanka gacanta.',
-    'location.manual': 'Geli cinwaanka gacanta',
-    'driver.dashboard': 'Dashboard-ka Darawalka',
-    'driver.status': 'Xaaladda darawalka',
-    'driver.available': 'Dalabyo la heli karo',
-    'driver.assigned': 'Dalabyada lagu qoondeeyay',
-    'driver.completed': 'Shaqooyin dhammaaday',
-    'driver.feeStatus': 'Xaaladda fee',
-    'driver.becomeOnline': 'Noqo Online',
-    'driver.becomeOffline': 'Noqo Offline',
-    'driver.pendingMsg': 'Diiwaangelintaada waa la sugayaa. Maamulka ayaa ansixin doona.',
-    'driver.rejectedMsg': 'Diiwaangelintaada waa la diiday. La xiriir maamulka.',
-    'driver.feeModal': 'Gudbi lacagta fee',
-    'driver.reference': 'Tixraaca lacagta',
-    'driver.paymentNote': 'Faahfaahin lacag',
-    'admin.overview': 'Guudmar',
-    'admin.orders': 'Dalabyo',
-    'admin.drivers': 'Darawalo',
-    'admin.fees': 'Fee Payments',
-    'admin.customers': 'Macaamiil',
-    'admin.community': 'Bulsho',
-    'admin.notifications': 'Ogeysiis',
-    'admin.serviceFees': 'Adeeg Fees',
-    'admin.settings': 'Dejinta',
-    'admin.pendingDrivers': 'Darawalo sugitaan',
-    'admin.pendingFees': 'Fee sugitaan',
-    'admin.totalOrders': 'Dalabyo wadarta',
-    'admin.newOrders': 'Dalabyo cusub',
-    'admin.activeOrders': 'Dalabyo firfircoon',
-    'admin.completedOrders': 'Dalabyo dhammaaday',
-    'admin.approvedDrivers': 'Darawalo la ansixiyay',
-    'admin.customersCount': 'Macaamiil',
-    'admin.approve': 'Ansixi',
-    'admin.reject': 'Diid',
-    'admin.confirmFee': 'Xaqiiji fee',
-    'admin.rejectFee': 'Diid fee',
-    'admin.publishNotice': 'Daabac ogeysiis',
-    'admin.audience': 'Dadka la gaarsiinayo',
-    'admin.audienceAll': 'Dhammaan isticmaalayaasha',
-    'admin.audienceCustomers': 'Macaamiisha kaliya',
-    'admin.audienceDrivers': 'Darawallada la ansixiyay',
-    'community.newPost': 'Qor wax cusub',
-    'community.post': 'Daabac',
-    'community.like': 'Jeclaado',
-    'community.comment': 'Faallo',
-    'community.writeComment': 'Qor faallo...',
-    'community.noPosts': 'Weli wax post ah ma jiraan.',
-    'notif.title': 'Ogeysiisyada',
-    'notif.markAll': 'Calaamadee dhammaan',
-    'account.profile': 'Akoonka',
-    'account.edit': 'Wax ka beddel',
-    'account.logout': 'Ka bax',
-    'account.language': 'Luqadda',
-    'account.theme': 'Muuqaalka',
-    'account.light': 'Iftiin',
-    'account.dark': 'Mugdi',
-    'account.saved': 'Waa la kaydiyay',
-    'auth.resetTitle': 'Dib u dejinta password',
-    'auth.resetSend': 'Dir linkiga',
-    'auth.newPassword': 'Password cusub',
-    'auth.updatePassword': 'Cusboonaysii password',
-    'auth.checkEmail': 'Hubi emailkaaga si aad u xaqiijiso akoonka.',
-    'auth.welcome': 'Ku soo dhawoow',
-    'error.generic': 'Dalabka lama dhammaystirin. Fadlan mar kale isku day.',
-    'error.network': 'Internet connection-ka waa go\'an yahay.',
-    'error.auth': 'Email ama password khaldan.',
-    'error.permission': 'Ma haysato fasax ku filan.',
-    'offline': 'Internet connection-ka waa go\'an yahay.',
-    'online': 'Connection-ka waa soo noqday.'
+    'auth.tagline': 'Adeeggaaga meel kasta.', 'auth.login': 'Gelid', 'auth.signup': 'Diiwaangelin',
+    'auth.email': 'Email', 'auth.password': 'Password', 'auth.forgot': 'Password ma illoowday?',
+    'auth.fullName': 'Magaca oo buuxa', 'auth.phone': 'Telefoon', 'auth.iam': 'Macmiil mise Darawal?',
+    'role.customer': 'Macmiil', 'role.driver': 'Darawal', 'driver.serviceType': 'Adeegga',
+    'driver.vehicle': 'Faahfaahinta gaariga', 'driver.pendingHint': 'Darawallada cusub waxaa ansixiya maamulka ka hor inta aanay dalabyo qaadan.',
+    'nav.home': 'Bogga', 'nav.orders': 'Dalabyo', 'nav.community': 'Bulsho', 'nav.notifications': 'Ogeysiis',
+    'nav.account': 'Akoon', 'nav.chat': 'Sheeko', 'nav.dashboard': 'Dashboard', 'nav.drivers': 'Darawalo',
+    'nav.fees': 'Fees', 'nav.settings': 'Dejinta', 'home.heroTitle': 'Maxaad u baahan tahay?',
+    'home.heroSub': 'Dooro adeegga, waxaan ku xiriirinaynaa darawal u dhow.', 'home.services': 'Adeegyada',
+    'home.recent': 'Dalabyadaada ugu dambeeyay', 'home.viewAll': 'Dhammaan', 'service.taxi': 'Taxi',
+    'service.bajaaj': 'Bajaaj', 'service.delivery': 'Delivery', 'service.safar': 'Safar',
+    'service.taxi.desc': 'Safar degdeg ah oo ammaan ah', 'service.bajaaj.desc': 'Safar gaaban oo jaban',
+    'service.delivery.desc': 'Dir alaab si ammaan ah', 'service.safar.desc': 'Safar dheer oo la qorsheeyay',
+    'common.loading': 'Waa la soo dejinayaa...', 'common.error': 'Khalad ayaa dhacay. Fadlan mar kale isku day.',
+    'common.retry': 'Isku day', 'common.cancel': 'Jooji', 'common.save': 'Kaydi', 'common.send': 'Dir',
+    'common.close': 'Xir', 'common.confirm': 'Xaqiiji', 'common.reject': 'Diid', 'common.back': 'Dib u noqo',
+    'common.empty': 'Wax ma jiraan', 'common.all': 'Dhammaan', 'common.active': 'Firfircoon',
+    'common.completed': 'Dhammaaday', 'common.cancelled': 'La joojiyay', 'common.new': 'Cusub',
+    'common.online': 'Online', 'common.offline': 'Offline', 'common.approved': 'La ansixiyay',
+    'common.pending': 'Sugitaan', 'common.rejected': 'La diiday', 'common.unread': 'Aan la akhrin',
+    'common.read': 'La akhriyay', 'order.create': 'Dalab samee', 'order.pickup': 'Goobta qaadista',
+    'order.destination': 'Goobta gaadhista', 'order.departure': 'Goobta bixista', 'order.phone': 'Telefoon',
+    'order.passengers': 'Tirada rakaabka', 'order.notes': 'Faahfaahin dheeraad ah',
+    'order.scheduled': 'Waqtiga safarka', 'order.receiver': 'Qaataha / Xiriirka', 'order.submit': 'Dir dalabka',
+    'order.detail': 'Faahfaahinta dalabka', 'order.chat': 'La sheekee darawalka', 'order.accept': 'Aqbal dalabka',
+    'order.feePay': 'Fee bixi', 'order.feeRequired': 'Fee loo baahan yahay', 'order.feeSubmitted': 'Fee la gudbiyay — sugitaan maamul',
+    'order.feeConfirmed': 'Fee la xaqiijiyay', 'order.noDriver': 'Weli darawal lama xiriirin',
+    'order.status': 'Xaaladda', 'order.orderNumber': 'Lambarka dalabka', 'location.current': 'Isticmaal goobta hadda',
+    'location.locating': 'Goobta waa la raadinayaa...', 'location.denied': 'Goobta lama helin. Geli cinwaanka gacanta.',
+    'location.manual': 'Geli cinwaanka gacanta', 'driver.dashboard': 'Dashboard-ka Darawalka', 'driver.status': 'Xaaladda darawalka',
+    'driver.available': 'Dalabyo la heli karo', 'driver.assigned': 'Dalabyada lagu qoondeeyay', 'driver.completed': 'Shaqooyin dhammaaday',
+    'driver.feeStatus': 'Xaaladda fee', 'driver.becomeOnline': 'Noqo Online', 'driver.becomeOffline': 'Noqo Offline',
+    'driver.pendingMsg': 'Diiwaangelintaada waa la sugayaa. Maamulka ayaa ansixin doona.', 'driver.rejectedMsg': 'Diiwaangelintaada waa la diiday. La xiriir maamulka.',
+    'driver.feeModal': 'Gudbi lacagta fee', 'driver.reference': 'Tixraaca lacagta', 'driver.paymentNote': 'Faahfaahin lacag',
+    'admin.overview': 'Guudmar', 'admin.orders': 'Dalabyo', 'admin.drivers': 'Darawalo', 'admin.fees': 'Fee Payments',
+    'admin.customers': 'Macaamiil', 'admin.community': 'Bulsho', 'admin.notifications': 'Ogeysiis', 'admin.serviceFees': 'Adeeg Fees',
+    'admin.settings': 'Dejinta', 'admin.pendingDrivers': 'Darawalo sugitaan', 'admin.pendingFees': 'Fee sugitaan',
+    'admin.totalOrders': 'Dalabyo wadarta', 'admin.newOrders': 'Dalabyo cusub', 'admin.activeOrders': 'Dalabyo firfircoon',
+    'admin.completedOrders': 'Dalabyo dhammaaday', 'admin.approvedDrivers': 'Darawalo la ansixiyay', 'admin.customersCount': 'Macaamiil',
+    'admin.approve': 'Ansixi', 'admin.reject': 'Diid', 'admin.confirmFee': 'Xaqiiji fee', 'admin.rejectFee': 'Diid fee',
+    'admin.publishNotice': 'Daabac ogeysiis', 'admin.audience': 'Dadka la gaarsiinayo', 'admin.audienceAll': 'Dhammaan isticmaalayaasha',
+    'admin.audienceCustomers': 'Macaamiisha kaliya', 'admin.audienceDrivers': 'Darawallada la ansixiyay',
+    'community.newPost': 'Qor wax cusub', 'community.post': 'Daabac', 'community.like': 'Jeclaado', 'community.comment': 'Faallo',
+    'community.writeComment': 'Qor faallo...', 'community.noPosts': 'Weli wax post ah ma jiraan.', 'notif.title': 'Ogeysiisyada',
+    'notif.markAll': 'Calaamadee dhammaan', 'account.profile': 'Akoonka', 'account.edit': 'Wax ka beddel', 'account.logout': 'Ka bax',
+    'account.language': 'Luqadda', 'account.theme': 'Muuqaalka', 'account.light': 'Iftiin', 'account.dark': 'Mugdi',
+    'account.saved': 'Waa la kaydiyay', 'auth.resetTitle': 'Dib u dejinta password', 'auth.resetSend': 'Dir linkiga',
+    'auth.newPassword': 'Password cusub', 'auth.updatePassword': 'Cusboonaysii password', 'auth.checkEmail': 'Hubi emailkaaga si aad u xaqiijiso akoonka.',
+    'auth.welcome': 'Ku soo dhawoow', 'error.generic': 'Dalabka lama dhammaystirin. Fadlan mar kale isku day.',
+    'error.network': 'Internet connection-ka waa go\'an yahay.', 'error.auth': 'Email ama password khaldan.',
+    'error.permission': 'Ma haysato fasax ku filan.', 'offline': 'Internet connection-ka waa go\'an yahay.', 'online': 'Connection-ka waa soo noqday.'
   },
   en: {
-    'auth.tagline': 'Your service, anywhere.',
-    'auth.login': 'Log in',
-    'auth.signup': 'Sign up',
-    'auth.email': 'Email',
-    'auth.password': 'Password',
-    'auth.forgot': 'Forgot password?',
-    'auth.fullName': 'Full name',
-    'auth.phone': 'Phone',
-    'auth.iam': 'Customer or Driver?',
-    'role.customer': 'Customer',
-    'role.driver': 'Driver',
-    'driver.serviceType': 'Service',
-    'driver.vehicle': 'Vehicle description',
-    'driver.pendingHint': 'New drivers must be approved by admin before receiving orders.',
-    'nav.home': 'Home',
-    'nav.orders': 'Orders',
-    'nav.community': 'Community',
-    'nav.notifications': 'Alerts',
-    'nav.account': 'Account',
-    'nav.chat': 'Chat',
-    'nav.dashboard': 'Dashboard',
-    'nav.drivers': 'Drivers',
-    'nav.fees': 'Fees',
-    'nav.settings': 'Settings',
-    'home.heroTitle': 'What do you need?',
-    'home.heroSub': 'Choose a service and we will connect you with a nearby driver.',
-    'home.services': 'Services',
-    'home.recent': 'Your recent orders',
-    'home.viewAll': 'View all',
-    'service.taxi': 'Taxi',
-    'service.bajaaj': 'Bajaaj',
-    'service.delivery': 'Delivery',
-    'service.safar': 'Safar',
-    'service.taxi.desc': 'Fast and safe rides',
-    'service.bajaaj.desc': 'Short affordable trips',
-    'service.delivery.desc': 'Send packages safely',
-    'service.safar.desc': 'Long planned journeys',
-    'common.loading': 'Loading...',
-    'common.error': 'Something went wrong. Please try again.',
-    'common.retry': 'Retry',
-    'common.cancel': 'Cancel',
-    'common.save': 'Save',
-    'common.send': 'Send',
-    'common.close': 'Close',
-    'common.confirm': 'Confirm',
-    'common.reject': 'Reject',
-    'common.back': 'Back',
-    'common.empty': 'Nothing here',
-    'common.all': 'All',
-    'common.active': 'Active',
-    'common.completed': 'Completed',
-    'common.cancelled': 'Cancelled',
-    'common.new': 'New',
-    'common.online': 'Online',
-    'common.offline': 'Offline',
-    'common.approved': 'Approved',
-    'common.pending': 'Pending',
-    'common.rejected': 'Rejected',
-    'common.unread': 'Unread',
-    'common.read': 'Read',
-    'order.create': 'Create order',
-    'order.pickup': 'Pickup',
-    'order.destination': 'Destination',
-    'order.departure': 'Departure',
-    'order.phone': 'Phone',
-    'order.passengers': 'Passengers',
-    'order.notes': 'Notes',
-    'order.scheduled': 'Scheduled time',
-    'order.receiver': 'Receiver / Contact',
-    'order.submit': 'Send order',
-    'order.detail': 'Order details',
-    'order.chat': 'Chat with driver',
-    'order.accept': 'Accept order',
-    'order.feePay': 'Pay fee',
-    'order.feeRequired': 'Fee required',
-    'order.feeSubmitted': 'Fee submitted — awaiting admin',
-    'order.feeConfirmed': 'Fee confirmed',
-    'order.noDriver': 'No driver assigned yet',
-    'order.status': 'Status',
-    'order.orderNumber': 'Order number',
-    'location.current': 'Use current location',
-    'location.locating': 'Locating...',
-    'location.denied': 'Location unavailable. Enter address manually.',
-    'location.manual': 'Enter address manually',
-    'driver.dashboard': 'Driver Dashboard',
-    'driver.status': 'Driver status',
-    'driver.available': 'Available orders',
-    'driver.assigned': 'Assigned orders',
-    'driver.completed': 'Completed jobs',
-    'driver.feeStatus': 'Fee status',
-    'driver.becomeOnline': 'Go online',
-    'driver.becomeOffline': 'Go offline',
-    'driver.pendingMsg': 'Your registration is pending admin approval.',
-    'driver.rejectedMsg': 'Your registration was rejected. Contact admin.',
-    'driver.feeModal': 'Submit fee payment',
-    'driver.reference': 'Payment reference',
-    'driver.paymentNote': 'Payment note',
-    'admin.overview': 'Overview',
-    'admin.orders': 'Orders',
-    'admin.drivers': 'Drivers',
-    'admin.fees': 'Fee Payments',
-    'admin.customers': 'Customers',
-    'admin.community': 'Community',
-    'admin.notifications': 'Notifications',
-    'admin.serviceFees': 'Service Fees',
-    'admin.settings': 'Settings',
-    'admin.pendingDrivers': 'Pending drivers',
-    'admin.pendingFees': 'Pending fees',
-    'admin.totalOrders': 'Total orders',
-    'admin.newOrders': 'New orders',
-    'admin.activeOrders': 'Active orders',
-    'admin.completedOrders': 'Completed orders',
-    'admin.approvedDrivers': 'Approved drivers',
-    'admin.customersCount': 'Customers',
-    'admin.approve': 'Approve',
-    'admin.reject': 'Reject',
-    'admin.confirmFee': 'Confirm fee',
-    'admin.rejectFee': 'Reject fee',
-    'admin.publishNotice': 'Publish notice',
-    'admin.audience': 'Audience',
-    'admin.audienceAll': 'All users',
-    'admin.audienceCustomers': 'Customers only',
-    'admin.audienceDrivers': 'Approved drivers only',
-    'community.newPost': 'Create post',
-    'community.post': 'Post',
-    'community.like': 'Like',
-    'community.comment': 'Comment',
-    'community.writeComment': 'Write a comment...',
-    'community.noPosts': 'No posts yet.',
-    'notif.title': 'Notifications',
-    'notif.markAll': 'Mark all read',
-    'account.profile': 'Account',
-    'account.edit': 'Edit profile',
-    'account.logout': 'Log out',
-    'account.language': 'Language',
-    'account.theme': 'Theme',
-    'account.light': 'Light',
-    'account.dark': 'Dark',
-    'account.saved': 'Saved',
-    'auth.resetTitle': 'Reset password',
-    'auth.resetSend': 'Send reset link',
-    'auth.newPassword': 'New password',
-    'auth.updatePassword': 'Update password',
-    'auth.checkEmail': 'Check your email to confirm your account.',
-    'auth.welcome': 'Welcome',
-    'error.generic': 'Request could not be completed. Please try again.',
-    'error.network': 'You are offline.',
-    'error.auth': 'Invalid email or password.',
-    'error.permission': 'You do not have permission.',
-    'offline': 'Internet connection lost.',
-    'online': 'Connection restored.'
+    'auth.tagline': 'Your service, anywhere.', 'auth.login': 'Log in', 'auth.signup': 'Sign up',
+    'auth.email': 'Email', 'auth.password': 'Password', 'auth.forgot': 'Forgot password?',
+    'auth.fullName': 'Full name', 'auth.phone': 'Phone', 'auth.iam': 'Customer or Driver?',
+    'role.customer': 'Customer', 'role.driver': 'Driver', 'driver.serviceType': 'Service',
+    'driver.vehicle': 'Vehicle description', 'driver.pendingHint': 'New drivers must be approved by admin before receiving orders.',
+    'nav.home': 'Home', 'nav.orders': 'Orders', 'nav.community': 'Community', 'nav.notifications': 'Alerts',
+    'nav.account': 'Account', 'nav.chat': 'Chat', 'nav.dashboard': 'Dashboard', 'nav.drivers': 'Drivers',
+    'nav.fees': 'Fees', 'nav.settings': 'Settings', 'home.heroTitle': 'What do you need?',
+    'home.heroSub': 'Choose a service and we will connect you with a nearby driver.', 'home.services': 'Services',
+    'home.recent': 'Your recent orders', 'home.viewAll': 'View all', 'service.taxi': 'Taxi',
+    'service.bajaaj': 'Bajaaj', 'service.delivery': 'Delivery', 'service.safar': 'Safar',
+    'service.taxi.desc': 'Fast and safe rides', 'service.bajaaj.desc': 'Short affordable trips',
+    'service.delivery.desc': 'Send packages safely', 'service.safar.desc': 'Long planned journeys',
+    'common.loading': 'Loading...', 'common.error': 'Something went wrong. Please try again.',
+    'common.retry': 'Retry', 'common.cancel': 'Cancel', 'common.save': 'Save', 'common.send': 'Send',
+    'common.close': 'Close', 'common.confirm': 'Confirm', 'common.reject': 'Reject', 'common.back': 'Back',
+    'common.empty': 'Nothing here', 'common.all': 'All', 'common.active': 'Active',
+    'common.completed': 'Completed', 'common.cancelled': 'Cancelled', 'common.new': 'New',
+    'common.online': 'Online', 'common.offline': 'Offline', 'common.approved': 'Approved',
+    'common.pending': 'Pending', 'common.rejected': 'Rejected', 'common.unread': 'Unread',
+    'common.read': 'Read', 'order.create': 'Create order', 'order.pickup': 'Pickup',
+    'order.destination': 'Destination', 'order.departure': 'Departure', 'order.phone': 'Phone',
+    'order.passengers': 'Passengers', 'order.notes': 'Notes', 'order.scheduled': 'Scheduled time',
+    'order.receiver': 'Receiver / Contact', 'order.submit': 'Send order', 'order.detail': 'Order details',
+    'order.chat': 'Chat with driver', 'order.accept': 'Accept order', 'order.feePay': 'Pay fee',
+    'order.feeRequired': 'Fee required', 'order.feeSubmitted': 'Fee submitted — awaiting admin',
+    'order.feeConfirmed': 'Fee confirmed', 'order.noDriver': 'No driver assigned yet', 'order.status': 'Status',
+    'order.orderNumber': 'Order number', 'location.current': 'Use current location', 'location.locating': 'Locating...',
+    'location.denied': 'Location unavailable. Enter address manually.', 'location.manual': 'Enter address manually',
+    'driver.dashboard': 'Driver Dashboard', 'driver.status': 'Driver status', 'driver.available': 'Available orders',
+    'driver.assigned': 'Assigned orders', 'driver.completed': 'Completed jobs', 'driver.feeStatus': 'Fee status',
+    'driver.becomeOnline': 'Go online', 'driver.becomeOffline': 'Go offline', 'driver.pendingMsg': 'Your registration is pending admin approval.',
+    'driver.rejectedMsg': 'Your registration was rejected. Contact admin.', 'driver.feeModal': 'Submit fee payment',
+    'driver.reference': 'Payment reference', 'driver.paymentNote': 'Payment note', 'admin.overview': 'Overview',
+    'admin.orders': 'Orders', 'admin.drivers': 'Drivers', 'admin.fees': 'Fee Payments', 'admin.customers': 'Customers',
+    'admin.community': 'Community', 'admin.notifications': 'Notifications', 'admin.serviceFees': 'Service Fees',
+    'admin.settings': 'Settings', 'admin.pendingDrivers': 'Pending drivers', 'admin.pendingFees': 'Pending fees',
+    'admin.totalOrders': 'Total orders', 'admin.newOrders': 'New orders', 'admin.activeOrders': 'Active orders',
+    'admin.completedOrders': 'Completed orders', 'admin.approvedDrivers': 'Approved drivers', 'admin.customersCount': 'Customers',
+    'admin.approve': 'Approve', 'admin.reject': 'Reject', 'admin.confirmFee': 'Confirm fee', 'admin.rejectFee': 'Reject fee',
+    'admin.publishNotice': 'Publish notice', 'admin.audience': 'Audience', 'admin.audienceAll': 'All users',
+    'admin.audienceCustomers': 'Customers only', 'admin.audienceDrivers': 'Approved drivers only', 'community.newPost': 'Create post',
+    'community.post': 'Post', 'community.like': 'Like', 'community.comment': 'Comment', 'community.writeComment': 'Write a comment...',
+    'community.noPosts': 'No posts yet.', 'notif.title': 'Notifications', 'notif.markAll': 'Mark all read',
+    'account.profile': 'Account', 'account.edit': 'Edit profile', 'account.logout': 'Log out', 'account.language': 'Language',
+    'account.theme': 'Theme', 'account.light': 'Light', 'account.dark': 'Dark', 'account.saved': 'Saved',
+    'auth.resetTitle': 'Reset password', 'auth.resetSend': 'Send reset link', 'auth.newPassword': 'New password',
+    'auth.updatePassword': 'Update password', 'auth.checkEmail': 'Check your email to confirm your account.',
+    'auth.welcome': 'Welcome', 'error.generic': 'Request could not be completed. Please try again.',
+    'error.network': 'You are offline.', 'error.auth': 'Invalid email or password.', 'error.permission': 'You do not have permission.',
+    'offline': 'Internet connection lost.', 'online': 'Connection restored.'
   },
   ar: {
-    'auth.tagline': 'خدمتك في أي مكان.',
-    'auth.login': 'تسجيل الدخول',
-    'auth.signup': 'إنشاء حساب',
-    'auth.email': 'البريد الإلكتروني',
-    'auth.password': 'كلمة المرور',
-    'auth.forgot': 'نسيت كلمة المرور؟',
-    'auth.fullName': 'الاسم الكامل',
-    'auth.phone': 'الهاتف',
-    'auth.iam': 'عميل أم سائق؟',
-    'role.customer': 'عميل',
-    'role.driver': 'سائق',
-    'driver.serviceType': 'الخدمة',
-    'driver.vehicle': 'وصف المركبة',
-    'driver.pendingHint': 'يجب أن يوافق المسؤول على السائقين الجدد قبل استلام الطلبات.',
-    'nav.home': 'الرئيسية',
-    'nav.orders': 'الطلبات',
-    'nav.community': 'المجتمع',
-    'nav.notifications': 'الإشعارات',
-    'nav.account': 'الحساب',
-    'nav.chat': 'المحادثة',
-    'nav.dashboard': 'لوحة التحكم',
-    'nav.drivers': 'السائقون',
-    'nav.fees': 'الرسوم',
-    'nav.settings': 'الإعدادات',
-    'home.heroTitle': 'ماذا تحتاج؟',
-    'home.heroSub': 'اختر الخدمة وسنصلك بسائق قريب.',
-    'home.services': 'الخدمات',
-    'home.recent': 'طلباتك الأخيرة',
-    'home.viewAll': 'عرض الكل',
-    'service.taxi': 'تاكسي',
-    'service.bajaaj': 'باجاج',
-    'service.delivery': 'توصيل',
-    'service.safar': 'سفر',
-    'service.taxi.desc': 'رحلات سريعة وآمنة',
-    'service.bajaaj.desc': 'رحلات قصيرة ميسورة',
-    'service.delivery.desc': 'أرسل الطرود بأمان',
-    'service.safar.desc': 'رحلات طويلة مخططة',
-    'common.loading': 'جار التحميل...',
-    'common.error': 'حدث خطأ. يرجى المحاولة مرة أخرى.',
-    'common.retry': 'إعادة المحاولة',
-    'common.cancel': 'إلغاء',
-    'common.save': 'حفظ',
-    'common.send': 'إرسال',
-    'common.close': 'إغلاق',
-    'common.confirm': 'تأكيد',
-    'common.reject': 'رفض',
-    'common.back': 'رجوع',
-    'common.empty': 'لا يوجد شيء',
-    'common.all': 'الكل',
-    'common.active': 'نشط',
-    'common.completed': 'مكتمل',
-    'common.cancelled': 'ملغي',
-    'common.new': 'جديد',
-    'common.online': 'متصل',
-    'common.offline': 'غير متصل',
-    'common.approved': 'موافق عليه',
-    'common.pending': 'قيد الانتظار',
-    'common.rejected': 'مرفوض',
-    'common.unread': 'غير مقروء',
-    'common.read': 'مقروء',
-    'order.create': 'إنشاء طلب',
-    'order.pickup': 'نقطة الالتقاط',
-    'order.destination': 'الوجهة',
-    'order.departure': 'نقطة الانطلاق',
-    'order.phone': 'الهاتف',
-    'order.passengers': 'عدد الركاب',
-    'order.notes': 'ملاحظات',
-    'order.scheduled': 'وقت الرحلة',
-    'order.receiver': 'المستلم / جهة الاتصال',
-    'order.submit': 'إرسال الطلب',
-    'order.detail': 'تفاصيل الطلب',
-    'order.chat': 'تحدث مع السائق',
-    'order.accept': 'قبول الطلب',
-    'order.feePay': 'دفع الرسوم',
-    'order.feeRequired': 'الرسوم مطلوبة',
-    'order.feeSubmitted': 'تم إرسال الرسوم — بانتظار الإدارة',
-    'order.feeConfirmed': 'تم تأكيد الرسوم',
-    'order.noDriver': 'لم يتم تعيين سائق بعد',
-    'order.status': 'الحالة',
-    'order.orderNumber': 'رقم الطلب',
-    'location.current': 'استخدم الموقع الحالي',
-    'location.locating': 'جار تحديد الموقع...',
-    'location.denied': 'الموقع غير متاح. أدخل العنوان يدوياً.',
-    'location.manual': 'إدخال العنوان يدوياً',
-    'driver.dashboard': 'لوحة السائق',
-    'driver.status': 'حالة السائق',
-    'driver.available': 'الطلبات المتاحة',
-    'driver.assigned': 'الطلبات المعينة',
-    'driver.completed': 'الأعمال المكتملة',
-    'driver.feeStatus': 'حالة الرسوم',
-    'driver.becomeOnline': 'اتصل',
-    'driver.becomeOffline': 'قطع الاتصال',
-    'driver.pendingMsg': 'تسجيلك بانتظار موافقة الإدارة.',
-    'driver.rejectedMsg': 'تم رفض تسجيلك. تواصل مع الإدارة.',
-    'driver.feeModal': 'إرسال دفع الرسوم',
-    'driver.reference': 'مرجع الدفع',
-    'driver.paymentNote': 'ملاحظة الدفع',
-    'admin.overview': 'نظرة عامة',
-    'admin.orders': 'الطلبات',
-    'admin.drivers': 'السائقون',
-    'admin.fees': 'مدفوعات الرسوم',
-    'admin.customers': 'العملاء',
-    'admin.community': 'المجتمع',
-    'admin.notifications': 'الإشعارات',
-    'admin.serviceFees': 'رسوم الخدمة',
-    'admin.settings': 'الإعدادات',
-    'admin.pendingDrivers': 'سائقون قيد الانتظار',
-    'admin.pendingFees': 'رسوم قيد الانتظار',
-    'admin.totalOrders': 'إجمالي الطلبات',
-    'admin.newOrders': 'طلبات جديدة',
-    'admin.activeOrders': 'طلبات نشطة',
-    'admin.completedOrders': 'طلبات مكتملة',
-    'admin.approvedDrivers': 'سائقون موافق عليهم',
-    'admin.customersCount': 'العملاء',
-    'admin.approve': 'موافقة',
-    'admin.reject': 'رفض',
-    'admin.confirmFee': 'تأكيد الرسوم',
-    'admin.rejectFee': 'رفض الرسوم',
-    'admin.publishNotice': 'نشر إشعار',
-    'admin.audience': 'الجمهور',
-    'admin.audienceAll': 'جميع المستخدمين',
-    'admin.audienceCustomers': 'العملاء فقط',
-    'admin.audienceDrivers': 'السائقون الموافق عليهم فقط',
-    'community.newPost': 'إنشاء منشور',
-    'community.post': 'نشر',
-    'community.like': 'إعجاب',
-    'community.comment': 'تعليق',
-    'community.writeComment': 'اكتب تعليقاً...',
-    'community.noPosts': 'لا توجد منشورات بعد.',
-    'notif.title': 'الإشعارات',
-    'notif.markAll': 'تحديد الكل كمقروء',
-    'account.profile': 'الحساب',
-    'account.edit': 'تعديل الملف',
-    'account.logout': 'تسجيل الخروج',
-    'account.language': 'اللغة',
-    'account.theme': 'المظهر',
-    'account.light': 'فاتح',
-    'account.dark': 'داكن',
-    'account.saved': 'تم الحفظ',
-    'auth.resetTitle': 'إعادة تعيين كلمة المرور',
-    'auth.resetSend': 'إرسال الرابط',
-    'auth.newPassword': 'كلمة مرور جديدة',
-    'auth.updatePassword': 'تحديث كلمة المرور',
-    'auth.checkEmail': 'تحقق من بريدك لتأكيد الحساب.',
-    'auth.welcome': 'مرحباً',
-    'error.generic': 'تعذر إكمال الطلب. يرجى المحاولة مرة أخرى.',
-    'error.network': 'أنت غير متصل بالإنترنت.',
-    'error.auth': 'البريد أو كلمة المرور غير صحيحة.',
-    'error.permission': 'ليس لديك إذن.',
-    'offline': 'انقطع الاتصال بالإنترنت.',
-    'online': 'تمت استعادة الاتصال.'
+    'auth.tagline': 'خدمتك في أي مكان.', 'auth.login': 'تسجيل الدخول', 'auth.signup': 'إنشاء حساب',
+    'auth.email': 'البريد الإلكتروني', 'auth.password': 'كلمة المرور', 'auth.forgot': 'نسيت كلمة المرور؟',
+    'auth.fullName': 'الاسم الكامل', 'auth.phone': 'الهاتف', 'auth.iam': 'عميل أم سائق؟',
+    'role.customer': 'عميل', 'role.driver': 'سائق', 'driver.serviceType': 'الخدمة',
+    'driver.vehicle': 'وصف المركبة', 'driver.pendingHint': 'يجب أن يوافق المسؤول على السائقين الجدد قبل استلام الطلبات.',
+    'nav.home': 'الرئيسية', 'nav.orders': 'الطلبات', 'nav.community': 'المجتمع', 'nav.notifications': 'الإشعارات',
+    'nav.account': 'الحساب', 'nav.chat': 'المحادثة', 'nav.dashboard': 'لوحة التحكم', 'nav.drivers': 'السائقون',
+    'nav.fees': 'الرسوم', 'nav.settings': 'الإعدادات', 'home.heroTitle': 'ماذا تحتاج؟',
+    'home.heroSub': 'اختر الخدمة وسنصلك بسائق قريب.', 'home.services': 'الخدمات', 'home.recent': 'طلباتك الأخيرة',
+    'home.viewAll': 'عرض الكل', 'service.taxi': 'تاكسي', 'service.bajaaj': 'باجاج', 'service.delivery': 'توصيل',
+    'service.safar': 'سفر', 'service.taxi.desc': 'رحلات سريعة وآمنة', 'service.bajaaj.desc': 'رحلات قصيرة ميسورة',
+    'service.delivery.desc': 'أرسل الطرود بأمان', 'service.safar.desc': 'رحلات طويلة مخططة',
+    'common.loading': 'جار التحميل...', 'common.error': 'حدث خطأ. يرجى المحاولة مرة أخرى.', 'common.retry': 'إعادة المحاولة',
+    'common.cancel': 'إلغاء', 'common.save': 'حفظ', 'common.send': 'إرسال', 'common.close': 'إغلاق',
+    'common.confirm': 'تأكيد', 'common.reject': 'رفض', 'common.back': 'رجوع', 'common.empty': 'لا يوجد شيء',
+    'common.all': 'الكل', 'common.active': 'نشط', 'common.completed': 'مكتمل', 'common.cancelled': 'ملغي',
+    'common.new': 'جديد', 'common.online': 'متصل', 'common.offline': 'غير متصل', 'common.approved': 'موافق عليه',
+    'common.pending': 'قيد الانتظار', 'common.rejected': 'مرفوض', 'common.unread': 'غير مقروء', 'common.read': 'مقروء',
+    'order.create': 'إنشاء طلب', 'order.pickup': 'نقطة الالتقاط', 'order.destination': 'الوجهة', 'order.departure': 'نقطة الانطلاق',
+    'order.phone': 'الهاتف', 'order.passengers': 'عدد الركاب', 'order.notes': 'ملاحظات', 'order.scheduled': 'وقت الرحلة',
+    'order.receiver': 'المستلم / جهة الاتصال', 'order.submit': 'إرسال الطلب', 'order.detail': 'تفاصيل الطلب',
+    'order.chat': 'تحدث مع السائق', 'order.accept': 'قبول الطلب', 'order.feePay': 'دفع الرسوم', 'order.feeRequired': 'الرسوم مطلوبة',
+    'order.feeSubmitted': 'تم إرسال الرسوم — بانتظار الإدارة', 'order.feeConfirmed': 'تم تأكيد الرسوم',
+    'order.noDriver': 'لم يتم تعيين سائق بعد', 'order.status': 'الحالة', 'order.orderNumber': 'رقم الطلب',
+    'location.current': 'استخدم الموقع الحالي', 'location.locating': 'جار تحديد الموقع...', 'location.denied': 'الموقع غير متاح. أدخل العنوان يدوياً.',
+    'location.manual': 'إدخال العنوان يدوياً', 'driver.dashboard': 'لوحة السائق', 'driver.status': 'حالة السائق',
+    'driver.available': 'الطلبات المتاحة', 'driver.assigned': 'الطلبات المعينة', 'driver.completed': 'الأعمال المكتملة',
+    'driver.feeStatus': 'حالة الرسوم', 'driver.becomeOnline': 'اتصل', 'driver.becomeOffline': 'قطع الاتصال',
+    'driver.pendingMsg': 'تسجيلك بانتظار موافقة الإدارة.', 'driver.rejectedMsg': 'تم رفض تسجيلك. تواصل مع الإدارة.',
+    'driver.feeModal': 'إرسال دفع الرسوم', 'driver.reference': 'مرجع الدفع', 'driver.paymentNote': 'ملاحظة الدفع',
+    'admin.overview': 'نظرة عامة', 'admin.orders': 'الطلبات', 'admin.drivers': 'السائقون', 'admin.fees': 'مدفوعات الرسوم',
+    'admin.customers': 'العملاء', 'admin.community': 'المجتمع', 'admin.notifications': 'الإشعارات', 'admin.serviceFees': 'رسوم الخدمة',
+    'admin.settings': 'الإعدادات', 'admin.pendingDrivers': 'سائقون قيد الانتظار', 'admin.pendingFees': 'رسوم قيد الانتظار',
+    'admin.totalOrders': 'إجمالي الطلبات', 'admin.newOrders': 'طلبات جديدة', 'admin.activeOrders': 'طلبات نشطة',
+    'admin.completedOrders': 'طلبات مكتملة', 'admin.approvedDrivers': 'سائقون موافق عليهم', 'admin.customersCount': 'العملاء',
+    'admin.approve': 'موافقة', 'admin.reject': 'رفض', 'admin.confirmFee': 'تأكيد الرسوم', 'admin.rejectFee': 'رفض الرسوم',
+    'admin.publishNotice': 'نشر إشعار', 'admin.audience': 'الجمهور', 'admin.audienceAll': 'جميع المستخدمين',
+    'admin.audienceCustomers': 'العملاء فقط', 'admin.audienceDrivers': 'السائقون الموافق عليهم فقط',
+    'community.newPost': 'إنشاء منشور', 'community.post': 'نشر', 'community.like': 'إعجاب', 'community.comment': 'تعليق',
+    'community.writeComment': 'اكتب تعليقاً...', 'community.noPosts': 'لا توجد منشورات بعد.', 'notif.title': 'الإشعارات',
+    'notif.markAll': 'تحديد الكل كمقروء', 'account.profile': 'الحساب', 'account.edit': 'تعديل الملف', 'account.logout': 'تسجيل الخروج',
+    'account.language': 'اللغة', 'account.theme': 'المظهر', 'account.light': 'فاتح', 'account.dark': 'داكن', 'account.saved': 'تم الحفظ',
+    'auth.resetTitle': 'إعادة تعيين كلمة المرور', 'auth.resetSend': 'إرسال الرابط', 'auth.newPassword': 'كلمة مرور جديدة',
+    'auth.updatePassword': 'تحديث كلمة المرور', 'auth.checkEmail': 'تحقق من بريدك لتأكيد الحساب.', 'auth.welcome': 'مرحباً',
+    'error.generic': 'تعذر إكمال الطلب. يرجى المحاولة مرة أخرى.', 'error.network': 'أنت غير متصل بالإنترنت.',
+    'error.auth': 'البريد أو كلمة المرور غير صحيحة.', 'error.permission': 'ليس لديك إذن.', 'offline': 'انقطع الاتصال بالإنترنت.', 'online': 'تمت استعادة الاتصال.'
   }
 };
 
@@ -541,7 +238,7 @@ function friendlyError(err) {
   if (/invalid login|invalid credentials|email not confirmed/i.test(m)) return t('error.auth');
   if (/row-level security|permission denied|not authorized|unauthorized|jwt/i.test(m)) return t('error.permission');
   if (/duplicate|unique/i.test(m)) return 'Diiwaangelintan horey ayaa loo isticmaalay.';
-  return `${t('error.generic')} (Sababta: ${m})`; 
+  return `${t('error.generic')} (${m})`; 
 }
 function showLoading(show = true) { $('loadingOverlay').classList.toggle('hidden', !show); }
 function setBadge(n) {
@@ -715,7 +412,7 @@ async function logout() {
    SESSION / ROLE
    ========================================================= */
 async function handleSession(session) {
-  if (!session || !session.user) {
+  if (!session || !session.user || !session.user.id) {
     state.user = null; state.profile = null; state.driver = null; state.isAdmin = false;
     $('authScreen').classList.remove('hidden');
     $('appShell').classList.add('hidden');
@@ -737,6 +434,7 @@ async function handleSession(session) {
 }
 
 async function loadProfile() {
+  if (!state.user?.id) return;
   const { data, error } = await db.from('profiles').select('*').eq('id', state.user.id).maybeSingle();
   if (error) console.warn('profile load', error);
   if (data) state.profile = data;
@@ -764,7 +462,7 @@ async function loadProfile() {
     : esc(initials(name));
 }
 async function ensureDriverProfile(user) {
-  if (!user || user.user_metadata?.role !== 'driver') return;
+  if (!user || !user.id || user.user_metadata?.role !== 'driver') return;
   const { data, error } = await db.from('drivers').select('*').eq('user_id', user.id).maybeSingle();
   if (error) { console.warn('driver check', error); return; }
   if (data) { state.driver = data; return; }
@@ -791,7 +489,7 @@ async function checkAdmin() {
   }
 }
 async function loadDriver() {
-  if (!state.user) return;
+  if (!state.user?.id) return;
   const { data } = await db.from('drivers').select('*').eq('user_id', state.user.id).maybeSingle();
   state.driver = data || null;
 }
@@ -843,7 +541,8 @@ async function render() {
   $('screen').innerHTML = `<div class="skeleton" style="height:120px;margin-bottom:12px"></div><div class="skeleton" style="height:220px"></div>`;
   
   try { 
-    await fn(); 
+    // FIX: Halkan waxaa lagu daray state.screenParam si loo gudbiyo ID-ga
+    await fn(state.screenParam); 
   } catch (err) { 
     console.error('RENDER ERROR:', err); 
     $('screen').innerHTML = `
@@ -851,7 +550,7 @@ async function render() {
         <div class="empty-ico">⚠️</div>
         <h4>${t('common.error')}</h4>
         <p style="color:var(--danger); font-size:12px; margin-bottom:14px">${esc(err.message || err.details || 'Unknown error')}</p>
-        <button class="btn btn-secondary" onclick="App.render()">${t('common.retry')}</button>
+        <button class="btn btn-secondary" onclick="App.navigate('home')">${t('common.back')}</button>
       </div>`; 
   }
 }
@@ -860,9 +559,13 @@ async function render() {
    CUSTOMER HOME
    ========================================================= */
 async function renderCustomerHome() {
-  const { data: orders } = await db.from('orders').select('*').eq('user_id', state.user.id).order('created_at', { ascending: false }).limit(3);
+  const uid = state.user?.id;
+  if (!uid) return; // Guard
+
+  const { data: orders } = await db.from('orders').select('*').eq('user_id', uid).order('created_at', { ascending: false }).limit(3);
   const { data: notices } = await db.from('app_notices').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(3);
   const services = ['taxi', 'bajaaj', 'delivery', 'safar'];
+  
   $('screen').innerHTML = `
     <div class="hero">
       <h2>${t('home.heroTitle')}</h2>
@@ -967,6 +670,7 @@ async function submitOrder(e) {
   e.preventDefault();
   showLoading();
   try {
+    if (!state.user?.id) throw new Error('Fadlan mar kale gal (Login).');
     const service = state.orderService;
     const { data: fee } = await db.from('service_fees').select('*').eq('service_type', service).maybeSingle();
     const receiver = $('receiver')?.value?.trim() || '';
@@ -1005,7 +709,9 @@ async function submitOrder(e) {
    CUSTOMER ORDERS
    ========================================================= */
 async function renderCustomerOrders() {
-  const { data, error } = await db.from('orders').select('*').eq('user_id', state.user.id).order('created_at', { ascending: false });
+  const uid = state.user?.id;
+  if (!uid) return;
+  const { data, error } = await db.from('orders').select('*').eq('user_id', uid).order('created_at', { ascending: false });
   if (error) throw error;
   state.orders = data || [];
   $('screen').innerHTML = `
@@ -1029,8 +735,15 @@ function filterCustomerOrders(filter, btn) {
 /* =========================================================
    ORDER DETAIL
    ========================================================= */
-async function openOrder(id) { navigate('order-detail', id); }
+async function openOrder(id) { 
+  if (!id) return toast('Khalad: Dalabka ID-ga maqan yahay.', 'error');
+  navigate('order-detail', id); 
+}
 async function renderOrderDetail(id) {
+  if (!id) {
+    toast('Dalabka lama helin.', 'error');
+    return navigate('orders');
+  }
   const { data: o, error } = await db.from('orders').select('*').eq('id', id).maybeSingle();
   if (error || !o) throw error || new Error('Order not found');
   state.currentOrder = o;
@@ -1119,6 +832,7 @@ async function toggleOnline() {
   finally { showLoading(false); }
 }
 async function acceptOrder(orderId) {
+  if (!orderId) return;
   showLoading();
   try {
     const { error } = await db.rpc('igakeen_accept_order', { p_order_id: orderId });
@@ -1135,6 +849,7 @@ async function acceptOrder(orderId) {
    FEE PAYMENT
    ========================================================= */
 function openFeeModal(orderId) {
+  if (!orderId) return toast('Dalab khaldan.', 'error');
   const o = state.currentOrder;
   openModal(`
     <div class="modal-head"><h3>${t('driver.feeModal')}</h3><button class="modal-close" onclick="App.closeModal()">×</button></div>
@@ -1150,6 +865,7 @@ function openFeeModal(orderId) {
 }
 async function submitFee(e, orderId) {
   e.preventDefault();
+  if (!orderId) return toast('Dalab khaldan.', 'error');
   showLoading();
   try {
     if (!state.driver) throw new Error('Driver profile missing');
@@ -1196,6 +912,7 @@ async function renderChatList() {
   `;
 }
 async function openChat(orderId) {
+  if (!orderId) return toast('Sheekadan lama helin.', 'error');
   const { data: o, error } = await db.from('orders').select('*').eq('id', orderId).maybeSingle();
   if (error || !o) return toast(friendlyError(error), 'error');
   const isCustomer = o.user_id === state.user.id;
@@ -1209,6 +926,7 @@ async function openChat(orderId) {
   subscribeChat(orderId);
 }
 async function fetchChatMessages(orderId) {
+  if (!orderId) return;
   const { data, error } = await db.from('order_messages').select('*').eq('order_id', orderId).order('created_at', { ascending: true });
   if (error) { console.error(error); return; }
   state.chatMessages = data || [];
@@ -1216,6 +934,10 @@ async function fetchChatMessages(orderId) {
   await db.from('order_messages').update({ read_at: new Date().toISOString() }).eq('order_id', orderId).eq('recipient_id', state.user.id).is('read_at', null);
 }
 async function renderChat(orderId) {
+  if (!orderId) {
+    toast('Sheekadan lama helin.', 'error');
+    return navigate('chat-list');
+  }
   const o = state.chatOrder || (await db.from('orders').select('*').eq('id', orderId).maybeSingle()).data;
   if (!o) throw new Error('Order missing');
   const otherName = o.user_id === state.user.id ? 'Darawalka' : (o.customer_name || 'Macmiil');
@@ -1244,6 +966,7 @@ function renderChatMessages() {
   body.scrollTop = body.scrollHeight;
 }
 function subscribeChat(orderId) {
+  if (!orderId) return;
   if (state.chatChannel) db.removeChannel(state.chatChannel);
   state.chatChannel = db.channel(`chat-${orderId}`)
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'order_messages', filter: `order_id=eq.${orderId}` }, async (payload) => {
@@ -1262,9 +985,10 @@ function leaveChat() {
 }
 async function sendMessage(e, orderId) {
   e.preventDefault();
+  if (!orderId || !state.chatOrder) return;
   const input = $('chatInput');
   const body = input.value.trim();
-  if (!body || !state.chatOrder) return;
+  if (!body) return;
   const o = state.chatOrder;
   const recipient = o.user_id === state.user.id ? o.driver_id : o.user_id;
   input.value = '';
@@ -1276,13 +1000,15 @@ async function sendMessage(e, orderId) {
    NOTIFICATIONS
    ========================================================= */
 async function refreshUnread() {
+  if (!state.user?.id) return;
   const { count } = await db.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', state.user.id).is('read_at', null);
   setBadge(count || 0);
 }
 function subscribeNotifications() {
+  const uid = state.user?.id || FALLBACK_UUID;
   if (state.notifChannel) db.removeChannel(state.notifChannel);
-  state.notifChannel = db.channel(`notif-${state.user.id}`)
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${state.user.id}` }, (payload) => {
+  state.notifChannel = db.channel(`notif-${uid}`)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${uid}` }, (payload) => {
       setBadge(state.unread + 1);
       toast(payload.new.title || 'Ogeysiis cusub');
       if (state.screen === 'notifications') renderNotifications();
@@ -1290,15 +1016,17 @@ function subscribeNotifications() {
     .subscribe();
 }
 function subscribeOrders() {
+  const uid = state.user?.id || FALLBACK_UUID;
   if (state.orderChannel) db.removeChannel(state.orderChannel);
-  const filter = state.role === 'driver' && state.driver ? `driver_id=eq.${state.driver.id}` : `user_id=eq.${state.user.id}`;
-  state.orderChannel = db.channel(`orders-${state.user.id}`)
+  const filter = state.role === 'driver' && state.driver ? `driver_id=eq.${state.driver.id}` : `user_id=eq.${uid}`;
+  state.orderChannel = db.channel(`orders-${uid}`)
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter }, () => {
       if (['orders', 'order-detail', 'home', 'driver-home'].includes(state.screen)) render();
     })
     .subscribe();
 }
 async function renderNotifications() {
+  if (!state.user?.id) return;
   const { data, error } = await db.from('notifications').select('*').eq('user_id', state.user.id).order('created_at', { ascending: false }).limit(60);
   if (error) throw error;
   $('screen').innerHTML = `
@@ -1322,6 +1050,7 @@ async function renderNotifications() {
   }
 }
 async function markAllRead() {
+  if (!state.user?.id) return;
   showLoading();
   try {
     const { error } = await db.from('notifications').update({ read_at: new Date().toISOString() }).eq('user_id', state.user.id).is('read_at', null);
@@ -1383,6 +1112,7 @@ function openNewPost() {
 }
 async function createPost(e) {
   e.preventDefault();
+  if (!state.user?.id) return;
   showLoading();
   try {
     let imageUrl = null;
@@ -1397,6 +1127,7 @@ async function createPost(e) {
   finally { showLoading(false); }
 }
 async function toggleLike(postId, liked) {
+  if (!postId || !state.user?.id) return;
   if (liked) {
     await db.from('community_reactions').delete().eq('post_id', postId).eq('user_id', state.user.id);
   } else {
@@ -1405,6 +1136,7 @@ async function toggleLike(postId, liked) {
   renderCommunity();
 }
 async function openComments(postId) {
+  if (!postId) return;
   const { data } = await db.from('community_comments').select('*, profiles(full_name, avatar_url)').eq('post_id', postId).order('created_at', { ascending: true });
   openModal(`
     <div class="modal-head"><h3>${t('community.comment')}</h3><button class="modal-close" onclick="App.closeModal()">×</button></div>
@@ -1419,6 +1151,7 @@ async function openComments(postId) {
 }
 async function createComment(e, postId) {
   e.preventDefault();
+  if (!postId || !state.user?.id) return;
   showLoading();
   try {
     const { error } = await db.from('community_comments').insert({ post_id: postId, author_id: state.user.id, body: $('commentBody').value.trim() });
@@ -1441,7 +1174,7 @@ async function renderAccount() {
       <div class="logo-mark" style="margin-bottom:10px">${p.avatar_url ? `<img src="${esc(p.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">` : esc(initials(p.full_name))}</div>
       <p class="card-title">${esc(p.full_name || 'IG User')}</p>
       <p class="card-sub">${esc(p.phone || '—')}</p>
-      <p class="card-sub" style="font-size:11px">${esc(state.user.email || '')}</p>
+      <p class="card-sub" style="font-size:11px">${esc(state.user?.email || '')}</p>
       <button class="btn btn-secondary btn-block btn-sm" style="margin-top:14px" onclick="App.openEditProfile()">${t('account.edit')}</button>
     </div>
     <div class="card">
@@ -1474,6 +1207,7 @@ function openEditProfile() {
 }
 async function saveProfile(e) {
   e.preventDefault();
+  if (!state.user?.id) return;
   showLoading();
   try {
     let avatar_url = state.profile?.avatar_url || null;
@@ -1489,6 +1223,10 @@ async function saveProfile(e) {
   finally { showLoading(false); }
 }
 async function renderProfileView(userId) {
+  if (!userId) {
+    toast('Akoonka lama helin.', 'error');
+    return navigate('community');
+  }
   const { data: p } = await db.from('profiles').select('*').eq('id', userId).maybeSingle();
   if (!p) throw new Error('Profile not found');
   const { data: posts } = await db.from('community_posts').select('*').eq('author_id', userId).order('created_at', { ascending: false }).limit(20);
@@ -1564,6 +1302,7 @@ async function renderAdminDrivers() {
   `;
 }
 async function adminDriverDecision(driverId, status) {
+  if (!driverId) return;
   showLoading();
   try {
     const { error } = await db.rpc('igakeen_admin_set_driver_approval', { p_driver_id: driverId, p_status: status });
@@ -1592,6 +1331,7 @@ async function renderAdminFees() {
   `;
 }
 async function adminFeeDecision(paymentId, decision) {
+  if (!paymentId) return;
   showLoading();
   try {
     const { error } = await db.rpc('igakeen_review_provider_fee', { p_payment_id: paymentId, p_decision: decision, p_review_note: null });
@@ -1620,6 +1360,7 @@ async function renderAdminSettings() {
 }
 async function saveFee(e, feeId) {
   e.preventDefault();
+  if (!feeId) return;
   showLoading();
   try {
     const { error } = await db.from('service_fees').update({
