@@ -1,644 +1,401 @@
 
-"use strict";
+/* =====================================================
+   IGA KEEN V2
+   HTML + CSS + VANILLA JAVASCRIPT + SUPABASE
+===================================================== */
 
-/* =========================================================
-   IGA KEEN
-   Supabase Auth + Orders + GPS + WhatsApp + Driver Signup
-   ========================================================= */
+/*
+  FIIRO GAAR AH:
+  1. Supabase URL iyo publishable key waa kuwa project-ka.
+  2. Ha gelin service_role key gudaha browser-ka.
+  3. Supabase tables iyo RLS policies waa inay diyaar yihiin.
+  4. Fee submission ma xaqiijinayo lacag-bixin.
+*/
 
-const SUPABASE_URL =
-  "https://zywwypqddnvslgqztnep.supabase.co";
-
-const SUPABASE_PUBLISHABLE_KEY =
+const SUPABASE_URL = "https://zywwypqddnvslgqztnep.supabase.co";
+const SUPABASE_ANON_KEY =
   "sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8";
 
-const IGA_KEEN_WHATSAPP = "252907825640";
+const ADMIN_USER_ID = "85282aac-7813-442f-a51b-6d43e3eccf1e";
 
-const ADMIN_UID =
-  "85282aac-7813-442f-a51b-6d43e3eccf1e";
+const db = window.supabase
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
 
-const $ = (id) => document.getElementById(id);
-const views = [...document.querySelectorAll(".view")];
-const navItems = [...document.querySelectorAll(".nav-item")];
+/* =========================
+   STATE
+========================= */
 
-let db = null;
 let currentUser = null;
-let currentSession = null;
-let lastWhatsAppUrl = "";
-let authMode = "login";
-let pendingService = null;
+let currentProfile = null;
+let currentDriver = null;
+let currentView = "home";
+let currentAuthMode = "login";
+let currentOrderFilter = "all";
+let currentChatOrder = null;
+let currentChatRecipient = null;
+let cachedOrders = [];
+let cachedNotifications = [];
+let toastTimer = null;
+let chatSubscription = null;
+let notificationSubscription = null;
+let ordersSubscription = null;
 
-let gps = {
-  latitude: null,
-  longitude: null
-};
+/* =========================
+   HELPERS
+========================= */
 
-if (window.supabase?.createClient) {
-  db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
+const $ = (selector) => document.querySelector(selector);
+
+const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+    return map[character];
+  });
 }
 
-/* =========================================================
-   VIEW SYSTEM
-   ========================================================= */
+function showToast(message) {
+  const toast = $("#toast");
+  if (!toast) return;
 
-function showView(id) {
-  views.forEach((view) => {
-    view.classList.toggle("active", view.id === id);
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3200);
+}
+
+function setText(selector, value) {
+  const element = $(selector);
+  if (element) element.textContent = value ?? "";
+}
+
+function setVisible(selector, visible) {
+  const element = $(selector);
+  if (element) element.classList.toggle("hidden", !visible);
+}
+
+function setError(selector, message = "") {
+  setText(selector, message);
+}
+
+function formatDate(value) {
+  if (!value) return "Lama cayimin";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Lama cayimin";
+
+  return date.toLocaleString("so-SO", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+}
+
+function formatMoney(value) {
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) return "$0.00";
+  return `$${amount.toFixed(2)}`;
+}
+
+function normalizeStatus(status) {
+  return String(status || "new").toLowerCase().replace(/\s+/g, "_");
+}
+
+function statusLabel(status) {
+  const labels = {
+    new: "Cusub",
+    contacted: " lala xiriiray",
+    confirmed: "La xaqiijiyey",
+    in_progress: "Socda",
+    completed: "Dhammaaday",
+    cancelled: "La joojiyey",
+    pending: "Sugaya",
+    rejected: "La diiday",
+    approved: "La ansixiyey"
+  };
+
+  return labels[normalizeStatus(status)] || status || "Lama yaqaan";
+}
+
+function serviceLabel(service) {
+  const labels = {
+    Taxi: "Taxi",
+    Bajaaj: "Bajaaj",
+    Delivery: "Delivery",
+    Safar: "Safar"
+  };
+  return labels[service] || service || "Adeeg";
+}
+
+function getCustomerFee(service) {
+  const fees = {
+    Taxi: 0,
+    Bajaaj: 0,
+    Delivery: 0.15,
+    Safar: 0
+  };
+
+  return fees[service] ?? 0;
+}
+
+function getProviderFee(service) {
+  const fees = {
+    Taxi: 0.30,
+    Bajaaj: 0.20,
+    Delivery: 0.20,
+    Safar: 1.50
+  };
+
+  return fees[service] ?? 0;
+}
+
+function isAdmin() {
+  return Boolean(currentUser && currentUser.id === ADMIN_USER_ID);
+}
+
+function isDriver() {
+  return Boolean(currentDriver);
+}
+
+function requireLogin(message = "Fadlan marka hore gal akoonkaaga.") {
+  if (currentUser) return true;
+
+  showToast(message);
+  navigateTo("account");
+  return false;
+}
+
+function makeEmptyState(icon, title, description = "") {
+  return `
+    <div class="empty-state">
+      <span>${escapeHTML(icon)}</span>
+      <strong>${escapeHTML(title)}</strong>
+      <p>${escapeHTML(description)}</p>
+    </div>
+  `;
+}
+
+function safeErrorMessage(error) {
+  if (!error) return "Wax khalad ah ayaa dhacay.";
+  return error.message || "Wax khalad ah ayaa dhacay.";
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function navigateTo(viewName) {
+  const view = $(`#${viewName}View`);
+
+  if (!view) {
+    console.warn("View lama helin:", viewName);
+    return;
+  }
+
+  $$(".view").forEach((element) => {
+    element.classList.remove("active");
   });
 
-  navItems.forEach((item) => {
-    item.classList.toggle("active", item.dataset.view === id);
+  view.classList.add("active");
+  currentView = viewName;
+
+  $$(".nav-item").forEach((button) => {
+    button.classList.toggle(
+      "active",
+      button.dataset.view === viewName
+    );
   });
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (viewName === "orders") loadOrders();
+  if (viewName === "notifications") loadNotifications();
+  if (viewName === "driver") loadDriverDashboard();
+  if (viewName === "account") refreshAccountUI();
 }
 
-/* =========================================================
-   FEEDBACK
-   ========================================================= */
+function bindNavigation() {
+  $$("[data-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      navigateTo(button.dataset.view);
+    });
+  });
 
-function feedback(message, type = "info", elementId = "form-feedback") {
-  const box = $(elementId);
-  if (!box) return;
+  $("#notificationButton")?.addEventListener("click", () => {
+    navigateTo("notifications");
+  });
 
-  box.textContent = message;
-  box.className = `feedback show ${type}`;
+  $("#accountButton")?.addEventListener("click", () => {
+    navigateTo("account");
+  });
+
+  $("#openDriverButton")?.addEventListener("click", () => {
+    navigateTo("driver");
+  });
 }
 
-function clearFeedback(elementId = "form-feedback") {
-  const box = $(elementId);
-  if (!box) return;
-
-  box.textContent = "";
-  box.className = "feedback";
-}
-
-/* =========================================================
-   SIGNUP FORM FIELDS
-   ========================================================= */
-
-function updateProviderFields() {
-  const role = $("account-role");
-  const details = $("provider-details");
-  const service = $("provider-service");
-  const methodField = $("delivery-method-field");
-  const method = $("delivery-method");
-  const vehicle = $("provider-vehicle");
-
-  if (!role || !details || !service || !methodField || !method) {
-    return;
-  }
-
-  const isProvider = role.value === "provider";
-  const isDelivery = isProvider && service.value === "delivery";
-
-  details.classList.toggle("hidden", !isProvider);
-  methodField.classList.toggle("hidden", !isDelivery);
-
-  service.required = isProvider;
-  method.required = isDelivery;
-
-  if (vehicle) {
-    vehicle.required = isProvider && !isDelivery;
-  }
-
-  if (!isDelivery) {
-    method.value = "";
-  }
-}
-
-$("account-role")?.addEventListener("change", updateProviderFields);
-$("provider-service")?.addEventListener("change", updateProviderFields);
-
-/* =========================================================
-   AUTH MODE
-   ========================================================= */
-
-function setAuthMode(mode) {
-  authMode = mode;
-
-  const signup = $("signup-fields");
-  const title = $("auth-title");
-  const subtitle = $("auth-subtitle");
-  const submit = $("auth-submit");
-  const switchText = $("auth-switch-text");
-  const switchButton = $("switch-auth-mode");
-  const forgot = $("forgot-password");
-
-  clearFeedback("auth-feedback");
-
-  if (mode === "signup") {
-    signup?.classList.remove("hidden");
-
-    title.textContent = "Samee akoon";
-    subtitle.textContent =
-      "Samee akoon bilaash ah. Waxaad noqon kartaa macmiil ama adeeg-bixiye.";
-
-    submit.innerHTML = 'Samee akoon <span>→</span>';
-    switchText.textContent = "Akoon hore ma leedahay?";
-    switchButton.textContent = "Soo gal";
-    forgot.classList.add("hidden");
-
-    $("auth-password").autocomplete = "new-password";
-    updateProviderFields();
-  } else {
-    signup?.classList.add("hidden");
-
-    title.textContent = "Soo gal akoonkaaga";
-    subtitle.textContent =
-      "Si aad u dalbato adeeg, marka hore gal ama samee akoon.";
-
-    submit.innerHTML = 'Soo gal <span>→</span>';
-    switchText.textContent = "Akoon ma lihid?";
-    switchButton.textContent = "Samee akoon";
-    forgot.classList.remove("hidden");
-
-    $("auth-password").autocomplete = "current-password";
-  }
-}
-
-function openAuth(message = null) {
-  setAuthMode("login");
-  showView("auth-view");
-
-  if (message) {
-    feedback(message, "info", "auth-feedback");
-  }
-}
-
-/* =========================================================
-   CUSTOMER ACCOUNT UI
-   ========================================================= */
-
-function updateAuthUI() {
-  const navLabel = $("login-nav-label");
-  const navButton = $("login-nav-button");
-
-  if (currentUser) {
-    navLabel.textContent = "Akoon";
-    navButton.dataset.view = "account-view";
-
-    $("account-email").textContent =
-      currentUser.email || "Email lama helin";
-
-    const name = currentUser.user_metadata?.full_name;
-
-    $("account-status").textContent = name
-      ? `Ku soo dhawoow, ${name}`
-      : "Waad soo gashay";
-
-    prefillCustomerInfo();
-  } else {
-    navLabel.textContent = "Login";
-    navButton.dataset.view = "auth-view";
-    $("account-email").textContent = "—";
-    $("account-status").textContent = "Ma soo gelin";
-  }
-}
-
-function prefillCustomerInfo() {
-  if (!currentUser) return;
-
-  const metadata = currentUser.user_metadata || {};
-
-  const name = metadata.full_name || "";
-  const phone = metadata.phone || "";
-
-  if (name && !$("customer-name").value.trim()) {
-    $("customer-name").value = name;
-  }
-
-  if (phone && !$("customer-phone").value.trim()) {
-    $("customer-phone").value = phone;
-  }
-}
-
-/* =========================================================
-   DRIVER PROFILE
-   ========================================================= */
-
-/*
-  Akoon adeeg-bixiye oo la sameeyay wuxuu ku bilaabmaa:
-  approval_status = pending
-  is_available = false
-
-  Ansixinta waxaa sameeya maamulka Supabase.
-*/
-
-async function ensureDriverProfile(user) {
-  if (!db || !user) return;
-
-  const metadata = user.user_metadata || {};
-
-  if (metadata.account_role !== "provider") {
-    return;
-  }
-
-  const fullName = String(metadata.full_name || "").trim();
-  const phone = String(metadata.phone || "").trim();
-  const service = String(metadata.provider_service || "").trim();
-  const deliveryMethod =
-    String(metadata.delivery_method || "").trim();
-  const vehicle = String(metadata.provider_vehicle || "").trim();
-
-  const validServices = ["taxi", "bajaaj", "delivery", "safar"];
-  const validDeliveryMethods = ["lug", "mooto", "baaskiil"];
-
-  if (!fullName || !phone || !validServices.includes(service)) {
-    throw new Error(
-      "Xogta adeeg-bixiyaha way dhiman tahay. La xiriir maamulka IGA KEEN."
-    );
-  }
-
-  if (service === "delivery" &&
-      !validDeliveryMethods.includes(deliveryMethod)) {
-    throw new Error("Fadlan dooro habka Delivery-ga.");
-  }
-
-  // Hubi in codsi hore loo sameeyay si looga hortago diiwaangelin laba-laab ah.
-  const { data: existing, error: lookupError } = await db
-    .from("drivers")
-    .select("id, approval_status, is_available")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (lookupError) {
-    throw lookupError;
-  }
-
-  if (existing) {
-    return existing;
-  }
-
-  const driverRecord = {
-    user_id: user.id,
-    full_name: fullName,
-    phone,
-    service_type: service,
-    vehicle_description: vehicle || null,
-    delivery_method: service === "delivery" ? deliveryMethod : null,
-    approval_status: "pending",
-    is_available: false
-  };
-
-  const { data, error } = await db
-    .from("drivers")
-    .insert(driverRecord)
-    .select("id, approval_status, is_available")
-    .single();
-
-  if (error) {
-    console.error("Driver profile creation failed:", error);
-    throw new Error(
-      "Akoonka waa la sameeyay, laakiin codsiga adeeg-bixiyaha lama kaydin. Hubi tiirka delivery_method iyo oggolaanshaha Supabase."
-    );
-  }
-
-  return data;
-}
-
-async function showDriverStatus(user) {
-  if (!db || !user) return false;
-
-  const metadata = user.user_metadata || {};
-
-  if (metadata.account_role !== "provider") {
-    return false;
-  }
-
-  try {
-    const { data: driver, error } = await db
-      .from("drivers")
-      .select("approval_status, is_available, service_type, delivery_method")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (error) throw error;
-
-    if (!driver) {
-      feedback(
-        "Akoonkaagu waa jiraa, laakiin codsiga adeeg-bixiyaha lama helin. La xiriir maamulka IGA KEEN.",
-        "error",
-        "account-feedback"
-      );
-      showView("account-view");
-      return true;
-    }
-
-    if (driver.approval_status === "approved") {
-      $("account-status").textContent =
-        driver.is_available
-          ? "Adeeg-bixiye la ansixiyay"
-          : "La ansixiyay — weli offline";
-
-      feedback(
-        "Codsigaaga waa la ansixiyay. Raac tilmaamaha maamulka ka hor intaadan dalab aqbalin.",
-        "success",
-        "account-feedback"
-      );
-    } else if (driver.approval_status === "rejected") {
-      $("account-status").textContent = "Codsiga waa la diiday";
-
-      feedback(
-        "Codsiga adeeg-bixiyaha waa la diiday. La xiriir maamulka IGA KEEN haddii aad u baahan tahay faahfaahin.",
-        "error",
-        "account-feedback"
-      );
-    } else {
-      $("account-status").textContent = "Codsigaaga waa la sugayaa";
-
-      feedback(
-        "Codsigaaga adeeg-bixiye waa la helay. Sug inta maamulka IGA KEEN uu ansixinayo. Weli ma shaqayn kartid.",
-        "info",
-        "account-feedback"
-      );
-    }
-
-    showView("account-view");
-    return true;
-  } catch (error) {
-    console.error("Driver status lookup failed:", error);
-
-    feedback(
-      error?.message || "Xaaladda adeeg-bixiyaha lama soo qaadi karin.",
-      "error",
-      "account-feedback"
-    );
-
-    showView("account-view");
-    return true;
-  }
-}
-
-/* =========================================================
-   AUTH STATE
-   ========================================================= */
-
-async function loadAuthState() {
+/* =========================
+   SUPABASE AUTH
+========================= */
+
+async function refreshSession() {
   if (!db) return;
 
   const { data, error } = await db.auth.getSession();
 
   if (error) {
-    console.error("getSession error:", error);
+    console.error("Session error:", error.message);
     return;
   }
 
-  currentSession = data.session;
   currentUser = data.session?.user || null;
 
-  updateAuthUI();
+  if (currentUser) {
+    await loadCurrentProfile();
+  } else {
+    currentProfile = null;
+    currentDriver = null;
+  }
+
+  refreshAccountUI();
 }
 
-if (db) {
-  db.auth.onAuthStateChange((event, session) => {
-    currentSession = session;
-    currentUser = session?.user || null;
-    updateAuthUI();
+async function loadCurrentProfile() {
+  if (!db || !currentUser) return;
 
-    if (event === "SIGNED_IN" && currentUser && pendingService) {
-      const service = pendingService;
-      pendingService = null;
+  currentProfile = {
+    id: currentUser.id,
+    email: currentUser.email || "",
+    role: currentUser.id === ADMIN_USER_ID ? "admin" : "customer"
+  };
 
-      setTimeout(() => selectService(service), 100);
-    }
+  currentDriver = null;
 
-    if (event === "SIGNED_OUT") {
-      showView("home-view");
-    }
-  });
+  const { data, error } = await db
+    .from("drivers")
+    .select("*")
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+
+  if (error) {
+    console.warn("Driver profile lama akhrin karin:", error.message);
+  }
+
+  if (data) {
+    currentDriver = data;
+    currentProfile.role =
+      currentUser.id === ADMIN_USER_ID ? "admin" : "driver";
+  }
 }
 
-/* =========================================================
-   SERVICE SELECTION
-   ========================================================= */
+function refreshAccountUI() {
+  const loggedIn = Boolean(currentUser);
 
-function selectService(service) {
-  if (!currentUser) {
-    pendingService = service;
+  setVisible("#authPanel", !loggedIn);
+  setVisible("#signedInPanel", loggedIn);
 
-    openAuth(
-      "Si aad u dalbato adeeggan, marka hore gal ama samee akoon."
+  if (loggedIn) {
+    setText("#accountHeading", "Akoonkayga");
+    setText("#signedInEmail", currentUser.email || "Akoon");
+    setText(
+      "#signedInRole",
+      isAdmin()
+        ? "Maamule"
+        : isDriver()
+          ? "Adeeg-bixiye / Darawal"
+          : "Macmiil"
     );
 
-    return;
-  }
-
-  $("service-type").value = service;
-
-  document.querySelectorAll(".service-tile").forEach((tile) => {
-    tile.classList.toggle("selected", tile.dataset.service === service);
-  });
-
-  $("passengers-row").style.display =
-    service === "delivery" ? "none" : "grid";
-
-  prefillCustomerInfo();
-  showView("order-view");
-}
-
-/* =========================================================
-   WHATSAPP
-   ========================================================= */
-
-function whatsappUrl(message) {
-  return `https://wa.me/${IGA_KEEN_WHATSAPP}?text=${encodeURIComponent(message)}`;
-}
-
-function openWhatsApp(url) {
-  if (url) {
-    window.open(url, "_blank", "noopener,noreferrer");
+    setVisible("#openDriverButton", !isAdmin());
+  } else {
+    setText("#accountHeading", "Gal akoonkaaga");
   }
 }
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+function switchAuthMode(mode) {
+  currentAuthMode = mode;
 
-navItems.forEach((item) => {
-  item.addEventListener("click", () => {
-    const target = item.dataset.view;
+  $("#loginTab")?.classList.toggle("active", mode === "login");
+  $("#signupTab")?.classList.toggle("active", mode === "signup");
 
-    if (target === "order-view") {
-      if (!currentUser) {
-        pendingService = null;
-        openAuth("Si aad u dalbato, marka hore gal ama samee akoon.");
-        return;
-      }
+  setVisible("#fullNameGroup", mode === "signup");
 
-      prefillCustomerInfo();
-      showView("order-view");
-      return;
-    }
+  const isDriverSignup =
+    mode === "signup" && $("#driverSignupCheckbox")?.checked;
 
-    if (target === "auth-view" && currentUser) {
-      showView("account-view");
-      return;
-    }
+  setVisible("#driverSignupFields", Boolean(isDriverSignup));
 
-    showView(target);
-  });
-});
+  setText(
+    "#authSubmitButton",
+    mode === "login" ? "Gal" : "Samee akoon"
+  );
 
-$("start-order-button").addEventListener("click", () => {
-  if (!currentUser) {
-    pendingService = null;
-    openAuth("Si aad u dalbato, marka hore gal ama samee akoon.");
-    return;
+  const password = $("#authPassword");
+  if (password) {
+    password.autocomplete =
+      mode === "login" ? "current-password" : "new-password";
   }
 
-  prefillCustomerInfo();
-  showView("order-view");
-});
+  setError("#authError", "");
+  setText("#authMessage", "");
+}
 
-document.querySelectorAll(".service-tile").forEach((tile) => {
-  tile.addEventListener("click", () => {
-    selectService(tile.dataset.service);
+function bindAuthTabs() {
+  $("#loginTab")?.addEventListener("click", () => {
+    switchAuthMode("login");
   });
-});
 
-$("back-home").addEventListener("click", () => showView("home-view"));
-$("help-button").addEventListener("click", () => showView("contact-view"));
+  $("#signupTab")?.addEventListener("click", () => {
+    switchAuthMode("signup");
+  });
 
-$("switch-auth-mode").addEventListener("click", () => {
-  setAuthMode(authMode === "login" ? "signup" : "login");
-});
+  $("#driverSignupCheckbox")?.addEventListener("change", () => {
+    setVisible(
+      "#driverSignupFields",
+      currentAuthMode === "signup" &&
+        $("#driverSignupCheckbox").checked
+    );
+  });
 
-/* =========================================================
-   SIGN UP / LOGIN
-   ========================================================= */
+  $("#authForm")?.addEventListener("submit", handleAuthSubmit);
 
-$("auth-form").addEventListener("submit", async (event) => {
+  $("#signOutButton")?.addEventListener("click", signOut);
+}
+
+async function handleAuthSubmit(event) {
   event.preventDefault();
-  clearFeedback("auth-feedback");
 
   if (!db) {
-    feedback("Supabase ma furmin. Hubi internet-ka.", "error", "auth-feedback");
+    setError("#authError", "Supabase ma xirmana. Hubi internetka iyo script-ka.");
     return;
   }
 
-  const email = $("auth-email").value.trim();
-  const password = $("auth-password").value;
+  setError("#authError", "");
+  setText("#authMessage", "");
+
+  const email = $("#authEmail").value.trim();
+  const password = $("#authPassword").value;
+  const submitButton = $("#authSubmitButton");
 
   if (!email || !password) {
-    feedback("Fadlan geli email iyo password.", "error", "auth-feedback");
+    setError("#authError", "Geli email-ka iyo password-ka.");
     return;
   }
 
-  if (password.length < 8) {
-    feedback(
-      "Password-ku waa inuu ahaadaa ugu yaraan 8 xaraf.",
-      "error",
-      "auth-feedback"
-    );
-    return;
-  }
-
-  const button = $("auth-submit");
-  button.disabled = true;
-  button.textContent =
-    authMode === "signup" ? "Akoonka ayaa la sameynayaa…" : "Soo gelayaa…";
+  submitButton.disabled = true;
+  setText("#authSubmitButton", "Sug...");
 
   try {
-    if (authMode === "signup") {
-      const fullName = $("auth-full-name").value.trim();
-      const phone = $("auth-phone").value.trim();
-      const role = $("account-role")?.value || "customer";
-
-      if (!fullName || !phone) {
-        throw new Error("Fadlan geli magaca iyo telefoonka.");
-      }
-
-      let providerService = "";
-      let deliveryMethod = "";
-      let providerVehicle = "";
-
-      if (role === "provider") {
-        providerService = $("provider-service").value;
-        deliveryMethod = $("delivery-method")?.value || "";
-        providerVehicle = $("provider-vehicle")?.value.trim() || "";
-
-        if (!["taxi", "bajaaj", "delivery", "safar"].includes(providerService)) {
-          throw new Error("Fadlan dooro adeegga aad qabanayso.");
-        }
-
-        if (providerService === "delivery" &&
-            !["lug", "mooto", "baaskiil"].includes(deliveryMethod)) {
-          throw new Error("Fadlan dooro Lug, Mooto ama Baaskiil.");
-        }
-
-        if (providerService !== "delivery" && !providerVehicle) {
-          throw new Error("Fadlan geli faahfaahinta gaarigaaga.");
-        }
-      }
-
-      const userMetadata = {
-        full_name: fullName,
-        phone,
-        account_role: role
-      };
-
-      if (role === "provider") {
-        userMetadata.provider_service = providerService;
-        userMetadata.provider_vehicle = providerVehicle;
-
-        if (providerService === "delivery") {
-          userMetadata.delivery_method = deliveryMethod;
-        }
-      }
-
-      const { data, error } = await db.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: "https://cabaasnuur.github.io/iga-keen-app/",
-          data: userMetadata
-        }
-      });
-
-      if (error) throw error;
-
-      currentSession = data.session;
-      currentUser = data.user || null;
-      updateAuthUI();
-
-      if (data.session && data.user && role === "provider") {
-        await ensureDriverProfile(data.user);
-      }
-
-      if (data.session) {
-        feedback(
-          role === "provider"
-            ? "Akoonka waa la sameeyay. Codsigaaga adeeg-bixiyaha waxaa loo gudbinayaa maamulka."
-            : "Akoonka waa la sameeyay.",
-          "success",
-          "auth-feedback"
-        );
-
-        setTimeout(async () => {
-          if (role === "provider") {
-            await showDriverStatus(data.user);
-          } else if (pendingService) {
-            const service = pendingService;
-            pendingService = null;
-            selectService(service);
-          } else {
-            showView("account-view");
-          }
-        }, 500);
-      } else {
-        feedback(
-          "Akoonka waa la sameeyay. Fadlan email-kaaga xaqiiji, kadibna soo gal. Codsiga adeeg-bixiyaha waxaa la kaydin doonaa markaad soo gasho.",
-          "success",
-          "auth-feedback"
-        );
-
-        $("auth-password").value = "";
-      }
-    } else {
+    if (currentAuthMode === "login") {
       const { data, error } = await db.auth.signInWithPassword({
         email,
         password
@@ -646,215 +403,189 @@ $("auth-form").addEventListener("submit", async (event) => {
 
       if (error) throw error;
 
-      currentSession = data.session;
       currentUser = data.user;
-      updateAuthUI();
+      await loadCurrentProfile();
+      refreshAccountUI();
+      await setupRealtimeSubscriptions();
 
-      const isProvider =
-        currentUser.user_metadata?.account_role === "provider";
+      showToast("Waad gashay akoonkaaga.");
+      navigateTo("home");
+    } else {
+      const fullName = $("#authFullName").value.trim();
+      const wantsDriver = $("#driverSignupCheckbox").checked;
+      const phone = $("#authPhone").value.trim();
+      const serviceType = $("#driverServiceType").value;
+      const vehicle = $("#vehicleDescription").value.trim();
 
-      if (isProvider) {
-        await ensureDriverProfile(currentUser);
-        await showDriverStatus(currentUser);
-      } else {
-        feedback(
-          "Si guul leh ayaad u soo gashay.",
-          "success",
-          "auth-feedback"
-        );
+      if (!fullName) {
+        throw new Error("Fadlan geli magacaaga.");
+      }
 
-        setTimeout(() => {
-          if (pendingService) {
-            const service = pendingService;
-            pendingService = null;
-            selectService(service);
-          } else {
-            showView("account-view");
+      if (wantsDriver && !phone) {
+        throw new Error("Darawalku waa inuu geliyaa telefoonkiisa.");
+      }
+
+      const { data, error } = await db.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            account_type: wantsDriver ? "driver" : "customer"
           }
-        }, 350);
+        }
+      });
+
+      if (error) throw error;
+
+      const newUser = data.user;
+      const sessionExists = Boolean(data.session);
+
+      if (wantsDriver && newUser && sessionExists) {
+        const { error: driverError } = await db.from("drivers").insert({
+          user_id: newUser.id,
+          full_name: fullName,
+          phone,
+          service_type: serviceType,
+          vehicle_description: vehicle || null,
+          is_available: false,
+          approval_status: "pending"
+        });
+
+        if (driverError) {
+          console.error("Driver profile creation error:", driverError.message);
+          setText(
+            "#authMessage",
+            "Akoonka waa la sameeyey, laakiin xogta darawalka lama kaydin. Gal mar kale ama la xiriir maamulka."
+          );
+        }
+      }
+
+      if (sessionExists) {
+        currentUser = data.user;
+        await loadCurrentProfile();
+        refreshAccountUI();
+        await setupRealtimeSubscriptions();
+        showToast("Akoonka waa la sameeyey.");
+        navigateTo("home");
+      } else {
+        setText(
+          "#authMessage",
+          "Akoonka waa la sameeyey. Haddii email xaqiijin loo baahan yahay, ka xaqiiji email-kaaga kadibna gal."
+        );
       }
     }
   } catch (error) {
-    console.error("IGA KEEN Auth error:", error);
-
-    let message = error?.message || "Khalad ayaa dhacay.";
-
-    if (message.toLowerCase().includes("invalid login credentials")) {
-      message = "Email ama password ayaa khaldan.";
-    }
-
-    if (message.toLowerCase().includes("user already registered")) {
-      message =
-        "Email-kan hore ayaa akoon loogu sameeyay. Soo gal halkii aad akoon cusub ka samayn lahayd.";
-    }
-
-    feedback(message, "error", "auth-feedback");
+    setError("#authError", safeErrorMessage(error));
   } finally {
-    button.disabled = false;
-    button.innerHTML =
-      authMode === "signup"
-        ? 'Samee akoon <span>→</span>'
-        : 'Soo gal <span>→</span>';
-  }
-});
-
-/* =========================================================
-   FORGOT PASSWORD
-   ========================================================= */
-
-$("forgot-password").addEventListener("click", async () => {
-  clearFeedback("auth-feedback");
-
-  if (!db) {
-    feedback("Supabase ma furmin.", "error", "auth-feedback");
-    return;
-  }
-
-  const email = $("auth-email").value.trim();
-
-  if (!email) {
-    feedback("Marka hore geli email-kaaga.", "error", "auth-feedback");
-    $("auth-email").focus();
-    return;
-  }
-
-  try {
-    const { error } = await db.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://cabaasnuur.github.io/iga-keen-app/"
-    });
-
-    if (error) throw error;
-
-    feedback(
-      "Email-ka reset password-ka ayaa laguu diray. Hubi inbox-kaaga.",
-      "success",
-      "auth-feedback"
-    );
-  } catch (error) {
-    console.error("Password reset error:", error);
-
-    feedback(
-      error?.message || "Password reset lama dirin.",
-      "error",
-      "auth-feedback"
+    submitButton.disabled = false;
+    setText(
+      "#authSubmitButton",
+      currentAuthMode === "login" ? "Gal" : "Samee akoon"
     );
   }
-});
+}
 
-/* =========================================================
-   ACCOUNT ORDER
-   ========================================================= */
-
-$("account-order-button").addEventListener("click", () => {
-  if (!currentUser) {
-    openAuth("Fadlan marka hore soo gal.");
-    return;
-  }
-
-  prefillCustomerInfo();
-  showView("order-view");
-});
-
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-$("logout-button").addEventListener("click", async () => {
+async function signOut() {
   if (!db) return;
 
   const { error } = await db.auth.signOut();
 
   if (error) {
-    feedback(
-      error.message || "Ka bixitaanka akoonka wuu fashilmay.",
-      "error",
-      "account-feedback"
-    );
+    showToast("Ka bixiddu way fashilantay: " + error.message);
     return;
   }
 
   currentUser = null;
-  currentSession = null;
-  feedback("Waad ka baxday akoonka.", "success", "account-feedback");
-  showView("home-view");
-});
+  currentProfile = null;
+  currentDriver = null;
+  cachedOrders = [];
+  cachedNotifications = [];
+  currentChatOrder = null;
+  currentChatRecipient = null;
 
-/* =========================================================
-   NEW ORDER
-   ========================================================= */
+  removeRealtimeSubscriptions();
+  refreshAccountUI();
 
-$("new-order").addEventListener("click", () => {
-  if (!currentUser) {
-    openAuth("Fadlan marka hore soo gal.");
+  showToast("Waad ka baxday akoonka.");
+  navigateTo("home");
+}
+
+/* =========================
+   SERVICE ORDER FORM
+========================= */
+
+function openOrderForm(service) {
+  const allowed = ["Taxi", "Bajaaj", "Delivery", "Safar"];
+
+  if (!allowed.includes(service)) {
+    showToast("Adeeggan lama aqoonsan.");
     return;
   }
 
-  $("order-form").reset();
+  $("#serviceType").value = service;
+  setText("#orderHeading", `Dalbo ${serviceLabel(service)}`);
 
-  gps = { latitude: null, longitude: null };
+  const customerFee = getCustomerFee(service);
+  const feeText =
+    customerFee > 0
+      ? `Kharashka IGA KEEN ee macmiilka: ${formatMoney(customerFee)}. Qiimaha adeegga laftiisa adiga iyo adeeg-bixiyaha ayaad isla garanaysaan.`
+      : "Macmiilka lagama qaadayo fee dalabkan. Qiimaha adeegga adiga iyo adeeg-bixiyaha ayaad isla garanaysaan.";
 
-  $("location-message").textContent =
-    "Ama goobta gacanta ku qor sanduuqa kore.";
+  setText("#customerFeeText", feeText);
 
-  $("passengers-row").style.display = "grid";
+  setVisible("#passengersGroup", service !== "Delivery");
+  setVisible("#scheduleGroup", service === "Safar" || service === "Taxi");
 
-  document.querySelectorAll(".service-tile").forEach((tile) => {
-    tile.classList.toggle("selected", tile.dataset.service === "taxi");
+  setError("#orderError", "");
+  navigateTo("order");
+}
+
+function bindServiceCards() {
+  $$(".service-card").forEach((button) => {
+    button.addEventListener("click", () => {
+      openOrderForm(button.dataset.service);
+    });
   });
 
-  clearFeedback();
-  prefillCustomerInfo();
-  showView("order-view");
-});
+  $("#orderForm")?.addEventListener("submit", submitOrder);
+  $("#getLocationButton")?.addEventListener("click", getCurrentLocation);
+}
 
-/* =========================================================
-   SUCCESS WHATSAPP
-   ========================================================= */
-
-$("success-whatsapp").addEventListener("click", () => {
-  openWhatsApp(
-    lastWhatsAppUrl ||
-    whatsappUrl("Asc IGA KEEN, waxaan rabaa inaan wax ka weydiiyo adeegga.")
-  );
-});
-
-/* =========================================================
-   GPS
-   ========================================================= */
-
-function getGPS() {
-  const msg = $("location-message");
-
+async function getCurrentLocation() {
   if (!navigator.geolocation) {
-    msg.textContent =
-      "Telefoonkaagu ma taageerayo GPS browser-ka. Fadlan goobta gacanta ku qor.";
+    showToast("Telefoonkaagu ma taageerayo GPS.");
     return;
   }
 
-  msg.textContent = "GPS ayaa la raadinayaa…";
+  const button = $("#getLocationButton");
+  button.disabled = true;
+  setText("#getLocationButton", "Sug...");
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
-      gps.latitude = position.coords.latitude;
-      gps.longitude = position.coords.longitude;
+      $("#pickupLatitude").value = position.coords.latitude;
+      $("#pickupLongitude").value = position.coords.longitude;
 
-      if (!$("pickup-address").value.trim()) {
-        $("pickup-address").value = "Goobta GPS-kayga";
+      if (!$("#pickupAddress").value.trim()) {
+        $("#pickupAddress").value = "Goobtayda hadda (GPS)";
       }
 
-      msg.textContent =
-        `Location waa la helay (${gps.latitude.toFixed(5)}, ${gps.longitude.toFixed(5)}).`;
+      button.disabled = false;
+      setText("#getLocationButton", "GPS");
+      showToast("Goobta GPS waa la helay.");
     },
     (error) => {
+      button.disabled = false;
+      setText("#getLocationButton", "GPS");
+
       const messages = {
-        1: "GPS waa la diiday. Oggolow Location-ka ama goobta gacanta ku qor.",
-        2: "GPS lama helin. Isku day mar kale ama goobta gacanta ku qor.",
+        1: "Oggolow location-ka telefoonkaaga.",
+        2: "Goobta GPS lama heli karo. Isku day mar kale.",
         3: "GPS-ku waqti ayuu qaatay. Isku day mar kale."
       };
 
-      msg.textContent =
-        messages[error.code] ||
-        "GPS lama helin. Geli goobta gacanta.";
+      showToast(messages[error.code] || "GPS error.");
     },
     {
       enableHighAccuracy: true,
@@ -864,90 +595,59 @@ function getGPS() {
   );
 }
 
-$("get-location-button").addEventListener("click", getGPS);
-
-$("home-location-button").addEventListener("click", () => {
-  if (!currentUser) {
-    openAuth(
-      "Si aad u isticmaasho dalabka, marka hore gal ama samee akoon."
-    );
-    return;
-  }
-
-  showView("order-view");
-  getGPS();
-});
-
-/* =========================================================
-   CONTACT WHATSAPP
-   ========================================================= */
-
-$("contact-whatsapp").href = whatsappUrl(
-  "Asc IGA KEEN, waxaan rabaa inaan wax ka weydiiyo adeegyada."
-);
-
-/* =========================================================
-   SERVICE SELECT CHANGE
-   ========================================================= */
-
-$("service-type").addEventListener("change", () => {
-  const service = $("service-type").value;
-
-  document.querySelectorAll(".service-tile").forEach((tile) => {
-    tile.classList.toggle("selected", tile.dataset.service === service);
-  });
-
-  $("passengers-row").style.display =
-    service === "delivery" ? "none" : "grid";
-});
-
-/* =========================================================
-   ORDER SUBMIT
-   ========================================================= */
-
-$("order-form").addEventListener("submit", async (event) => {
+async function submitOrder(event) {
   event.preventDefault();
-  clearFeedback();
-
-  if (!currentUser) {
-    openAuth(
-      "Si aad u dirto dalabka, marka hore soo gal ama samee akoon."
-    );
-    return;
-  }
 
   if (!db) {
-    feedback("Supabase ma furmin. Hubi internet-ka.", "error");
+    setError("#orderError", "Xiriirka database-ka ma shaqaynayo.");
     return;
   }
 
-  if (!currentSession) {
-    const { data } = await db.auth.getSession();
-    currentSession = data.session;
-    currentUser = data.session?.user || null;
-  }
-
-  if (!currentUser) {
-    openAuth("Session-kaaga wuu dhammaaday. Fadlan mar kale soo gal.");
+  if (!requireLogin("Si aad dalab u dirto, marka hore samee akoon ama gal.")) {
     return;
   }
 
-  const submit = $("submit-order");
-  const service = $("service-type").value;
-  const name = $("customer-name").value.trim();
-  const phone = $("customer-phone").value.trim();
-  const pickup = $("pickup-address").value.trim();
-  const destination = $("destination-address").value.trim();
-  const notes = $("notes").value.trim();
-  const scheduledValue = $("scheduled-at").value;
+  const button = $("#submitOrderButton");
+  setError("#orderError", "");
 
-  if (!name || !phone || !pickup || !destination) {
-    feedback(
-      "Fadlan buuxi magaca, telefoonka, goobta lagaa qaadayo iyo meesha loo socdo.",
-      "error"
+  const service = $("#serviceType").value;
+  const name = $("#customerName").value.trim();
+  const phone = $("#customerPhone").value.trim();
+  const pickup = $("#pickupAddress").value.trim();
+  const destination = $("#destinationAddress").value.trim();
+  const notes = $("#orderNotes").value.trim();
+
+  if (!name || !phone || !pickup) {
+    setError(
+      "#orderError",
+      "Magaca, telefoonka iyo goobta lagaa qaadayo waa muhiim."
     );
     return;
   }
+
+  if (service === "Delivery" && !destination) {
+    setError("#orderError", "Delivery-ga geli meesha alaabta la geynayo.");
+    return;
+  }
+
+  if (service === "Safar" && !destination) {
+    setError("#orderError", "Safarka geli magaalada ama meesha loo socdo.");
+    return;
+  }
+
+  let scheduledAt = $("#scheduledAt").value || null;
+
+  if (scheduledAt) {
+    const date = new Date(scheduledAt);
+    if (Number.isNaN(date.getTime())) {
+      setError("#orderError", "Waqtiga safarka sax ma aha.");
+      return;
+    }
+    scheduledAt = date.toISOString();
+  }
+
+  const passengers =
+    service === "Delivery" ? null : Number($("#passengers").value || 1);
 
   const payload = {
     user_id: currentUser.id,
@@ -955,23 +655,26 @@ $("order-form").addEventListener("submit", async (event) => {
     customer_name: name,
     customer_phone: phone,
     pickup_address: pickup,
-    destination_address: destination,
+    destination_address: destination || null,
+    pickup_latitude: $("#pickupLatitude").value
+      ? Number($("#pickupLatitude").value)
+      : null,
+    pickup_longitude: $("#pickupLongitude").value
+      ? Number($("#pickupLongitude").value)
+      : null,
+    destination_latitude: null,
+    destination_longitude: null,
     notes: notes || null,
-    passengers: service === "delivery"
-      ? null
-      : (Number.parseInt($("passengers").value, 10) || 1),
-    pickup_latitude: gps.latitude,
-    pickup_longitude: gps.longitude
+    passengers,
+    scheduled_at: scheduledAt,
+    status: "new",
+    customer_fee: getCustomerFee(service),
+    provider_fee: getProviderFee(service),
+    currency: "USD"
   };
 
-  if (scheduledValue) {
-    payload.scheduled_at = new Date(scheduledValue).toISOString();
-  }
-
-  submit.disabled = true;
-  submit.textContent = "Waa la kaydinayaa…";
-
-  feedback("Dalabkaaga ayaa lagu kaydinayaa IGA KEEN…", "info");
+  button.disabled = true;
+  setText("#submitOrderButton", "Diraya...");
 
   try {
     const { data, error } = await db
@@ -982,383 +685,883 @@ $("order-form").addEventListener("submit", async (event) => {
 
     if (error) throw error;
 
-    const serviceNames = {
-      taxi: "Taxi",
-      bajaaj: "Bajaaj",
-      delivery: "Delivery",
-      safar: "Safar"
-    };
+    cachedOrders.unshift(data);
 
-    const maps =
-      gps.latitude !== null && gps.longitude !== null
-        ? `https://maps.google.com/?q=${gps.latitude},${gps.longitude}`
-        : "GPS lama darin; goobta qoraalka ah ayaa la isticmaalay.";
+    $("#orderForm").reset();
+    $("#serviceType").value = "";
 
-    const message = [
-      "*Dalab cusub — IGA KEEN*",
-      `Adeeg: ${serviceNames[service] || service}`,
-      `Magac: ${name}`,
-      `Telefoon: ${phone}`,
-      `Laga qaadayo: ${pickup}`,
-      `Loo socdo: ${destination}`,
-      service !== "delivery" ? `Rakaab: ${payload.passengers}` : null,
-      scheduledValue
-        ? `Waqti: ${new Date(scheduledValue).toLocaleString()}`
-        : null,
-      notes ? `Faahfaahin: ${notes}` : null,
-      `GPS/Map: ${maps}`
-    ].filter(Boolean).join("\n");
+    $("#pickupLatitude").value = "";
+    $("#pickupLongitude").value = "";
 
-    lastWhatsAppUrl = whatsappUrl(message);
-
-    $("order-reference").textContent = data?.id
-      ? `Order ID: ${data.id}`
-      : `Adeegga: ${serviceNames[service] || service}`;
-
-    $("success-message").textContent =
-      "Dalabkaaga waxaa lagu kaydiyey Supabase. WhatsApp ayaad ka sii xaqiijin kartaa IGA KEEN.";
-
-    showView("success-view");
-
-    const waWindow = window.open(
-      lastWhatsAppUrl,
-      "_blank",
-      "noopener,noreferrer"
-    );
-
-    if (!waWindow) {
-      $("success-message").textContent +=
-        " Taabo badhanka WhatsApp si aad u furto.";
-    }
+    showToast("Dalabkaaga waa la diray.");
+    navigateTo("orders");
+    await loadOrders();
   } catch (error) {
-    console.error("IGA KEEN order save failed:", error);
-
-    let message = error?.message || "Khalad aan la garanayn ayaa dhacay.";
-
-    if (message.toLowerCase().includes("row-level security")) {
-      message =
-        "Dalabka lama oggolaan. Hubi in account-kaagu soo galay iyo user_id policy-ga Supabase.";
-    }
-
-    feedback(`Dalabka lama kaydin: ${message}`, "error");
+    console.error("Order insert error:", error);
+    setError(
+      "#orderError",
+      "Dalabka lama dirin. " + safeErrorMessage(error)
+    );
   } finally {
-    submit.disabled = false;
-    submit.innerHTML = 'Dir dalabka <span>→</span>';
-  }
-});
-
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
-
-(async function init() {
-  setAuthMode("login");
-
-  if (!db) {
-    console.error("Supabase client lama abuurin.");
-    return;
-  }
-
-  await loadAuthState();
-})();
-
-/* =========================================================
-   IGA KEEN V2: NOTIFICATIONS + ORDER CHAT
-   Ku dar dhammaadka script.js
-   ========================================================= */
-
-let v2ActiveOrderId = null;
-
-function v2Escape(value) {
-  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
-
-function v2ShowEmpty(elementId, message) {
-  const element = $(elementId);
-  if (element) {
-    element.innerHTML =
-      `<p class="empty-state">${v2Escape(message)}</p>`;
+    button.disabled = false;
+    setText("#submitOrderButton", "Dir dalabka");
   }
 }
 
-async function v2LoadNotifications() {
-  if (!db || !currentUser) {
-    v2ShowEmpty("notifications-list", "Marka hore soo gal akoonkaaga.");
-    return;
-  }
+/* =========================
+   LOAD CUSTOMER ORDERS
+========================= */
 
-  const list = $("notifications-list");
-  list.innerHTML = '<p class="empty-state">Waa la soo rarayaa...</p>';
+function isOrderActive(order) {
+  return !["completed", "cancelled"].includes(normalizeStatus(order.status));
+}
 
-  const { data, error } = await db
-    .from("notifications")
-    .select("id,title,body,notification_type,created_at,read_at")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false })
-    .limit(50);
+async function loadOrders() {
+  const container = $("#ordersList");
+  if (!container) return;
 
-  if (error) {
-    console.error("Notifications:", error);
-    v2ShowEmpty(
-      "notifications-list",
-      "Ogeysiisyada lama soo qaadi karin. Hubi Supabase RLS."
+  if (!currentUser) {
+    container.innerHTML = makeEmptyState(
+      "🔐",
+      "Gal akoonkaaga",
+      "Dalabyadaadu waxay u baahan yihiin akoon."
     );
     return;
   }
 
-  if (!data?.length) {
-    v2ShowEmpty("notifications-list", "Weli ogeysiis ma jiro.");
-    return;
-  }
+  container.innerHTML = makeEmptyState("⏳", "Waa la soo rarayaa...");
 
-  list.innerHTML = data.map((item) => `
-    <article class="v2-card">
-      <h3>${v2Escape(item.title || "Ogeysiis cusub")}</h3>
-      <p>${v2Escape(item.body || "")}</p>
-      <p>${v2Escape(new Date(item.created_at).toLocaleString())}</p>
-      ${item.read_at ? "" : `
-        <button class="secondary-button"
-          data-notification-read="${v2Escape(item.id)}"
-          type="button">Waan arkay</button>`}
-    </article>
-  `).join("");
+  try {
+    let query = db
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (isAdmin()) {
+      // Admin-ku wuxuu arki karaa dalabyada haddii RLS policy oggolaato.
+    } else if (isDriver()) {
+      query = query.eq("driver_id", currentDriver.id);
+    } else {
+      query = query.eq("user_id", currentUser.id);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    cachedOrders = data || [];
+    renderOrders();
+  } catch (error) {
+    console.error("Load orders error:", error);
+    container.innerHTML = makeEmptyState(
+      "⚠️",
+      "Dalabyada lama soo rari karin",
+      safeErrorMessage(error)
+    );
+  }
 }
 
-$("notifications-list")?.addEventListener("click", async (event) => {
-  const button = event.target.closest("[data-notification-read]");
-  if (!button || !db || !currentUser) return;
+function renderOrders() {
+  const container = $("#ordersList");
+  if (!container) return;
 
-  const { error } = await db
-    .from("notifications")
-    .update({ read_at: new Date().toISOString() })
-    .eq("id", button.dataset.notificationRead)
-    .eq("user_id", currentUser.id);
+  let orders = [...cachedOrders];
 
-  if (error) {
-    console.error("Mark notification read:", error);
-    alert("Ogeysiiska lama cusboonaysiin. Hubi siyaasadda Supabase.");
+  if (currentOrderFilter === "active") {
+    orders = orders.filter(isOrderActive);
+  } else if (currentOrderFilter === "completed") {
+    orders = orders.filter(
+      (order) => normalizeStatus(order.status) === "completed"
+    );
+  }
+
+  if (!orders.length) {
+    container.innerHTML = makeEmptyState(
+      "📋",
+      "Dalabyo ma jiraan",
+      "Dalabyada ku habboon qaybtan halkan ayay ka muuqan doonaan."
+    );
     return;
   }
 
-  await v2LoadNotifications();
-});
+  container.innerHTML = orders.map((order) => {
+    const status = normalizeStatus(order.status);
 
-$("refresh-notifications")?.addEventListener(
-  "click",
-  v2LoadNotifications
-);
+    return `
+      <article class="order-card">
+        <div class="order-card-top">
+          <div>
+            <h3>${escapeHTML(serviceLabel(order.service_type))}</h3>
+            <p>Dalab #${escapeHTML(order.order_number ?? order.id)}</p>
+          </div>
+          <span class="status-badge status-${escapeHTML(status)}">
+            ${escapeHTML(statusLabel(status))}
+          </span>
+        </div>
 
-async function v2LoadOrdersForChat() {
-  if (!db || !currentUser) {
-    v2ShowEmpty("messages-orders", "Marka hore soo gal akoonkaaga.");
-    return;
-  }
+        <div class="order-details">
+          <p><strong>Macmiil:</strong> ${escapeHTML(order.customer_name || "—")}</p>
+          <p><strong>Telefoon:</strong> ${escapeHTML(order.customer_phone || "—")}</p>
+          <p><strong>Laga qaadayo:</strong> ${escapeHTML(order.pickup_address || "—")}</p>
+          <p><strong>Loo socdo:</strong> ${escapeHTML(order.destination_address || "—")}</p>
+          <p><strong>La sameeyey:</strong> ${escapeHTML(formatDate(order.created_at))}</p>
+        </div>
 
-  const list = $("messages-orders");
-  list.innerHTML = '<p class="empty-state">Dalabyada ayaa la soo rarayaa...</p>';
+        <div class="order-actions">
+          <button
+            type="button"
+            class="secondary-button"
+            data-open-chat="${escapeHTML(order.id)}">
+            Fariin
+          </button>
 
-  const { data, error } = await db
-    .from("orders")
-    .select("id,order_number,service_type,status,driver_id,created_at")
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false })
-    .limit(30);
+          ${
+            isDriver() && !order.driver_id && status === "new"
+              ? `<button type="button" class="primary-button"
+                  data-request-order="${escapeHTML(order.id)}">
+                  Codso dalabkan
+                </button>`
+              : ""
+          }
+        </div>
+      </article>
+    `;
+  }).join("");
 
-  if (error) {
-    console.error("Chat orders:", error);
-    v2ShowEmpty("messages-orders", "Dalabyada lama soo qaadi karin.");
-    return;
-  }
+  container.querySelectorAll("[data-open-chat]").forEach((button) => {
+    button.addEventListener("click", () => {
+      openChatForOrder(button.dataset.openChat);
+    });
+  });
 
-  if (!data?.length) {
-    v2ShowEmpty("messages-orders", "Weli dalab ma lihid.");
-    return;
-  }
+  container.querySelectorAll("[data-request-order]").forEach((button) => {
+    button.addEventListener("click", () => {
+      requestOrder(button.dataset.requestOrder);
+    });
+  });
+}
 
-  list.innerHTML = data.map((order) => `
-    <article class="v2-card">
-      <h3>Dalab ${v2Escape(order.order_number || order.id.slice(0, 8))}</h3>
-      <p>Adeeg: ${v2Escape(order.service_type)}</p>
-      <p>Xaalad: ${v2Escape(order.status)}</p>
-      <button class="primary-button"
-        type="button"
-        data-open-chat="${v2Escape(order.id)}"
-        ${order.driver_id ? "" : "disabled"}>
-        ${order.driver_id ? "Fur wada hadalka" : "Darawal weli lama xilsaarin"}
+function bindOrderFilters() {
+  $$("[data-order-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      currentOrderFilter = button.dataset.orderFilter;
+
+      $$("[data-order-filter]").forEach((item) => {
+        item.classList.toggle("active", item === button);
+      });
+
+      renderOrders();
+    });
+  });
+
+  $("#refreshOrdersButton")?.addEventListener("click", loadOrders);
+}
+
+/* =========================
+   DRIVER DASHBOARD
+========================= */
+
+async function loadDriverDashboard() {
+  const container = $("#availableOrdersList");
+  const profileCard = $("#driverProfileCard");
+
+  if (!currentUser) {
+    profileCard.innerHTML = `
+      <strong>Gal akoonkaaga</strong>
+      <p class="muted">Waxaad u baahan tahay akoon si aad u isticmaasho qaybta darawalka.</p>
+      <button type="button" class="primary-button full-width" id="driverLoginButton">
+        Gal akoonka
       </button>
-    </article>
-  `).join("");
-}
+    `;
 
-$("messages-orders")?.addEventListener("click", async (event) => {
-  const button = event.target.closest("[data-open-chat]");
-  if (!button) return;
+    $("#driverLoginButton")?.addEventListener("click", () => {
+      navigateTo("account");
+    });
 
-  v2ActiveOrderId = button.dataset.openChat;
-  $("chat-panel")?.classList.remove("hidden");
-  $("chat-title").textContent = "Wadahadalka dalabka";
-  await v2LoadChatMessages();
-});
-
-async function v2LoadChatMessages() {
-  if (!db || !currentUser || !v2ActiveOrderId) return;
-
-  const list = $("chat-list");
-  list.innerHTML = '<p class="empty-state">Farriimaha ayaa la soo rarayaa...</p>';
-
-  // Ogaaw cidda darawalka ah si loo doorto qaataha fariinta.
-  const { data: order, error: orderError } = await db
-    .from("orders")
-    .select("id,user_id,driver_id,order_number")
-    .eq("id", v2ActiveOrderId)
-    .single();
-
-  if (orderError || !order) {
-    v2ShowEmpty("chat-list", "Dalabkan lama heli karo.");
-    return;
-  }
-
-  const isCustomer = order.user_id === currentUser.id;
-  let otherUserId = null;
-
-  if (isCustomer && order.driver_id) {
-    const { data: driver, error: driverError } = await db
-      .from("drivers")
-      .select("user_id")
-      .eq("id", order.driver_id)
-      .single();
-
-    if (driverError) {
-      console.error("Driver profile:", driverError);
-      v2ShowEmpty("chat-list", "Macluumaadka darawalka lama helin.");
-      return;
-    }
-
-    otherUserId = driver?.user_id;
-  } else {
-    const { data: driver, error: driverError } = await db
-      .from("drivers")
-      .select("id")
-      .eq("user_id", currentUser.id)
-      .maybeSingle();
-
-    if (driverError || !driver || driver.id !== order.driver_id) {
-      v2ShowEmpty("chat-list", "Chat-kan adiga laguma oggola.");
-      return;
-    }
-
-    otherUserId = order.user_id;
-  }
-
-  if (!otherUserId) {
-    v2ShowEmpty("chat-list", "Akoonka dhinaca kale lama helin.");
-    return;
-  }
-
-  $("chat-form").dataset.recipientId = otherUserId;
-
-  const { data, error } = await db
-    .from("order_messages")
-    .select("id,sender_id,recipient_id,body,created_at")
-    .eq("order_id", v2ActiveOrderId)
-    .order("created_at", { ascending: true })
-    .limit(100);
-
-  if (error) {
-    console.error("Chat messages:", error);
-    v2ShowEmpty(
-      "chat-list",
-      "Farriimaha lama soo qaadi karin. Hubi RLS-ka order_messages."
+    container.innerHTML = makeEmptyState(
+      "🔐",
+      "Gal akoonkaaga",
+      "Si aad u aragto dalabyada darawalka, marka hore gal."
     );
     return;
   }
 
-  if (!data?.length) {
-    v2ShowEmpty("chat-list", "Weli farriin ma jirto. Adigu bilow.");
+  if (!isDriver() && !isAdmin()) {
+    profileCard.innerHTML = `
+      <strong>Ma lihid profile darawal oo la aqoonsaday.</strong>
+      <p class="muted">Ka bax akoonka macmiilka oo iska diiwaangeli adigoo dooranaya adeeg-bixiye/darawal.</p>
+      <button type="button" class="secondary-button full-width" id="driverSignupButton">
+        Iska diiwaangeli darawal
+      </button>
+    `;
+
+    $("#driverSignupButton")?.addEventListener("click", () => {
+      navigateTo("account");
+      switchAuthMode("signup");
+      $("#driverSignupCheckbox").checked = true;
+      setVisible("#driverSignupFields", true);
+    });
+
+    container.innerHTML = makeEmptyState(
+      "🚘",
+      "Profile darawal lama helin",
+      "Profile-ka darawalku waa inuu ku jiraa database-ka."
+    );
     return;
   }
 
-  list.innerHTML = data.map((message) => `
-    <div class="chat-message ${
-      message.sender_id === currentUser.id ? "mine" : ""
-    }">
-      ${v2Escape(message.body)}
-      <small>${v2Escape(new Date(message.created_at).toLocaleString())}</small>
-    </div>
-  `).join("");
+  if (isAdmin()) {
+    profileCard.innerHTML = `
+      <strong>Maamule</strong>
+      <p class="muted">Waxaad maamuli kartaa xogta adiga oo adeegsanaya siyaasadaha maamulka ee Supabase.</p>
+    `;
+  } else {
+    const approved = currentDriver.approval_status === "approved";
 
-  list.scrollTop = list.scrollHeight;
+    profileCard.innerHTML = `
+      <strong>${escapeHTML(currentDriver.full_name || "Darawal")}</strong>
+      <p class="muted">${escapeHTML(serviceLabel(currentDriver.service_type))}</p>
+      <p class="muted">Xaaladda: ${escapeHTML(statusLabel(currentDriver.approval_status))}</p>
+      ${
+        !approved
+          ? `<p class="form-message">Akoonkaaga darawal wuxuu sugayaa ansixinta maamulka.</p>`
+          : ""
+      }
+    `;
+  }
+
+  container.innerHTML = makeEmptyState("⏳", "Dalabyada waa la soo rarayaa...");
+
+  try {
+    let query = db
+      .from("orders")
+      .select("*")
+      .eq("status", "new")
+      .is("driver_id", null)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    if (!isAdmin() && currentDriver?.service_type) {
+      query = query.eq("service_type", currentDriver.service_type);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    if (!data?.length) {
+      container.innerHTML = makeEmptyState(
+        "🚘",
+        "Dalabyo kuu bannaan ma jiraan",
+        "Marka dalab cusub yimaado, halkan ayuu ka soo muuqan karaa."
+      );
+      return;
+    }
+
+    container.innerHTML = data.map((order) => `
+      <article class="order-card">
+        <div class="order-card-top">
+          <div>
+            <h3>${escapeHTML(serviceLabel(order.service_type))}</h3>
+            <p>Dalab #${escapeHTML(order.order_number ?? order.id)}</p>
+          </div>
+          <span class="status-badge status-new">Cusub</span>
+        </div>
+
+        <div class="order-details">
+          <p><strong>Goobta:</strong> ${escapeHTML(order.pickup_address || "—")}</p>
+          <p><strong>Meesha loo socdo:</strong> ${escapeHTML(order.destination_address || "—")}</p>
+          <p><strong>Fee-ga adeeg-bixiyaha:</strong> ${formatMoney(order.provider_fee)}</p>
+          <p><strong>Waqtiga:</strong> ${escapeHTML(formatDate(order.created_at))}</p>
+        </div>
+
+        <div class="order-actions">
+          <button type="button" class="primary-button"
+            data-request-order="${escapeHTML(order.id)}">
+            Codso dalabkan
+          </button>
+        </div>
+      </article>
+    `).join("");
+
+    container.querySelectorAll("[data-request-order]").forEach((button) => {
+      button.addEventListener("click", () => {
+        requestOrder(button.dataset.requestOrder);
+      });
+    });
+  } catch (error) {
+    console.error("Driver dashboard error:", error);
+
+    container.innerHTML = makeEmptyState(
+      "⚠️",
+      "Dalabyada lama soo rari karin",
+      safeErrorMessage(error)
+    );
+  }
 }
 
-$("chat-form")?.addEventListener("submit", async (event) => {
+/*
+  MUHIIM:
+  Function-kan si ula kac ah uma qoondeeyo darawal dalab si toos ah.
+  Qoondeynta saxda ahi waa inay ku dhacdaa secure Supabase RPC
+  ama backend leh transaction iyo hubin darawal/fee.
+*/
+async function requestOrder(orderId) {
+  if (!requireLogin()) return;
+
+  if (!isDriver() && !isAdmin()) {
+    showToast("Qaybtan waxaa isticmaali kara darawal la diiwaangeliyey.");
+    return;
+  }
+
+  if (!isAdmin() && currentDriver?.approval_status !== "approved") {
+    showToast("Akoonka darawalkaaga wali lama ansixin.");
+    return;
+  }
+
+  const order = cachedOrders.find((item) => item.id === orderId);
+
+  const confirmed = window.confirm(
+    "Ma rabtaa inaad codsato dalabkan? Codsigu ma xaqiijinayo in dalabka laguu qoondeeyey."
+  );
+
+  if (!confirmed) return;
+
+  /*
+    Ilaa secure RPC la diyaariyo, codsiga halkan laguma
+    qoondeynayo orders.driver_id. Tani waxay ka hortagaysaa
+    in darawallo badan isku mar qabsadaan dalab ama ay dhaafaan
+    habka xaqiijinta fee-ga.
+  */
+
+  if (order) {
+    $("#feeOrderId").value = order.id;
+    $("#feeAmount").value = Number(order.provider_fee || 0).toFixed(2);
+  }
+
+  showToast(
+    "Dalabka waa la doortay. Qoondeyn rasmi ah waxay u baahan tahay RPC ammaan ah oo Supabase ah."
+  );
+}
+
+/* =========================
+   IN-APP CHAT
+========================= */
+
+async function openChatForOrder(orderId) {
+  if (!requireLogin()) return;
+
+  const order =
+    cachedOrders.find((item) => item.id === orderId) ||
+    await fetchOrderById(orderId);
+
+  if (!order) {
+    showToast("Dalabka lama helin.");
+    return;
+  }
+
+  currentChatOrder = order;
+  currentChatRecipient = null;
+
+  if (order.user_id === currentUser.id) {
+    if (order.driver_id) {
+      const { data: driver, error } = await db
+        .from("drivers")
+        .select("user_id,full_name")
+        .eq("id", order.driver_id)
+        .maybeSingle();
+
+      if (!error && driver?.user_id) {
+        currentChatRecipient = driver.user_id;
+      }
+    }
+  } else if (currentDriver && order.driver_id === currentDriver.id) {
+    currentChatRecipient = order.user_id;
+  } else if (isAdmin()) {
+    currentChatRecipient = order.user_id;
+  }
+
+  setText(
+    "#chatOrderInfo",
+    `${serviceLabel(order.service_type)} — Dalab #${order.order_number ?? order.id}`
+  );
+
+  navigateTo("chat");
+  await loadChatMessages();
+  subscribeToChat();
+}
+
+async function fetchOrderById(orderId) {
+  if (!db) return null;
+
+  const { data, error } = await db
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Fetch order error:", error.message);
+    return null;
+  }
+
+  return data;
+}
+
+async function loadChatMessages() {
+  const container = $("#chatMessages");
+
+  if (!currentUser || !currentChatOrder) {
+    container.innerHTML = makeEmptyState(
+      "💬",
+      "Dooro dalab",
+      "Wada sheekaysigu wuxuu ku xiran yahay dalab."
+    );
+    return;
+  }
+
+  container.innerHTML = makeEmptyState("⏳", "Fariimaha waa la soo rarayaa...");
+
+  try {
+    const { data, error } = await db
+      .from("order_messages")
+      .select("*")
+      .eq("order_id", currentChatOrder.id)
+      .order("created_at", { ascending: true })
+      .limit(200);
+
+    if (error) throw error;
+
+    renderChatMessages(data || []);
+  } catch (error) {
+    console.error("Load chat error:", error);
+
+    container.innerHTML = makeEmptyState(
+      "⚠️",
+      "Fariimaha lama soo rari karin",
+      "Hubi in order_messages table iyo RLS policies ay sax yihiin. " +
+      safeErrorMessage(error)
+    );
+  }
+}
+
+function renderChatMessages(messages) {
+  const container = $("#chatMessages");
+
+  if (!messages.length) {
+    container.innerHTML = makeEmptyState(
+      "💬",
+      "Wadahadalku waa cusub yahay",
+      "Markaad dirto fariin, halkan ayay ka muuqan doontaa."
+    );
+    return;
+  }
+
+  container.innerHTML = messages.map((message) => {
+    const mine = message.sender_id === currentUser?.id;
+
+    return `
+      <div class="chat-bubble ${mine ? "mine" : "theirs"}">
+        <p>${escapeHTML(message.body)}</p>
+        <time>${escapeHTML(formatDate(message.created_at))}</time>
+      </div>
+    `;
+  }).join("");
+
+  container.scrollTop = container.scrollHeight;
+}
+
+function subscribeToChat() {
+  if (!db || !currentChatOrder) return;
+
+  if (chatSubscription) {
+    db.removeChannel(chatSubscription);
+    chatSubscription = null;
+  }
+
+  chatSubscription = db
+    .channel(`chat-${currentChatOrder.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "order_messages",
+        filter: `order_id=eq.${currentChatOrder.id}`
+      },
+      () => {
+        loadChatMessages();
+      }
+    )
+    .subscribe();
+}
+
+async function sendChatMessage(event) {
   event.preventDefault();
 
-  if (!db || !currentUser || !v2ActiveOrderId) return;
+  if (!requireLogin()) return;
 
-  const input = $("chat-input");
-  const body = input.value.trim();
-  const recipientId = event.currentTarget.dataset.recipientId;
+  if (!currentChatOrder) {
+    setError("#chatError", "Marka hore fur dalab.");
+    return;
+  }
 
-  if (!body || !recipientId) return;
+  const body = $("#chatInput").value.trim();
 
-  const button = event.currentTarget.querySelector("button[type=submit]");
+  if (!body) return;
+
+  if (!currentChatRecipient) {
+    setError(
+      "#chatError",
+      "Wada sheekaysigu ma bilaaban karo ilaa darawal ama macmiil kale loo qoondeeyo dalabka."
+    );
+    return;
+  }
+
+  setError("#chatError", "");
+
+  const button = $("#sendChatButton");
   button.disabled = true;
 
   try {
     const { error } = await db.from("order_messages").insert({
-      order_id: v2ActiveOrderId,
+      order_id: currentChatOrder.id,
       sender_id: currentUser.id,
-      recipient_id: recipientId,
+      recipient_id: currentChatRecipient,
       body
     });
 
     if (error) throw error;
 
-    input.value = "";
-    await v2LoadChatMessages();
+    $("#chatInput").value = "";
+    await loadChatMessages();
   } catch (error) {
-    console.error("Send chat message:", error);
-    feedback(
-      "Fariinta lama dirin. Hubi in RLS-ku oggol yahay dirista.",
-      "error",
-      "chat-feedback"
+    console.error("Send message error:", error);
+
+    setError(
+      "#chatError",
+      "Fariinta lama dirin. Hubi RLS policies-ka order_messages. " +
+      safeErrorMessage(error)
     );
   } finally {
     button.disabled = false;
   }
-});
+}
 
-// Soo geli xogta mar kasta oo user-ku furo qaybaha V2.
-document.querySelectorAll(".nav-item").forEach((item) => {
-  item.addEventListener("click", () => {
-    if (item.dataset.view === "notifications-view") {
-      v2LoadNotifications();
+function bindChat() {
+  $("#chatForm")?.addEventListener("submit", sendChatMessage);
+}
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+async function loadNotifications() {
+  const container = $("#notificationsList");
+
+  if (!currentUser) {
+    container.innerHTML = makeEmptyState(
+      "🔐",
+      "Gal akoonkaaga",
+      "Ogeysiisyada waxay ku xiran yihiin akoonkaaga."
+    );
+    updateNotificationBadge(0);
+    return;
+  }
+
+  container.innerHTML = makeEmptyState("⏳", "Ogeysiisyada waa la soo rarayaa...");
+
+  try {
+    const { data, error } = await db
+      .from("notifications")
+      .select("*")
+      .eq("user_id", currentUser.id)
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (error) throw error;
+
+    cachedNotifications = data || [];
+    renderNotifications();
+  } catch (error) {
+    console.error("Notifications error:", error);
+
+    container.innerHTML = makeEmptyState(
+      "⚠️",
+      "Ogeysiisyada lama soo rari karin",
+      safeErrorMessage(error)
+    );
+  }
+}
+
+function renderNotifications() {
+  const container = $("#notificationsList");
+
+  const unread = cachedNotifications.filter(
+    (notification) => !notification.read_at
+  ).length;
+
+  updateNotificationBadge(unread);
+
+  if (!cachedNotifications.length) {
+    container.innerHTML = makeEmptyState(
+      "🔔",
+      "Ogeysiis ma jiro",
+      "Marka ogeysiis cusub yimaado halkan ayuu ka muuqan doonaa."
+    );
+    return;
+  }
+
+  container.innerHTML = cachedNotifications.map((notification) => `
+    <article class="notification-card ${notification.read_at ? "" : "unread"}">
+      <div class="notification-icon">🔔</div>
+      <div>
+        <strong>${escapeHTML(notification.title || "Ogeysiis")}</strong>
+        <p>${escapeHTML(notification.body || "")}</p>
+        <time>${escapeHTML(formatDate(notification.created_at))}</time>
+      </div>
+    </article>
+  `).join("");
+}
+
+function updateNotificationBadge(count) {
+  const badge = $("#notificationBadge");
+  if (!badge) return;
+
+  badge.textContent = count > 99 ? "99+" : String(count);
+  badge.classList.toggle("hidden", count < 1);
+}
+
+async function markNotificationsRead() {
+  if (!requireLogin()) return;
+
+  const unread = cachedNotifications.filter(
+    (notification) => !notification.read_at
+  );
+
+  if (!unread.length) {
+    showToast("Ogeysiisyada oo dhan waa la akhriyey.");
+    return;
+  }
+
+  try {
+    const ids = unread.map((item) => item.id);
+
+    const { error } = await db
+      .from("notifications")
+      .update({ read_at: new Date().toISOString() })
+      .in("id", ids)
+      .eq("user_id", currentUser.id);
+
+    if (error) throw error;
+
+    showToast("Ogeysiisyada waa la calaamadeeyey.");
+    await loadNotifications();
+  } catch (error) {
+    showToast("Ogeysiisyada lama cusboonaysiin: " + safeErrorMessage(error));
+  }
+}
+
+function subscribeToNotifications() {
+  if (!db || !currentUser) return;
+
+  if (notificationSubscription) {
+    db.removeChannel(notificationSubscription);
+    notificationSubscription = null;
+  }
+
+  notificationSubscription = db
+    .channel(`notifications-${currentUser.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${currentUser.id}`
+      },
+      () => {
+        loadNotifications();
+      }
+    )
+    .subscribe();
+}
+
+/* =========================
+   DRIVER FEE SUBMISSION
+========================= */
+
+function bindFeeForm() {
+  $("#feeForm")?.addEventListener("submit", submitFeeEvidence);
+}
+
+async function submitFeeEvidence(event) {
+  event.preventDefault();
+
+  if (!requireLogin()) return;
+
+  if (!isDriver()) {
+    setError("#feeError", "Fee-ga darawalka waxaa gudbin kara akoon darawal oo sax ah.");
+    return;
+  }
+
+  const orderId = $("#feeOrderId").value.trim();
+  const amount = Number($("#feeAmount").value);
+  const reference = $("#feeReference").value.trim();
+  const note = $("#feeNote").value.trim();
+
+  if (!orderId) {
+    setError("#feeError", "Geli ID-ga dalabka.");
+    return;
+  }
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    setError("#feeError", "Geli qaddar fee oo sax ah.");
+    return;
+  }
+
+  setError("#feeError", "");
+
+  const button = $("#submitFeeButton");
+  button.disabled = true;
+  setText("#submitFeeButton", "Waa la gudbinayaa...");
+
+  try {
+    const { data: order, error: orderError } = await db
+      .from("orders")
+      .select("id,driver_id,provider_fee,service_type")
+      .eq("id", orderId)
+      .maybeSingle();
+
+    if (orderError) throw orderError;
+
+    if (!order) {
+      throw new Error("Dalabkaas lama helin ama ma lihid oggolaanshaha aad ku arki karto.");
     }
 
-    if (item.dataset.view === "messages-view") {
-      v2LoadOrdersForChat();
-      $("chat-panel")?.classList.add("hidden");
+    if (order.driver_id && order.driver_id !== currentDriver.id) {
+      throw new Error("Dalabkan darawal kale ayaa loo qoondeeyey.");
     }
-  });
-});
 
-// Marka akoonku diyaar noqdo, xogta V2 cusboonaysii.
-if (db) {
-  db.auth.onAuthStateChange((_event, session) => {
-    currentUser = session?.user || null;
+    if (Math.abs(Number(order.provider_fee) - amount) > 0.009) {
+      throw new Error(
+        `Fee-ga dalabkan waa ${formatMoney(order.provider_fee)}. Hubi qaddarka saxda ah.`
+      );
+    }
+
+    const { error } = await db.from("driver_fee_payments").insert({
+      order_id: order.id,
+      driver_id: currentDriver.id,
+      submitted_by: currentUser.id,
+      amount,
+      currency: "USD",
+      payment_reference: reference || null,
+      payment_note: note || null,
+      status: "pending"
+    });
+
+    if (error) throw error;
+
+    $("#feeForm").reset();
+
+    showToast(
+      "Caddeynta waa la gudbiyey. Maamulka ayaa dib u eegaya; tani ma aha xaqiijin lacag-bixin."
+    );
+  } catch (error) {
+    console.error("Fee submission error:", error);
+    setError("#feeError", safeErrorMessage(error));
+  } finally {
+    button.disabled = false;
+    setText("#submitFeeButton", "Gudbi caddeynta fee-ga");
+  }
+}
+
+/* =========================
+   REALTIME SUBSCRIPTIONS
+========================= */
+
+async function setupRealtimeSubscriptions() {
+  if (!db || !currentUser) return;
+
+  removeRealtimeSubscriptions();
+
+  subscribeToNotifications();
+
+  ordersSubscription = db
+    .channel(`orders-user-${currentUser.id}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "orders"
+      },
+      () => {
+        if (currentView === "orders") loadOrders();
+        if (currentView === "driver") loadDriverDashboard();
+      }
+    )
+    .subscribe();
+}
+
+function removeRealtimeSubscriptions() {
+  if (!db) return;
+
+  if (chatSubscription) {
+    db.removeChannel(chatSubscription);
+    chatSubscription = null;
+  }
+
+  if (notificationSubscription) {
+    db.removeChannel(notificationSubscription);
+    notificationSubscription = null;
+  }
+
+  if (ordersSubscription) {
+    db.removeChannel(ordersSubscription);
+    ordersSubscription = null;
+  }
+}
+
+/* =========================
+   INITIALIZATION
+========================= */
+
+async function initializeApp() {
+  if (!db) {
+    showToast("Supabase lama helin. Hubi internetka iyo Supabase script-ka.");
+    return;
+  }
+
+  bindNavigation();
+  bindAuthTabs();
+  bindServiceCards();
+  bindOrderFilters();
+  bindChat();
+  bindFeeForm();
+
+  $("#markNotificationsReadButton")?.addEventListener(
+    "click",
+    markNotificationsRead
+  );
+
+  switchAuthMode("login");
+
+  try {
+    await refreshSession();
 
     if (currentUser) {
-      v2LoadNotifications();
-      v2LoadOrdersForChat();
-    } else {
-      v2ShowEmpty("notifications-list", "Marka hore soo gal.");
-      v2ShowEmpty("messages-orders", "Marka hore soo gal.");
+      await setupRealtimeSubscriptions();
     }
-  });
+  } catch (error) {
+    console.error("App initialization error:", error);
+    showToast("App-ku wuu furmay, laakiin qaar ka mid ah xogta lama soo rarin.");
+  }
 }
+
+document.addEventListener("DOMContentLoaded", initializeApp);
+
+window.addEventListener("beforeunload", () => {
+  removeRealtimeSubscriptions();
+});
