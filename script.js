@@ -3,28 +3,15 @@
    Vanilla JavaScript + Supabase v2
    ========================================================= */
 
-const SUPABASE_URL =
-  'https://zywwypqddnvslgqztnep.supabase.co';
+const SUPABASE_URL = 'https://zywwypqddnvslgqztnep.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8';
 
-const SUPABASE_PUBLISHABLE_KEY =
-  'sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8';
-
-const ADMIN_UID =
-  '85282aac-7813-442f-a51b-6d43e3eccf1e';
+const ADMIN_UID = '85282aac-7813-442f-a51b-6d43e3eccf1e';
 
 const { createClient } = window.supabase;
-
-const db = createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true
-    }
-  }
-);
+const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
 
 /* =========================================================
    STATE
