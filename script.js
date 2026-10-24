@@ -541,7 +541,7 @@ function friendlyError(err) {
   if (/invalid login|invalid credentials|email not confirmed/i.test(m)) return t('error.auth');
   if (/row-level security|permission denied|not authorized|unauthorized|jwt/i.test(m)) return t('error.permission');
   if (/duplicate|unique/i.test(m)) return 'Diiwaangelintan horey ayaa loo isticmaalay.';
-  return t('error.generic');
+  return `${t('error.generic')} (Sababta: ${m})`; 
 }
 function showLoading(show = true) { $('loadingOverlay').classList.toggle('hidden', !show); }
 function setBadge(n) {
@@ -839,8 +839,21 @@ async function render() {
     'admin-settings': renderAdminSettings,
     profile: renderProfileView
   }[screen] || renderCustomerHome;
+  
   $('screen').innerHTML = `<div class="skeleton" style="height:120px;margin-bottom:12px"></div><div class="skeleton" style="height:220px"></div>`;
-  try { await fn(param); } catch (err) { console.error(err); $('screen').innerHTML = `<div class="empty"><div class="empty-ico">⚠️</div><h4>${t('common.error')}</h4><p>${esc(friendlyError(err))}</p><button class="btn btn-secondary" style="margin-top:14px" onclick="App.render()">${t('common.retry')}</button></div>`; }
+  
+  try { 
+    await fn(param); 
+  } catch (err) { 
+    console.error('RENDER ERROR:', err); // LOG THE ACTUAL ERROR FOR DEBUGGING
+    $('screen').innerHTML = `
+      <div class="empty" style="border: 1px solid var(--danger)">
+        <div class="empty-ico">⚠️</div>
+        <h4>${t('common.error')}</h4>
+        <p style="color:var(--danger); font-size:12px; margin-bottom:14px">${esc(err.message || err.details || 'Unknown error')}</p>
+        <button class="btn btn-secondary" onclick="App.render()">${t('common.retry')}</button>
+      </div>`; 
+  }
 }
 
 /* =========================================================
