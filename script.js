@@ -1061,3 +1061,304 @@ $("order-form").addEventListener("submit", async (event) => {
 
   await loadAuthState();
 })();
+
+/* =========================================================
+   IGA KEEN V2: NOTIFICATIONS + ORDER CHAT
+   Ku dar dhammaadka script.js
+   ========================================================= */
+
+let v2ActiveOrderId = null;
+
+function v2Escape(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function v2ShowEmpty(elementId, message) {
+  const element = $(elementId);
+  if (element) {
+    element.innerHTML =
+      `<p class="empty-state">${v2Escape(message)}</p>`;
+  }
+}
+
+async function v2LoadNotifications() {
+  if (!db || !currentUser) {
+    v2ShowEmpty("notifications-list", "Marka hore soo gal akoonkaaga.");
+    return;
+  }
+
+  const list = $("notifications-list");
+  list.innerHTML = '<p class="empty-state">Waa la soo rarayaa...</p>';
+
+  const { data, error } = await db
+    .from("notifications")
+    .select("id,title,body,notification_type,created_at,read_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    console.error("Notifications:", error);
+    v2ShowEmpty(
+      "notifications-list",
+      "Ogeysiisyada lama soo qaadi karin. Hubi Supabase RLS."
+    );
+    return;
+  }
+
+  if (!data?.length) {
+    v2ShowEmpty("notifications-list", "Weli ogeysiis ma jiro.");
+    return;
+  }
+
+  list.innerHTML = data.map((item) => `
+    <article class="v2-card">
+      <h3>${v2Escape(item.title || "Ogeysiis cusub")}</h3>
+      <p>${v2Escape(item.body || "")}</p>
+      <p>${v2Escape(new Date(item.created_at).toLocaleString())}</p>
+      ${item.read_at ? "" : `
+        <button class="secondary-button"
+          data-notification-read="${v2Escape(item.id)}"
+          type="button">Waan arkay</button>`}
+    </article>
+  `).join("");
+}
+
+$("notifications-list")?.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-notification-read]");
+  if (!button || !db || !currentUser) return;
+
+  const { error } = await db
+    .from("notifications")
+    .update({ read_at: new Date().toISOString() })
+    .eq("id", button.dataset.notificationRead)
+    .eq("user_id", currentUser.id);
+
+  if (error) {
+    console.error("Mark notification read:", error);
+    alert("Ogeysiiska lama cusboonaysiin. Hubi siyaasadda Supabase.");
+    return;
+  }
+
+  await v2LoadNotifications();
+});
+
+$("refresh-notifications")?.addEventListener(
+  "click",
+  v2LoadNotifications
+);
+
+async function v2LoadOrdersForChat() {
+  if (!db || !currentUser) {
+    v2ShowEmpty("messages-orders", "Marka hore soo gal akoonkaaga.");
+    return;
+  }
+
+  const list = $("messages-orders");
+  list.innerHTML = '<p class="empty-state">Dalabyada ayaa la soo rarayaa...</p>';
+
+  const { data, error } = await db
+    .from("orders")
+    .select("id,order_number,service_type,status,driver_id,created_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false })
+    .limit(30);
+
+  if (error) {
+    console.error("Chat orders:", error);
+    v2ShowEmpty("messages-orders", "Dalabyada lama soo qaadi karin.");
+    return;
+  }
+
+  if (!data?.length) {
+    v2ShowEmpty("messages-orders", "Weli dalab ma lihid.");
+    return;
+  }
+
+  list.innerHTML = data.map((order) => `
+    <article class="v2-card">
+      <h3>Dalab ${v2Escape(order.order_number || order.id.slice(0, 8))}</h3>
+      <p>Adeeg: ${v2Escape(order.service_type)}</p>
+      <p>Xaalad: ${v2Escape(order.status)}</p>
+      <button class="primary-button"
+        type="button"
+        data-open-chat="${v2Escape(order.id)}"
+        ${order.driver_id ? "" : "disabled"}>
+        ${order.driver_id ? "Fur wada hadalka" : "Darawal weli lama xilsaarin"}
+      </button>
+    </article>
+  `).join("");
+}
+
+$("messages-orders")?.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-open-chat]");
+  if (!button) return;
+
+  v2ActiveOrderId = button.dataset.openChat;
+  $("chat-panel")?.classList.remove("hidden");
+  $("chat-title").textContent = "Wadahadalka dalabka";
+  await v2LoadChatMessages();
+});
+
+async function v2LoadChatMessages() {
+  if (!db || !currentUser || !v2ActiveOrderId) return;
+
+  const list = $("chat-list");
+  list.innerHTML = '<p class="empty-state">Farriimaha ayaa la soo rarayaa...</p>';
+
+  // Ogaaw cidda darawalka ah si loo doorto qaataha fariinta.
+  const { data: order, error: orderError } = await db
+    .from("orders")
+    .select("id,user_id,driver_id,order_number")
+    .eq("id", v2ActiveOrderId)
+    .single();
+
+  if (orderError || !order) {
+    v2ShowEmpty("chat-list", "Dalabkan lama heli karo.");
+    return;
+  }
+
+  const isCustomer = order.user_id === currentUser.id;
+  let otherUserId = null;
+
+  if (isCustomer && order.driver_id) {
+    const { data: driver, error: driverError } = await db
+      .from("drivers")
+      .select("user_id")
+      .eq("id", order.driver_id)
+      .single();
+
+    if (driverError) {
+      console.error("Driver profile:", driverError);
+      v2ShowEmpty("chat-list", "Macluumaadka darawalka lama helin.");
+      return;
+    }
+
+    otherUserId = driver?.user_id;
+  } else {
+    const { data: driver, error: driverError } = await db
+      .from("drivers")
+      .select("id")
+      .eq("user_id", currentUser.id)
+      .maybeSingle();
+
+    if (driverError || !driver || driver.id !== order.driver_id) {
+      v2ShowEmpty("chat-list", "Chat-kan adiga laguma oggola.");
+      return;
+    }
+
+    otherUserId = order.user_id;
+  }
+
+  if (!otherUserId) {
+    v2ShowEmpty("chat-list", "Akoonka dhinaca kale lama helin.");
+    return;
+  }
+
+  $("chat-form").dataset.recipientId = otherUserId;
+
+  const { data, error } = await db
+    .from("order_messages")
+    .select("id,sender_id,recipient_id,body,created_at")
+    .eq("order_id", v2ActiveOrderId)
+    .order("created_at", { ascending: true })
+    .limit(100);
+
+  if (error) {
+    console.error("Chat messages:", error);
+    v2ShowEmpty(
+      "chat-list",
+      "Farriimaha lama soo qaadi karin. Hubi RLS-ka order_messages."
+    );
+    return;
+  }
+
+  if (!data?.length) {
+    v2ShowEmpty("chat-list", "Weli farriin ma jirto. Adigu bilow.");
+    return;
+  }
+
+  list.innerHTML = data.map((message) => `
+    <div class="chat-message ${
+      message.sender_id === currentUser.id ? "mine" : ""
+    }">
+      ${v2Escape(message.body)}
+      <small>${v2Escape(new Date(message.created_at).toLocaleString())}</small>
+    </div>
+  `).join("");
+
+  list.scrollTop = list.scrollHeight;
+}
+
+$("chat-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (!db || !currentUser || !v2ActiveOrderId) return;
+
+  const input = $("chat-input");
+  const body = input.value.trim();
+  const recipientId = event.currentTarget.dataset.recipientId;
+
+  if (!body || !recipientId) return;
+
+  const button = event.currentTarget.querySelector("button[type=submit]");
+  button.disabled = true;
+
+  try {
+    const { error } = await db.from("order_messages").insert({
+      order_id: v2ActiveOrderId,
+      sender_id: currentUser.id,
+      recipient_id: recipientId,
+      body
+    });
+
+    if (error) throw error;
+
+    input.value = "";
+    await v2LoadChatMessages();
+  } catch (error) {
+    console.error("Send chat message:", error);
+    feedback(
+      "Fariinta lama dirin. Hubi in RLS-ku oggol yahay dirista.",
+      "error",
+      "chat-feedback"
+    );
+  } finally {
+    button.disabled = false;
+  }
+});
+
+// Soo geli xogta mar kasta oo user-ku furo qaybaha V2.
+document.querySelectorAll(".nav-item").forEach((item) => {
+  item.addEventListener("click", () => {
+    if (item.dataset.view === "notifications-view") {
+      v2LoadNotifications();
+    }
+
+    if (item.dataset.view === "messages-view") {
+      v2LoadOrdersForChat();
+      $("chat-panel")?.classList.add("hidden");
+    }
+  });
+});
+
+// Marka akoonku diyaar noqdo, xogta V2 cusboonaysii.
+if (db) {
+  db.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
+
+    if (currentUser) {
+      v2LoadNotifications();
+      v2LoadOrdersForChat();
+    } else {
+      v2ShowEmpty("notifications-list", "Marka hore soo gal.");
+      v2ShowEmpty("messages-orders", "Marka hore soo gal.");
+    }
+  });
+}
