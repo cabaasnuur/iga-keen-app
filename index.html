@@ -3,437 +3,432 @@
 <html lang="so">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#090909">
-  <meta name="description" content="IGA KEEN — dalbo Taxi, Bajaaj, Delivery ama Safar.">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="IGA KEEN">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <title>IGA KEEN | Dalbo adeeg</title>
-
-  <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icon-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101010">
+  <meta name="description" content="IGA KEEN — Taxi, Bajaaj, Delivery iyo Safar.">
+  <title>IGA KEEN</title>
   <link rel="stylesheet" href="style.css">
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js" defer></script>
 </head>
 
 <body>
-<div class="app-shell">
+  <div class="app-shell">
 
-  <header class="topbar">
-    <a class="brand" href="#home-view">
-      <span class="brand-icon">IG</span>
-      <span>
-        IGA <b>KEEN</b>
-        <small>Adeeggaaga kuu dhow</small>
-      </span>
-    </a>
-    <button class="icon-button" id="help-button" type="button" aria-label="Caawimaad">?</button>
-  </header>
+    <header class="topbar">
+      <a href="#" class="brand" aria-label="IGA KEEN Home" data-view="home">
+        <span class="brand-mark">IG</span>
+        <span class="brand-name">IGA KEEN</span>
+      </a>
 
-  <main>
+      <div class="top-actions">
+        <button id="notificationButton" class="icon-button" aria-label="Ogeysiisyada">
+          <span>♧</span>
+          <span id="notificationBadge" class="notification-badge hidden">0</span>
+        </button>
+        <button id="accountButton" class="avatar-button" aria-label="Akoonkayga">👤</button>
+      </div>
+    </header>
 
-    <!-- HOME -->
-    <section class="view active" id="home-view">
-      <div class="welcome-card">
-        <div class="welcome-copy">
-          <span class="eyebrow"><i></i> ADEEGYO HAL MEEL AH</span>
-          <h1>Xaggee <span>kuu qaadnaa?</span></h1>
-          <p>Dooro adeegga aad u baahan tahay. Dalabkaaga si fudud u dir.</p>
-          <button class="primary-button" id="start-order-button" type="button">
-            Dalbo hadda <span>→</span>
+    <main id="appMain">
+
+      <!-- HOME -->
+      <section id="homeView" class="view active">
+        <div class="welcome-block">
+          <p class="eyebrow">KU SOO DHAWOOW</p>
+          <h1>Adeeggaaga,<br><span>hal meel ka hel.</span></h1>
+          <p class="muted">
+            IGA KEEN wuxuu isku xiraa macaamiisha iyo adeeg-bixiyeyaasha.
+          </p>
+        </div>
+
+        <div class="notice-card" id="noticeCard">
+          <div class="notice-icon">!</div>
+          <div>
+            <strong>Ogeysiis muhiim ah</strong>
+            <p id="noticeText">
+              Hubi xogta dalabkaaga iyo kharashka adeegga ka hor intaadan dirin.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ADEEGYADA</p>
+            <h2>Maxaad u baahan tahay?</h2>
+          </div>
+        </div>
+
+        <div class="service-grid">
+          <button class="service-card" data-service="Taxi">
+            <span class="service-icon">🚕</span>
+            <strong>Taxi</strong>
+            <small>Gaari kuu yimaada</small>
+          </button>
+
+          <button class="service-card" data-service="Bajaaj">
+            <span class="service-icon">🛺</span>
+            <strong>Bajaaj</strong>
+            <small>Safar gudaha magaalada</small>
+          </button>
+
+          <button class="service-card" data-service="Delivery">
+            <span class="service-icon">📦</span>
+            <strong>Delivery</strong>
+            <small>Alaab kuu gaarsiin</small>
+          </button>
+
+          <button class="service-card" data-service="Safar">
+            <span class="service-icon">🚌</span>
+            <strong>Safar</strong>
+            <small>Magaalo ilaa magaalo</small>
           </button>
         </div>
-        <div class="welcome-mark" aria-hidden="true">IG</div>
-      </div>
 
-      <div class="section-title">
-        <div>
-          <span class="overline">ADEEGYADA</span>
-          <h2>Maxaad u baahan tahay?</h2>
+        <div class="quick-card">
+          <div>
+            <p class="eyebrow">DALABYADAADA</p>
+            <h3>La soco adeeggaaga</h3>
+            <p class="muted">Eeg xaaladda dalabkaaga iyo fariimaha.</p>
+          </div>
+          <button class="primary-button" data-view="orders">Dalabyadayda</button>
         </div>
-      </div>
 
-      <div class="service-grid">
-        <button class="service-tile selected" type="button" data-service="taxi">
-          <span class="tile-icon">🚕</span>
-          <span class="tile-name">Taxi</span>
-          <span class="tile-caption">Gaari kuu yeer</span>
-          <span class="tile-arrow">↗</span>
-        </button>
-
-        <button class="service-tile" type="button" data-service="bajaaj">
-          <span class="tile-icon">🛺</span>
-          <span class="tile-name">Bajaaj</span>
-          <span class="tile-caption">Safar magaalada</span>
-          <span class="tile-arrow">↗</span>
-        </button>
-
-        <button class="service-tile" type="button" data-service="delivery">
-          <span class="tile-icon">📦</span>
-          <span class="tile-name">Delivery</span>
-          <span class="tile-caption">Wax kuu keen</span>
-          <span class="tile-arrow">↗</span>
-        </button>
-
-        <button class="service-tile" type="button" data-service="safar">
-          <span class="tile-icon">🚌</span>
-          <span class="tile-name">Safar</span>
-          <span class="tile-caption">Magaalo kale u safar</span>
-          <span class="tile-arrow">↗</span>
-        </button>
-      </div>
-
-      <button class="location-promo" id="home-location-button" type="button">
-        <span class="promo-icon">⌖</span>
-        <span>
-          <b>Goobtaada ma naqaan?</b>
-          <small>Taabo si aad GPS-kaaga u dirto</small>
-        </span>
-        <span class="promo-arrow">→</span>
-      </button>
-
-      <div class="section-title why-title">
-        <div>
-          <span class="overline">SIDA AY U SHAQAYSO</span>
-          <h2>Saddex tallaabo oo fudud</h2>
+        <div class="section-heading">
+          <h2>Sida loo isticmaalo</h2>
         </div>
-      </div>
 
-      <div class="how-list">
-        <div class="how-item">
-          <span>1</span>
-          <div><b>Dooro adeeg</b><small>Taxi, Bajaaj, Delivery ama Safar.</small></div>
-        </div>
-        <div class="how-item">
-          <span>2</span>
-          <div><b>Buuxi xogta</b><small>Geli goobta lagaa qaadayo iyo meesha loo socdo.</small></div>
-        </div>
-        <div class="how-item">
-          <span>3</span>
-          <div><b>Dir dalabka</b><small>Dalabkaaga waxaa lagu kaydinayaa nidaamka IGA KEEN.</small></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- LOGIN AND SIGNUP -->
-    <section class="view" id="auth-view">
-      <div class="auth-card">
-        <div class="auth-logo">IG</div>
-        <span class="overline" id="auth-overline">AKOONKA IGA KEEN</span>
-        <h1 id="auth-title">Soo gal akoonkaaga</h1>
-        <p id="auth-subtitle">Si aad u dalbato adeeg, marka hore gal ama samee akoon.</p>
-
-        <form id="auth-form">
-          <div id="signup-fields" class="hidden">
-            <label class="label" for="auth-full-name">Magaca oo buuxa</label>
-            <input id="auth-full-name" type="text" autocomplete="name"
-                   placeholder="Magacaaga" maxlength="100">
-
-            <label class="label" for="auth-phone">Telefoonka</label>
-            <input id="auth-phone" type="tel" autocomplete="tel"
-                   inputmode="tel" placeholder="061xxxxxxx" maxlength="30">
-
-            <!-- NOOCA AKOONKA -->
-            <label class="label" for="account-role">Nooca akoonka</label>
-            <select id="account-role" name="account_role">
-              <option value="customer">Macmiil</option>
-              <option value="provider">Adeeg-bixiye / Darawal</option>
-            </select>
-
-            <!-- FAHFAAHINTA ADEEG-BIXIYAHA -->
-            <div id="provider-details" class="hidden">
-              <label class="label" for="provider-service">Adeegga aad qabanayso</label>
-              <select id="provider-service" name="provider_service">
-                <option value="taxi">Taxi</option>
-                <option value="bajaaj">Bajaaj</option>
-                <option value="delivery">Delivery</option>
-                <option value="safar">Safar</option>
-              </select>
-
-              <!-- DOORASHADA DELIVERY -->
-              <div id="delivery-method-field" class="hidden">
-                <label class="label" for="delivery-method">Habka gaarsiinta</label>
-                <select id="delivery-method" name="delivery_method">
-                  <option value="">Dooro habka gaarsiinta</option>
-                  <option value="lug">Lug</option>
-                  <option value="mooto">Mooto</option>
-                  <option value="baaskiil">Baaskiil</option>
-                </select>
-                <p class="field-hint">
-                  Dooro habka aad alaabta ku gaarsiin karto.
-                </p>
-              </div>
-
-              <label class="label" for="provider-vehicle">
-                Gaariga ama faahfaahin dheeraad ah
-              </label>
-              <input id="provider-vehicle" name="provider_vehicle"
-                     type="text" maxlength="150"
-                     placeholder="Tusaale: Mooto ama Bajaaj">
-
-              <div class="notice-card">
-                <span>ⓘ</span>
-                <p>
-                  <b>Ogow:</b> Codsigaaga waxaa eegaya maamulka IGA KEEN.
-                  Waa inaad sugtaa ansixinta ka hor intaadan adeeg bilaabin.
-                </p>
-              </div>
+        <div class="steps-list">
+          <div class="step-item">
+            <span class="step-number">1</span>
+            <div>
+              <strong>Dooro adeegga</strong>
+              <p>Taxi, Bajaaj, Delivery ama Safar.</p>
             </div>
           </div>
+          <div class="step-item">
+            <span class="step-number">2</span>
+            <div>
+              <strong>Buuxi dalabka</strong>
+              <p>Geli goobta lagaa qaadayo iyo meesha loo socdo.</p>
+            </div>
+          </div>
+          <div class="step-item">
+            <span class="step-number">3</span>
+            <div>
+              <strong>La xiriir adeeg-bixiyaha</strong>
+              <p>Marka darawal laguu qoondeeyo, waxaad kala hadli kartaa app-ka.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <label class="label" for="auth-email">Email</label>
-          <input id="auth-email" type="email" autocomplete="email"
-                 placeholder="example@email.com" required>
+      <!-- ORDER FORM -->
+      <section id="orderView" class="view">
+        <button class="back-button" data-view="home">← Dib ugu noqo</button>
 
-          <label class="label" for="auth-password">Password</label>
-          <input id="auth-password" type="password" autocomplete="current-password"
-                 placeholder="Ugu yaraan 8 xaraf" minlength="8" required>
+        <div class="page-heading">
+          <p class="eyebrow">DALAB CUSUB</p>
+          <h1 id="orderHeading">Dalbo adeeg</h1>
+          <p class="muted">Fadlan si sax ah u buuxi xogta hoose.</p>
+        </div>
 
-          <button class="primary-button auth-submit" id="auth-submit" type="submit">
-            Soo gal <span>→</span>
+        <form id="orderForm" class="app-form">
+          <input type="hidden" id="serviceType" name="service_type">
+
+          <label for="customerName">Magacaaga</label>
+          <input id="customerName" name="customer_name" type="text"
+                 placeholder="Magaca oo buuxa" maxlength="100" required>
+
+          <label for="customerPhone">Telefoonkaaga</label>
+          <input id="customerPhone" name="customer_phone" type="tel"
+                 placeholder="Tusaale: 252..." maxlength="30" required>
+
+          <label for="pickupAddress">Goobta lagaa qaadayo</label>
+          <div class="input-with-button">
+            <input id="pickupAddress" name="pickup_address" type="text"
+                   placeholder="Xaafadda ama goobta" maxlength="250" required>
+            <button type="button" id="getLocationButton" class="secondary-button">
+              GPS
+            </button>
+          </div>
+
+          <input type="hidden" id="pickupLatitude" name="pickup_latitude">
+          <input type="hidden" id="pickupLongitude" name="pickup_longitude">
+
+          <label for="destinationAddress">Meesha loo socdo</label>
+          <input id="destinationAddress" name="destination_address" type="text"
+                 placeholder="Geli meesha loo socdo" maxlength="250">
+
+          <div id="passengersGroup">
+            <label for="passengers">Tirada rakaabka</label>
+            <select id="passengers" name="passengers">
+              <option value="1">1 qof</option>
+              <option value="2">2 qof</option>
+              <option value="3">3 qof</option>
+              <option value="4">4 qof</option>
+              <option value="5">5 qof ama ka badan</option>
+            </select>
+          </div>
+
+          <div id="scheduleGroup">
+            <label for="scheduledAt">Waqtiga safarka (ikhtiyaari)</label>
+            <input id="scheduledAt" name="scheduled_at" type="datetime-local">
+          </div>
+
+          <label for="orderNotes">Faahfaahin dheeraad ah</label>
+          <textarea id="orderNotes" name="notes" rows="3"
+                    placeholder="Qor faahfaahin haddii loo baahdo"
+                    maxlength="1000"></textarea>
+
+          <div id="customerFeeNotice" class="fee-notice">
+            <strong>Kharashka IGA KEEN</strong>
+            <p id="customerFeeText">Kharashka adeegga waxaa laguu caddeynayaa ka hor xaqiijinta.</p>
+          </div>
+
+          <p id="orderError" class="form-error" role="alert"></p>
+
+          <button id="submitOrderButton" class="primary-button full-width" type="submit">
+            Dir dalabka
           </button>
         </form>
+      </section>
 
-        <button class="text-button" id="forgot-password" type="button">
-          Password-ka ma ilowday?
-        </button>
-        <div class="feedback" id="auth-feedback" role="status" aria-live="polite"></div>
-
-        <div class="auth-switch">
-          <span id="auth-switch-text">Akoon ma lihid?</span>
-          <button type="button" id="switch-auth-mode">Samee akoon</button>
+      <!-- ORDERS -->
+      <section id="ordersView" class="view">
+        <div class="page-heading">
+          <p class="eyebrow">DALABYADA</p>
+          <h1>Dalabyadayda</h1>
+          <p class="muted">Eeg xaaladda dalabyadaada iyo wada sheekaysiga.</p>
         </div>
-      </div>
-    </section>
 
-    <!-- ORDER -->
-    <section class="view" id="order-view">
-      <button class="back-button" id="back-home" type="button">← Dib u noqo</button>
+        <div class="filter-row">
+          <button class="filter-button active" data-order-filter="all">Dhammaan</button>
+          <button class="filter-button" data-order-filter="active">Socda</button>
+          <button class="filter-button" data-order-filter="completed">Dhammaaday</button>
+        </div>
 
-      <div class="page-heading">
-        <span class="overline">DALAB CUSUB</span>
-        <h1>Buuxi dalabkaaga</h1>
-        <p>Geli xog sax ah si adeeg-bixiyuhu kuu helo.</p>
-      </div>
-
-      <form id="order-form">
-        <div class="form-card">
-          <label class="label" for="service-type">Adeegga aad rabto</label>
-          <select id="service-type" name="service_type" required>
-            <option value="taxi">🚕 Taxi</option>
-            <option value="bajaaj">🛺 Bajaaj</option>
-            <option value="delivery">📦 Delivery</option>
-            <option value="safar">🚌 Safar</option>
-          </select>
-
-          <div class="form-row">
-            <div class="input-group">
-              <label class="label" for="customer-name">Magacaaga</label>
-              <input id="customer-name" name="customer_name" autocomplete="name"
-                     placeholder="Magaca oo buuxa" maxlength="100" required>
-            </div>
-            <div class="input-group">
-              <label class="label" for="customer-phone">Telefoonka</label>
-              <input id="customer-phone" name="customer_phone" type="tel"
-                     autocomplete="tel" inputmode="tel"
-                     placeholder="061xxxxxxx" maxlength="30" required>
-            </div>
+        <div id="ordersList" class="stack-list">
+          <div class="empty-state">
+            <span>📋</span>
+            <strong>Weli dalab ma jiro</strong>
+            <p>Markaad adeeg dalbato, halkan ayuu ka muuqan doonaa.</p>
           </div>
+        </div>
 
-          <label class="label" for="pickup-address">Goobta lagaa qaadayo</label>
-          <input id="pickup-address" name="pickup_address"
-                 placeholder="Tusaale: Suuqa Goldogob" maxlength="250" required>
+        <button id="refreshOrdersButton" class="secondary-button full-width">
+          Dib u cusboonaysii
+        </button>
+      </section>
 
-          <button class="gps-button" id="get-location-button" type="button">
-            <span>⌖</span> Isticmaal GPS-kayga
+      <!-- CHAT -->
+      <section id="chatView" class="view">
+        <button class="back-button" data-view="orders">← Dalabyada</button>
+
+        <div class="page-heading">
+          <p class="eyebrow">FARIIMAHA</p>
+          <h1>Wada sheekaysi</h1>
+          <p id="chatOrderInfo" class="muted">Dooro dalab si aad u aragto fariimaha.</p>
+        </div>
+
+        <div id="chatMessages" class="chat-messages">
+          <div class="empty-state">
+            <span>💬</span>
+            <strong>Wadahadalkaaga</strong>
+            <p>Fariimaha macmiilka iyo adeeg-bixiyaha halkan ayay ka muuqanayaan marka wada sheekaysigu diyaar yahay.</p>
+          </div>
+        </div>
+
+        <form id="chatForm" class="chat-form">
+          <input id="chatInput" type="text" maxlength="2000"
+                 placeholder="Qor fariintaada..." required>
+          <button id="sendChatButton" class="primary-button" type="submit">Dir</button>
+        </form>
+        <p id="chatError" class="form-error" role="alert"></p>
+      </section>
+
+      <!-- DRIVER DASHBOARD -->
+      <section id="driverView" class="view">
+        <div class="page-heading">
+          <p class="eyebrow">ADEEG-BIXIYAHA</p>
+          <h1>Qaybta darawalka</h1>
+          <p class="muted">Eeg dalabyada kuu bannaan iyo xaaladda fee-ga.</p>
+        </div>
+
+        <div id="driverProfileCard" class="profile-card">
+          <strong>Xogta darawalka</strong>
+          <p class="muted">Gal akoonkaaga oo hubi in xogta adeeg-bixiyaha la diiwaangeliyey.</p>
+        </div>
+
+        <div class="section-heading">
+          <h2>Dalabyo kuu bannaan</h2>
+        </div>
+        <div id="availableOrdersList" class="stack-list">
+          <div class="empty-state">
+            <span>🚘</span>
+            <strong>Dalabyo wali lama soo bandhigin</strong>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <h2>Fee-ga adeegga</h2>
+        </div>
+
+        <div class="fee-notice">
+          <strong>Fee-ga IGA KEEN</strong>
+          <p>Marka aad dalab aqbasho, raac habka fee-bixinta ee maamulka kuu xaqiijiyey. Soo gudbinta caddeyntu ma aha xaqiijin lacag-bixin.</p>
+        </div>
+
+        <form id="feeForm" class="app-form">
+          <label for="feeOrderId">Lambarka dalabka</label>
+          <input id="feeOrderId" type="text" placeholder="Geli UUID-ga dalabka" required>
+
+          <label for="feeAmount">Qaddarka ($)</label>
+          <input id="feeAmount" type="number" min="0.01" max="10000"
+                 step="0.01" placeholder="Tusaale: 0.30" required>
+
+          <label for="feeReference">Tixraaca lacag-bixinta</label>
+          <input id="feeReference" type="text" maxlength="150"
+                 placeholder="Lambarka tixraaca haddii uu jiro">
+
+          <label for="feeNote">Faahfaahin</label>
+          <textarea id="feeNote" rows="2" maxlength="500"
+                    placeholder="Faahfaahin kooban"></textarea>
+
+          <p id="feeError" class="form-error" role="alert"></p>
+          <button id="submitFeeButton" type="submit" class="primary-button full-width">
+            Gudbi caddeynta fee-ga
           </button>
-          <p class="field-hint" id="location-message">
-            Ama goobta gacanta ku qor sanduuqa kore.
-          </p>
+        </form>
+      </section>
 
-          <label class="label" for="destination-address">
-            Meesha loo socdo / la geynayo
-          </label>
-          <input id="destination-address" name="destination_address"
-                 placeholder="Geli meesha loo socdo" maxlength="250" required>
+      <!-- NOTIFICATIONS -->
+      <section id="notificationsView" class="view">
+        <div class="page-heading">
+          <p class="eyebrow">OGEYSIISYO</p>
+          <h1>Ogeysiisyadaada</h1>
+          <p class="muted">Wararka ku saabsan dalabyadaada iyo akoonkaaga.</p>
+        </div>
 
-          <div class="form-row" id="passengers-row">
-            <div class="input-group">
-              <label class="label" for="passengers">Tirada rakaabka</label>
-              <input id="passengers" name="passengers" type="number"
-                     min="1" max="30" value="1" inputmode="numeric">
-            </div>
-            <div class="input-group">
-              <label class="label" for="scheduled-at">Waqtiga (ikhtiyaari)</label>
-              <input id="scheduled-at" name="scheduled_at" type="datetime-local">
-            </div>
+        <div id="notificationsList" class="stack-list">
+          <div class="empty-state">
+            <span>🔔</span>
+            <strong>Ogeysiis ma jiro</strong>
+            <p>Ogeysiisyada cusub halkan ayay ka muuqan doonaan.</p>
+          </div>
+        </div>
+
+        <button id="markNotificationsReadButton" class="secondary-button full-width">
+          Calaamadee in la akhriyey
+        </button>
+      </section>
+
+      <!-- ACCOUNT / AUTH -->
+      <section id="accountView" class="view">
+        <div class="page-heading">
+          <p class="eyebrow">AKOONKA</p>
+          <h1 id="accountHeading">Gal akoonkaaga</h1>
+          <p class="muted">Isticmaal email iyo password si aad u gasho.</p>
+        </div>
+
+        <div id="signedInPanel" class="profile-card hidden">
+          <div class="profile-avatar">👤</div>
+          <strong id="signedInEmail"></strong>
+          <p id="signedInRole" class="muted">Macmiil</p>
+          <button id="openDriverButton" class="secondary-button full-width">
+            Qaybta darawalka
+          </button>
+          <button id="signOutButton" class="danger-button full-width">
+            Ka bax akoonka
+          </button>
+        </div>
+
+        <div id="authPanel">
+          <div class="auth-tabs">
+            <button id="loginTab" class="auth-tab active" type="button">Gal</button>
+            <button id="signupTab" class="auth-tab" type="button">Is diiwaangeli</button>
           </div>
 
-          <label class="label" for="notes">Faahfaahin dheeraad ah (ikhtiyaari)</label>
-          <textarea id="notes" name="notes" rows="3"
-                    placeholder="Faahfaahin kale oo dalabka ku saabsan..."
-                    maxlength="1000"></textarea>
+          <form id="authForm" class="app-form">
+            <div id="fullNameGroup" class="hidden">
+              <label for="authFullName">Magacaaga</label>
+              <input id="authFullName" type="text" maxlength="100"
+                     placeholder="Magaca oo buuxa">
+            </div>
+
+            <label for="authEmail">Email</label>
+            <input id="authEmail" type="email" autocomplete="email"
+                   placeholder="name@example.com" required>
+
+            <label for="authPassword">Password</label>
+            <input id="authPassword" type="password"
+                   autocomplete="current-password" minlength="6"
+                   placeholder="Ugu yaraan 6 xaraf" required>
+
+            <div id="driverSignupFields" class="hidden">
+              <label for="authPhone">Telefoonka</label>
+              <input id="authPhone" type="tel" maxlength="30"
+                     placeholder="Telefoonkaaga">
+
+              <label for="driverServiceType">Adeegga aad bixiso</label>
+              <select id="driverServiceType">
+                <option value="Taxi">Taxi</option>
+                <option value="Bajaaj">Bajaaj</option>
+                <option value="Delivery">Delivery</option>
+                <option value="Safar">Safar</option>
+              </select>
+
+              <label for="vehicleDescription">Faahfaahinta gaariga</label>
+              <input id="vehicleDescription" type="text" maxlength="150"
+                     placeholder="Nooca gaariga iyo lambarkiisa">
+            </div>
+
+            <label class="checkbox-row">
+              <input id="driverSignupCheckbox" type="checkbox">
+              <span>Waxaan rabaa inaan iska diiwaangeliyo adeeg-bixiye/darawal</span>
+            </label>
+
+            <p id="authMessage" class="form-message" role="status"></p>
+            <p id="authError" class="form-error" role="alert"></p>
+
+            <button id="authSubmitButton" class="primary-button full-width" type="submit">
+              Gal
+            </button>
+          </form>
         </div>
+      </section>
 
-        <div class="notice-card">
-          <span>ⓘ</span>
-          <p>
-            <b>Ogow:</b> Qiimaha Taxi, Bajaaj iyo Safar waxaa isla garta
-            macaamilka iyo darawalka.
-          </p>
-        </div>
+    </main>
 
-        <button class="primary-button submit-button" id="submit-order" type="submit">
-          Dir dalabka <span>→</span>
-        </button>
-        <p class="form-footnote">
-          Marka dalabka la kaydiyo, WhatsApp ayaa kuu furmaya si aad ula xiriirto IGA KEEN.
-        </p>
-        <div class="feedback" id="form-feedback" role="status" aria-live="polite"></div>
-      </form>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="view" id="contact-view">
-      <div class="page-heading">
-        <span class="overline">CAAWIMAAD</span>
-        <h1>Nala soo xiriir</h1>
-        <p>Wax su'aal ah ma qabtaa? Nala soo xiriir WhatsApp.</p>
-      </div>
-
-      <div class="contact-card">
-        <span class="contact-symbol">☏</span>
-        <h2>IGA KEEN WhatsApp</h2>
-        <p>U dir fariin si aad wax uga weydiiso adeegyada ama dalabkaaga.</p>
-        <a class="primary-button contact-link" id="contact-whatsapp"
-           href="#" target="_blank" rel="noopener noreferrer">
-          Fur WhatsApp <span>↗</span>
-        </a>
-      </div>
-
-      <div class="mini-info">
-        <b>Adeegyada</b>
-        <p>Taxi · Bajaaj · Delivery · Safar</p>
-        <b>Goobta adeegga</b>
-        <p>Goldogob iyo meelaha adeeggu ka shaqeeyo.</p>
-      </div>
-    </section>
-
-    <!-- ACCOUNT -->
-    <section class="view" id="account-view">
-      <div class="page-heading">
-        <span class="overline">AKOONKAYGA</span>
-        <h1>Ku soo dhawoow</h1>
-        <p>Halkan waxaad ka maamuli kartaa akoonkaaga IGA KEEN.</p>
-      </div>
-
-      <div class="account-card">
-        <div class="account-avatar">IG</div>
-        <div class="account-info">
-          <span>AKOONKAAGA</span>
-          <b id="account-status">Waad soo gashay</b>
-          <small id="account-email">—</small>
-        </div>
-      </div>
-
-      <button class="primary-button" id="account-order-button" type="button">
-        Dalbo adeeg <span>→</span>
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav" aria-label="Navigation">
+      <button class="nav-item active" data-view="home">
+        <span class="nav-icon">⌂</span>
+        <span>Hoy</span>
       </button>
-      <button class="logout-button" id="logout-button" type="button">Ka bax akoonka</button>
-      <div class="feedback" id="account-feedback" role="status" aria-live="polite"></div>
-    </section>
+      <button class="nav-item" data-view="orders">
+        <span class="nav-icon">▤</span>
+        <span>Dalabyo</span>
+      </button>
+      <button class="nav-item" data-view="driver">
+        <span class="nav-icon">🚘</span>
+        <span>Darawal</span>
+      </button>
+      <button class="nav-item" data-view="notifications">
+        <span class="nav-icon">♧</span>
+        <span>Ogeysiis</span>
+      </button>
+      <button class="nav-item" data-view="account">
+        <span class="nav-icon">○</span>
+        <span>Akoon</span>
+      </button>
+    </nav>
 
-    <!-- SUCCESS -->
-    <section class="view" id="success-view">
-      <div class="success-card">
-        <div class="success-check">✓</div>
-        <span class="overline">WAA LA KAYDIYAY</span>
-        <h1>Dalabkaaga waa la gudbiyey!</h1>
-        <p id="success-message">Dalabka waxaa lagu kaydiyey IGA KEEN.</p>
-        <div class="order-reference" id="order-reference"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
 
-        <button class="primary-button" id="success-whatsapp" type="button">
-          La xiriir WhatsApp <span>↗</span>
-        </button>
-        <button class="secondary-button" id="new-order" type="button">
-          Dalab kale samee
-        </button>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- BOTTOM NAVIGATION -->
-  <nav class="bottom-nav" aria-label="Navigation hoose">
-    <button class="nav-item active" type="button" data-view="home-view">
-      <span>⌂</span><small>Home</small>
-    </button>
-    <button class="nav-item" type="button" data-view="order-view">
-      <span>＋</span><small>Dalbo</small>
-    </button>
-    <button class="nav-item" type="button" data-view="contact-view">
-      <span>☏</span><small>Xiriir</small>
-    </button>
-    <button class="nav-item" id="login-nav-button" type="button" data-view="auth-view">
-      <span>♙</span><small id="login-nav-label">Login</small>
-    </button>
-  </nav>
-
-  <footer class="app-footer">
-    © 2026 IGA KEEN · Adeeggaaga kuu dhow
-  </footer>
-</div>
-
-<!-- Isbeddelka muuqaalka doorashooyinka adeeg-bixiyaha -->
-<script>
-(() => {
-  const roleSelect = document.getElementById("account-role");
-  const providerDetails = document.getElementById("provider-details");
-  const serviceSelect = document.getElementById("provider-service");
-  const deliveryField = document.getElementById("delivery-method-field");
-  const deliverySelect = document.getElementById("delivery-method");
-  const vehicleInput = document.getElementById("provider-vehicle");
-
-  if (!roleSelect || !providerDetails || !serviceSelect ||
-      !deliveryField || !deliverySelect) return;
-
-  function updateProviderFields() {
-    const isProvider = roleSelect.value === "provider";
-    providerDetails.classList.toggle("hidden", !isProvider);
-
-    serviceSelect.required = isProvider;
-    vehicleInput.required = isProvider && serviceSelect.value !== "delivery";
-
-    const isDelivery = isProvider && serviceSelect.value === "delivery";
-    deliveryField.classList.toggle("hidden", !isDelivery);
-    deliverySelect.required = isDelivery;
-
-    if (!isDelivery) deliverySelect.value = "";
-  }
-
-  roleSelect.addEventListener("change", updateProviderFields);
-  serviceSelect.addEventListener("change", updateProviderFields);
-  updateProviderFields();
-})();
-</script>
-
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js")
-        .then(() => console.log("IGA KEEN PWA is ready."))
-        .catch((error) => console.error(
-          "Service worker registration failed:", error
-        ));
-    });
-  }
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
