@@ -1170,4 +1170,569 @@ async function renderChatList() {
     const { data } = await db.from('orders').select('*').eq('driver_id', state.driver.id).in('status', ['confirmed', 'in_progress', 'completed']).order('updated_at', { ascending: false });
     orders = data || [];
   } else {
-    const { data } = await db.from('orders').select('*').eq('user_id', state.user.id).not('driver_id', 'is', null).order('
+    const { data } = await db.from('orders').select('*').eq('user_id', state.user.id).not('driver_id', 'is', null).order('updated_at', { ascending: false });
+    orders = data || [];
+  }
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('nav.chat')}</h2><p>${t('order.chat')}</p></div>
+    ${orders.length ? orders.map(o => `
+      <div class="card order-card" onclick="App.openChat('${o.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <div><p class="card-title">#${esc(o.order_number || o.id.slice(0, 8))}</p><p class="card-sub">${esc(o.pickup_address || '')} → ${esc(o.destination_address || '')}</p></div>
+          ${statusPill(o.status)}
+        </div>
+      </div>`).join('') : emptyBox('💬', t('common.empty'), 'Weli sheeko ma jirto.')}
+  `;
+}
+async function openChat(orderId) {
+  const { data: o, error } = await db.from('orders').select('*').eq('id', orderId).maybeSingle();
+  if (error || !o) return toast(friendlyError(error), 'error');
+  const isCustomer = o.user_id === state.user.id;
+  const isDriver = state.driver && o.driver_id === state.driver.id;
+  if (!isCustomer && !isDriver) return toast(t('error.permission'), 'error');
+  if (!o.driver_id) return toast(t('order.noDriver'), 'error');
+  state.chatOrder = o;
+  state.chatMessages = [];
+  navigate('chat', orderId);
+  await fetchChatMessages(orderId);
+  subscribeChat(orderId);
+}
+async function fetchChatMessages(orderId) {
+  const { data, error } = await db.from('order_messages').select('*').eq('order_id', orderId).order('created_at', { ascending: true });
+  if (error) { console.error(error); return; }
+  state.chatMessages = data || [];
+  renderChatMessages();
+  await db.from('order_messages').update({ read_at: new Date().toISOString() }).eq('order_id', orderId).eq('recipient_id', state.user.id).is('read_at', null);
+}
+async function renderChat(orderId) {
+  const o = state.chatOrder || (await db.from('orders').select('*').eq('id', orderId).maybeSingle()).data;
+  if (!o) throw new Error('Order missing');
+  const otherName = o.user_id === state.user.id ? 'Darawalka' : (o.customer_name || 'Macmiil');
+  $('screen').innerHTML = `
+    <div class="chat-screen">
+      <div class="chat-head">
+        <button class="icon-btn" onclick="App.leaveChat()">←</button>
+        <div><p class="card-title">${esc(otherName)}</p><p class="card-sub">#${esc(o.order_number || o.id.slice(0, 8))}</p></div>
+      </div>
+      <div class="chat-body" id="chatBody"></div>
+      <form class="chat-input-row" onsubmit="App.sendMessage(event, '${orderId}')">
+        <textarea id="chatInput" rows="1" placeholder="Qor fariin..." required></textarea>
+        <button class="send-btn" type="submit">➤</button>
+      </form>
+    </div>
+  `;
+  renderChatMessages();
+}
+function renderChatMessages() {
+  const body = $('chatBody');
+  if (!body) return;
+  body.innerHTML = state.chatMessages.length ? state.chatMessages.map(m => {
+    const mine = m.sender_id === state.user.id;
+    return `<div class="msg ${mine ? 'me' : 'them'}">${esc(m.body)}<span class="msg-time">${fmtDate(m.created_at)}${mine ? (m.read_at ? ' · ✓✓' : ' · ✓') : ''}</span></div>`;
+  }).join('') : `<div class="empty" style="border:0"><div class="empty-ico">💬</div><h4>${t('common.empty')}</h4><p>Qor fariintaada ugu horreysa.</p></div>`;
+  body.scrollTop = body.scrollHeight;
+}
+function subscribeChat(orderId) {
+  if (state.chatChannel) db.removeChannel(state.chatChannel);
+  state.chatChannel = db.channel(`chat-${orderId}`)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'order_messages', filter: `order_id=eq.${orderId}` }, async (payload) => {
+      state.chatMessages.push(payload.new);
+      renderChatMessages();
+      if (payload.new.recipient_id === state.user.id) {
+        await db.from('order_messages').update({ read_at: new Date().toISOString() }).eq('id', payload.new.id);
+      }
+    })
+    .subscribe();
+}
+function leaveChat() {
+  if (state.chatChannel) { db.removeChannel(state.chatChannel); state.chatChannel = null; }
+  state.chatOrder = null;
+  navigate('chat-list');
+}
+async function sendMessage(e, orderId) {
+  e.preventDefault();
+  const input = $('chatInput');
+  const body = input.value.trim();
+  if (!body || !state.chatOrder) return;
+  const o = state.chatOrder;
+  const recipient = o.user_id === state.user.id ? o.driver_id : o.user_id;
+  input.value = '';
+  const { error } = await db.from('order_messages').insert({ order_id: orderId, sender_id: state.user.id, recipient_id: recipient, body });
+  if (error) toast(friendlyError(error), 'error');
+}
+
+/* =========================================================
+   NOTIFICATIONS
+   ========================================================= */
+async function refreshUnread() {
+  const { count } = await db.from('notifications').select('*', { count: 'exact', head: true }).eq('user_id', state.user.id).is('read_at', null);
+  setBadge(count || 0);
+}
+function subscribeNotifications() {
+  if (state.notifChannel) db.removeChannel(state.notifChannel);
+  state.notifChannel = db.channel(`notif-${state.user.id}`)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${state.user.id}` }, (payload) => {
+      setBadge(state.unread + 1);
+      toast(payload.new.title || 'Ogeysiis cusub');
+      if (state.screen === 'notifications') renderNotifications();
+    })
+    .subscribe();
+}
+function subscribeOrders() {
+  if (state.orderChannel) db.removeChannel(state.orderChannel);
+  const filter = state.role === 'driver' && state.driver ? `driver_id=eq.${state.driver.id}` : `user_id=eq.${state.user.id}`;
+  state.orderChannel = db.channel(`orders-${state.user.id}`)
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter }, () => {
+      if (['orders', 'order-detail', 'home', 'driver-home'].includes(state.screen)) render();
+    })
+    .subscribe();
+}
+async function renderNotifications() {
+  const { data, error } = await db.from('notifications').select('*').eq('user_id', state.user.id).order('created_at', { ascending: false }).limit(60);
+  if (error) throw error;
+  $('screen').innerHTML = `
+    <div class="page-head" style="display:flex;justify-content:space-between;align-items:start">
+      <div><h2>${t('notif.title')}</h2><p>${t('common.unread')}: ${state.unread}</p></div>
+      <button class="btn btn-sm btn-secondary" onclick="App.markAllRead()">${t('notif.markAll')}</button>
+    </div>
+    ${data?.length ? data.map(n => `
+      <div class="card" style="${n.read_at ? '' : 'border-color:var(--line-strong)'}">
+        <div style="display:flex;justify-content:space-between;gap:8px">
+          <p class="card-title" style="font-size:14px">${esc(n.title || 'Ogeysiis')}</p>
+          ${!n.read_at ? '<span class="badge-pill new">●</span>' : ''}
+        </div>
+        <p class="card-sub">${esc(n.body || '')}</p>
+        <p class="card-sub" style="font-size:11px;margin-top:8px">${fmtDate(n.created_at)}</p>
+      </div>`).join('') : emptyBox('🔔', t('common.empty'), 'Ma jiraan ogeysiisyo.')}
+  `;
+  if (state.unread > 0) {
+    await db.from('notifications').update({ read_at: new Date().toISOString() }).eq('user_id', state.user.id).is('read_at', null);
+    setBadge(0);
+  }
+}
+async function markAllRead() {
+  showLoading();
+  try {
+    const { error } = await db.from('notifications').update({ read_at: new Date().toISOString() }).eq('user_id', state.user.id).is('read_at', null);
+    if (error) throw error;
+    setBadge(0);
+    renderNotifications();
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+
+/* =========================================================
+   COMMUNITY
+   ========================================================= */
+async function renderCommunity() {
+  const { data: posts, error } = await db.from('community_posts').select('*, profiles(full_name, avatar_url)').order('created_at', { ascending: false }).limit(40);
+  if (error) throw error;
+  const ids = (posts || []).map(p => p.id);
+  let reactions = [], comments = [];
+  if (ids.length) {
+    const [{ data: r }, { data: c }] = await Promise.all([
+      db.from('community_reactions').select('*').in('post_id', ids),
+      db.from('community_comments').select('*').in('post_id', ids)
+    ]);
+    reactions = r || []; comments = c || [];
+  }
+  $('screen').innerHTML = `
+    <div class="page-head" style="display:flex;justify-content:space-between;align-items:start">
+      <div><h2>${t('nav.community')}</h2><p>IGA KEEN Community</p></div>
+      <button class="btn btn-sm btn-primary" onclick="App.openNewPost()">+ ${t('community.newPost')}</button>
+    </div>
+    ${(posts || []).length ? posts.map(p => {
+      const likes = reactions.filter(r => r.post_id === p.id).length;
+      const liked = reactions.some(r => r.post_id === p.id && r.user_id === state.user.id);
+      const cCount = comments.filter(c => c.post_id === p.id).length;
+      return `<div class="card post-card">
+        <div class="post-head">
+          <div class="post-avatar">${p.profiles?.avatar_url ? `<img src="${esc(p.profiles.avatar_url)}" alt="">` : esc(initials(p.profiles?.full_name || 'IG'))}</div>
+          <div class="post-meta"><strong>${esc(p.profiles?.full_name || 'IG User')}</strong><span>${fmtDate(p.created_at)}</span></div>
+        </div>
+        ${p.body ? `<p class="post-body">${esc(p.body)}</p>` : ''}
+        ${p.image_url ? `<img class="post-image" src="${esc(p.image_url)}" alt="Post image" loading="lazy">` : ''}
+        <div class="post-actions">
+          <button class="post-action ${liked ? 'liked' : ''}" onclick="App.toggleLike('${p.id}', ${liked})">♥ ${likes}</button>
+          <button class="post-action" onclick="App.openComments('${p.id}')">💬 ${cCount}</button>
+        </div>
+      </div>`;
+    }).join('') : emptyBox('◎', t('community.noPosts'), 'Qor postkaaga ugu horreeya.')}
+  `;
+}
+function openNewPost() {
+  openModal(`
+    <div class="modal-head"><h3>${t('community.newPost')}</h3><button class="modal-close" onclick="App.closeModal()">×</button></div>
+    <form onsubmit="App.createPost(event)" class="auth-form">
+      <label class="field"><span>${t('community.newPost')}</span><textarea id="postBody" placeholder="Maxaad la wadaagaysaa?" required></textarea></label>
+      <label class="field"><span>Image (ikhtiyaari)</span><input type="file" id="postImage" accept="image/*" /></label>
+      <button class="btn btn-primary btn-block" type="submit">${t('community.post')}</button>
+    </form>
+  `);
+}
+async function createPost(e) {
+  e.preventDefault();
+  showLoading();
+  try {
+    let imageUrl = null;
+    const file = $('postImage').files[0];
+    if (file) imageUrl = await uploadFile('community', `${state.user.id}/${Date.now()}-${file.name}`, file);
+    const { error } = await db.from('community_posts').insert({ author_id: state.user.id, body: $('postBody').value.trim(), image_url: imageUrl, post_type: imageUrl ? 'photo' : 'normal' });
+    if (error) throw error;
+    closeModal();
+    toast('Post waa la daabacay.', 'success');
+    renderCommunity();
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+async function toggleLike(postId, liked) {
+  if (liked) {
+    await db.from('community_reactions').delete().eq('post_id', postId).eq('user_id', state.user.id);
+  } else {
+    await db.from('community_reactions').insert({ post_id: postId, user_id: state.user.id, reaction: 'like' });
+  }
+  renderCommunity();
+}
+async function openComments(postId) {
+  const { data } = await db.from('community_comments').select('*, profiles(full_name, avatar_url)').eq('post_id', postId).order('created_at', { ascending: true });
+  openModal(`
+    <div class="modal-head"><h3>${t('community.comment')}</h3><button class="modal-close" onclick="App.closeModal()">×</button></div>
+    <div style="max-height:40dvh;overflow:auto;margin-bottom:12px">
+      ${(data || []).length ? data.map(c => `<div class="list-item"><div class="post-avatar">${esc(initials(c.profiles?.full_name || 'IG'))}</div><div class="list-main"><strong>${esc(c.profiles?.full_name || 'IG')}</strong><p>${esc(c.body)}</p><p style="font-size:10px">${fmtDate(c.created_at)}</p></div></div>`).join('') : emptyBox('💬', t('common.empty'), 'Qor faalladaada ugu horreysa.')}
+    </div>
+    <form onsubmit="App.createComment(event, '${postId}')" class="auth-form">
+      <label class="field"><span>${t('community.comment')}</span><input id="commentBody" required placeholder="${t('community.writeComment')}" /></label>
+      <button class="btn btn-primary btn-block" type="submit">${t('common.send')}</button>
+    </form>
+  `);
+}
+async function createComment(e, postId) {
+  e.preventDefault();
+  showLoading();
+  try {
+    const { error } = await db.from('community_comments').insert({ post_id: postId, author_id: state.user.id, body: $('commentBody').value.trim() });
+    if (error) throw error;
+    closeModal();
+    toast('Faallo waa la daray.', 'success');
+    renderCommunity();
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+
+/* =========================================================
+   ACCOUNT / PROFILE
+   ========================================================= */
+async function renderAccount() {
+  const p = state.profile || {};
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('account.profile')}</h2><p>${esc(p.role || state.role)}</p></div>
+    <div class="card" style="text-align:center">
+      <div class="logo-mark" style="margin-bottom:10px">${p.avatar_url ? `<img src="${esc(p.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">` : esc(initials(p.full_name))}</div>
+      <p class="card-title">${esc(p.full_name || 'IG User')}</p>
+      <p class="card-sub">${esc(p.phone || '—')}</p>
+      <p class="card-sub" style="font-size:11px">${esc(state.user.email || '')}</p>
+      <button class="btn btn-secondary btn-block btn-sm" style="margin-top:14px" onclick="App.openEditProfile()">${t('account.edit')}</button>
+    </div>
+    <div class="card">
+      <div class="list-item"><div class="list-main"><strong>${t('account.language')}</strong><p>Soomaali / English / العربية</p></div>
+        <select onchange="App.setLanguage(this.value)" style="border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px">
+          <option value="so" ${state.lang === 'so' ? 'selected' : ''}>Soomaali</option>
+          <option value="en" ${state.lang === 'en' ? 'selected' : ''}>English</option>
+          <option value="ar" ${state.lang === 'ar' ? 'selected' : ''}>العربية</option>
+        </select>
+      </div>
+      <div class="list-item"><div class="list-main"><strong>${t('account.theme')}</strong><p>${state.theme === 'dark' ? t('account.dark') : t('account.light')}</p></div>
+        <button class="btn btn-sm btn-secondary" onclick="App.toggleTheme()">${state.theme === 'dark' ? '☀' : '☾'}</button>
+      </div>
+    </div>
+    ${state.driver ? `<div class="card"><p class="card-title">${t('role.driver')}</p><p class="card-sub">${esc(state.driver.service_type)} · ${esc(state.driver.approval_status)}</p></div>` : ''}
+    <button class="btn btn-danger btn-block" style="margin-top:14px" onclick="App.logout()">${t('account.logout')}</button>
+  `;
+}
+function openEditProfile() {
+  const p = state.profile || {};
+  openModal(`
+    <div class="modal-head"><h3>${t('account.edit')}</h3><button class="modal-close" onclick="App.closeModal()">×</button></div>
+    <form onsubmit="App.saveProfile(event)" class="auth-form">
+      <label class="field"><span>${t('auth.fullName')}</span><input id="editName" required value="${esc(p.full_name || '')}" /></label>
+      <label class="field"><span>${t('auth.phone')}</span><input id="editPhone" type="tel" value="${esc(p.phone || '')}" /></label>
+      <label class="field"><span>Avatar</span><input type="file" id="editAvatar" accept="image/*" /></label>
+      <button class="btn btn-primary btn-block" type="submit">${t('common.save')}</button>
+    </form>
+  `);
+}
+async function saveProfile(e) {
+  e.preventDefault();
+  showLoading();
+  try {
+    let avatar_url = state.profile?.avatar_url || null;
+    const file = $('editAvatar').files[0];
+    if (file) avatar_url = await uploadFile('avatars', `${state.user.id}/avatar-${Date.now()}.${file.name.split('.').pop()}`, file);
+    const { error } = await db.from('profiles').update({ full_name: $('editName').value.trim(), phone: $('editPhone').value.trim(), avatar_url }).eq('id', state.user.id);
+    if (error) throw error;
+    closeModal();
+    await loadProfile();
+    toast(t('account.saved'), 'success');
+    renderAccount();
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+async function renderProfileView(userId) {
+  const { data: p } = await db.from('profiles').select('*').eq('id', userId).maybeSingle();
+  if (!p) throw new Error('Profile not found');
+  const { data: posts } = await db.from('community_posts').select('*').eq('author_id', userId).order('created_at', { ascending: false }).limit(20);
+  $('screen').innerHTML = `
+    <button class="link-btn" style="text-align:left;padding:0;margin-bottom:12px" onclick="App.navigate('community')">← ${t('common.back')}</button>
+    <div class="card" style="text-align:center">
+      <div class="logo-mark">${p.avatar_url ? `<img src="${esc(p.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">` : esc(initials(p.full_name))}</div>
+      <p class="card-title">${esc(p.full_name)}</p>
+      <p class="card-sub">${esc(p.role)} · ${fmtDate(p.created_at)}</p>
+    </div>
+    <div class="section-row"><h3>Posts</h3></div>
+    ${(posts || []).length ? posts.map(x => `<div class="card"><p class="post-body">${esc(x.body || '')}</p><p class="card-sub">${fmtDate(x.created_at)}</p></div>`).join('') : emptyBox('◎', t('common.empty'), 'Ma jiraan posts.')}
+  `;
+}
+
+/* =========================================================
+   ADMIN DASHBOARD
+   ========================================================= */
+async function renderAdminDashboard() {
+  const count = (table, apply) => {
+    let q = db.from(table).select('*', { count: 'exact', head: true });
+    if (apply) q = apply(q);
+    return q;
+  };
+  const [total, news, active, completed, pendingDrivers, pendingFees, customers, approvedDrivers] = await Promise.all([
+    count('orders'), count('orders', q => q.eq('status', 'new')), count('orders', q => q.in('status', ['confirmed', 'in_progress'])),
+    count('orders', q => q.eq('status', 'completed')), count('drivers', q => q.eq('approval_status', 'pending')),
+    count('driver_fee_payments', q => q.eq('status', 'pending')), count('profiles', q => q.eq('role', 'customer')),
+    count('drivers', q => q.eq('approval_status', 'approved'))
+  ]);
+  const cards = [
+    [t('admin.totalOrders'), total.count], [t('admin.newOrders'), news.count],
+    [t('admin.activeOrders'), active.count], [t('admin.completedOrders'), completed.count],
+    [t('admin.pendingDrivers'), pendingDrivers.count], [t('admin.pendingFees'), pendingFees.count],
+    [t('admin.customersCount'), customers.count], [t('admin.approvedDrivers'), approvedDrivers.count]
+  ];
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('nav.dashboard')}</h2><p>IGA KEEN Admin</p></div>
+    <div class="stat-grid">${cards.map(([label, val]) => `<div class="stat-card"><span>${esc(label)}</span><strong>${val || 0}</strong></div>`).join('')}</div>
+    <div class="section-row"><h3>Quick actions</h3></div>
+    <div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-secondary" onclick="App.navigate('admin-drivers')">🚕 ${t('admin.drivers')}</button>
+      <button class="btn btn-secondary" onclick="App.navigate('admin-fees')">💳 ${t('admin.fees')}</button>
+      <button class="btn btn-secondary" onclick="App.navigate('admin-orders')">🧾 ${t('admin.orders')}</button>
+      <button class="btn btn-secondary" onclick="App.navigate('admin-settings')">⚙ ${t('admin.settings')}</button>
+    </div>
+  `;
+}
+async function renderAdminOrders() {
+  const { data, error } = await db.from('orders').select('*').order('created_at', { ascending: false }).limit(80);
+  if (error) throw error;
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('admin.orders')}</h2><p>Dhammaan dalabyada</p></div>
+    ${(data || []).length ? data.map(orderCard).join('') : emptyBox('🧾', t('common.empty'), 'Ma jiraan dalabyo.')}
+  `;
+}
+async function renderAdminDrivers() {
+  const { data, error } = await db.from('drivers').select('*').order('created_at', { ascending: false });
+  if (error) throw error;
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('admin.drivers')}</h2><p>${t('admin.pendingDrivers')}: ${(data || []).filter(d => d.approval_status === 'pending').length}</p></div>
+    ${(data || []).length ? data.map(d => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:start">
+          <div><p class="card-title">${esc(d.full_name || 'Driver')}</p><p class="card-sub">${esc(d.service_type)} · ${esc(d.phone || '—')}</p><p class="card-sub">${esc(d.vehicle_description || '')}</p></div>
+          <span class="badge-pill ${d.approval_status === 'approved' ? 'active' : d.approval_status === 'rejected' ? 'cancel' : 'warn'}">${esc(d.approval_status)}</span>
+        </div>
+        ${d.approval_status === 'pending' ? `<div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-sm btn-success" onclick="App.adminDriverDecision('${d.id}','approved')">${t('admin.approve')}</button>
+          <button class="btn btn-sm btn-danger" onclick="App.adminDriverDecision('${d.id}','rejected')">${t('admin.reject')}</button>
+        </div>` : ''}
+      </div>`).join('') : emptyBox('🚕', t('common.empty'), 'Ma jiraan darawalo.')}
+  `;
+}
+async function adminDriverDecision(driverId, status) {
+  showLoading();
+  try {
+    const { error } = await db.rpc('igakeen_admin_set_driver_approval', { p_driver_id: driverId, p_status: status });
+    if (error) throw error;
+    toast(status === 'approved' ? 'Darawalka waa la ansixiyay.' : 'Darawalka waa la diiday.', 'success');
+    renderAdminDrivers();
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+async function renderAdminFees() {
+  const { data, error } = await db.from('driver_fee_payments').select('*').order('created_at', { ascending: false }).limit(80);
+  if (error) throw error;
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('admin.fees')}</h2><p>${t('admin.pendingFees')}: ${(data || []).filter(f => f.status === 'pending').length}</p></div>
+    ${(data || []).length ? data.map(f => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:8px">
+          <div><p class="card-title">${fmtMoney(f.amount, f.currency)}</p><p class="card-sub">${esc(f.payment_reference || '—')}</p><p class="card-sub">${esc(f.payment_note || '')}</p><p class="card-sub" style="font-size:11px">${fmtDate(f.created_at)}</p></div>
+          <span class="badge-pill ${f.status === 'confirmed' ? 'active' : f.status === 'rejected' ? 'cancel' : 'warn'}">${esc(f.status)}</span>
+        </div>
+        ${f.status === 'pending' ? `<div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-sm btn-success" onclick="App.adminFeeDecision('${f.id}','confirmed')">${t('admin.confirmFee')}</button>
+          <button class="btn btn-sm btn-danger" onclick="App.adminFeeDecision('${f.id}','rejected')">${t('admin.rejectFee')}</button>
+        </div>` : ''}
+      </div>`).join('') : emptyBox('💳', t('common.empty'), 'Ma jiraan fee payments.')}
+  `;
+}
+async function adminFeeDecision(paymentId, decision) {
+  showLoading();
+  try {
+    const { error } = await db.rpc('igakeen_review_provider_fee', { p_payment_id: paymentId, p_decision: decision, p_review_note: null });
+    if (error) throw error;
+    toast(decision === 'confirmed' ? 'Fee waa la xaqiijiyay.' : 'Fee waa la diiday.', 'success');
+    renderAdminFees();
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+async function renderAdminSettings() {
+  const { data: fees } = await db.from('service_fees').select('*').order('service_type');
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('admin.settings')}</h2><p>${t('admin.serviceFees')}</p></div>
+    ${(fees || []).map(f => `
+      <div class="card">
+        <p class="card-title">${esc(serviceInfo(f.service_type)[1])}</p>
+        <form onsubmit="App.saveFee(event, '${f.id}')" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+          <label class="field"><span>Customer fee</span><input id="cf-${f.id}" type="number" step="0.01" value="${Number(f.customer_fee || 0)}" /></label>
+          <label class="field"><span>Provider fee</span><input id="pf-${f.id}" type="number" step="0.01" value="${Number(f.provider_fee || 0)}" /></label>
+          <button class="btn btn-sm btn-primary" style="grid-column:1/-1" type="submit">${t('common.save')}</button>
+        </form>
+      </div>`).join('') || emptyBox('⚙', t('common.empty'), 'Service fees ma jiraan.')}
+    <div class="section-row"><h3>${t('admin.notifications')}</h3></div>
+    <button class="btn btn-secondary btn-block" onclick="App.navigate('admin-notifications')">${t('admin.publishNotice')}</button>
+  `;
+}
+async function saveFee(e, feeId) {
+  e.preventDefault();
+  showLoading();
+  try {
+    const { error } = await db.from('service_fees').update({
+      customer_fee: Number($(`cf-${feeId}`).value || 0),
+      provider_fee: Number($(`pf-${feeId}`).value || 0),
+      updated_at: new Date().toISOString()
+    }).eq('id', feeId);
+    if (error) throw error;
+    toast(t('account.saved'), 'success');
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+async function renderAdminNotifications() {
+  const { data: notices } = await db.from('app_notices').select('*').order('created_at', { ascending: false }).limit(20);
+  $('screen').innerHTML = `
+    <div class="page-head"><h2>${t('admin.notifications')}</h2><p>${t('admin.publishNotice')}</p></div>
+    <form class="card" onsubmit="App.publishNotice(event)" style="display:grid;gap:12px">
+      <label class="field"><span>Title</span><input id="noticeTitle" required /></label>
+      <label class="field"><span>Body</span><textarea id="noticeBody" required></textarea></label>
+      <label class="field"><span>${t('admin.audience')}</span><select id="noticeAudience">
+        <option value="all">${t('admin.audienceAll')}</option>
+        <option value="customers">${t('admin.audienceCustomers')}</option>
+        <option value="drivers">${t('admin.audienceDrivers')}</option>
+      </select></label>
+      <label class="field"><span>Image (ikhtiyaari)</span><input type="file" id="noticeImage" accept="image/*" /></label>
+      <button class="btn btn-primary btn-block" type="submit">${t('admin.publishNotice')}</button>
+    </form>
+    <div class="section-row"><h3>Published notices</h3></div>
+    ${(notices || []).length ? notices.map(n => `<div class="card"><p class="card-title">${esc(n.title)}</p><p class="card-sub">${esc(n.body)}</p><p class="card-sub" style="font-size:11px">${fmtDate(n.created_at)} · ${esc(n.audience || 'all')}</p></div>`).join('') : emptyBox('📢', t('common.empty'), 'Ma jiraan notices.')}
+  `;
+}
+async function publishNotice(e) {
+  e.preventDefault();
+  showLoading();
+  try {
+    let imageUrl = null;
+    const file = $('noticeImage').files[0];
+    if (file) imageUrl = await uploadFile('notifications', `${state.user.id}/${Date.now()}-${file.name}`, file);
+    const { error } = await db.rpc('igakeen_publish_notice', {
+      p_title: $('noticeTitle').value.trim(),
+      p_body: $('noticeBody').value.trim(),
+      p_audience: $('noticeAudience').value,
+      p_image_url: imageUrl
+    });
+    if (error) throw error;
+    toast('Ogeysiiska waa la daabacay.', 'success');
+    renderAdminNotifications();
+  } catch (err) { toast(friendlyError(err), 'error'); }
+  finally { showLoading(false); }
+}
+
+/* =========================================================
+   STORAGE
+   ========================================================= */
+async function uploadFile(bucket, path, file) {
+  const { error } = await db.storage.from(bucket).upload(path, file, { cacheControl: '3600', upsert: true });
+  if (error) throw error;
+  const { data } = db.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+function openModal(html, cls = '') {
+  const root = $('modalRoot');
+  root.innerHTML = `<div class="modal-backdrop" onclick="if(event.target===this)App.closeModal()"><div class="modal-sheet ${cls}">${html}</div></div>`;
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  $('modalRoot').innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+/* =========================================================
+   OFFLINE / ONLINE
+   ========================================================= */
+window.addEventListener('offline', () => toast(t('offline'), 'error'));
+window.addEventListener('online', () => toast(t('online'), 'success'));
+
+/* =========================================================
+   AUTH STATE LISTENER
+   ========================================================= */
+db.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    state.recoveryMode = true;
+    openUpdatePassword();
+    return;
+  }
+  if (event === 'SIGNED_OUT') {
+    state.user = null; state.profile = null; state.driver = null; state.isAdmin = false;
+    $('authScreen').classList.remove('hidden');
+    $('appShell').classList.add('hidden');
+    closeModal();
+    return;
+  }
+  await handleSession(session);
+});
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+(function boot() {
+  applyTheme();
+  applyLanguage();
+  signupRole('customer');
+  authTab('login');
+  db.auth.getSession().then(({ data: { session } }) => handleSession(session));
+})();
+
+/* =========================================================
+   GLOBAL APP API (used by inline handlers)
+   ========================================================= */
+window.App = {
+  toggleTheme, cycleLanguage, setLanguage, authTab, signupRole, login, signup,
+  openForgot, sendReset, updatePassword, logout, navigate, render,
+  startOrder, submitOrder, useLocation,
+  openOrder, filterCustomerOrders, openChat, leaveChat, sendMessage,
+  toggleOnline, acceptOrder, openFeeModal, submitFee,
+  renderNotifications, markAllRead,
+  renderCommunity, openNewPost, createPost, toggleLike, openComments, createComment,
+  renderAccount, openEditProfile, saveProfile, renderProfileView,
+  renderAdminDashboard, renderAdminOrders, renderAdminDrivers, adminDriverDecision,
+  renderAdminFees, adminFeeDecision, renderAdminSettings, saveFee,
+  renderAdminNotifications, publishNotice,
+  openModal, closeModal
+};
