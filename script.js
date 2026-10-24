@@ -7,7 +7,7 @@ const SUPABASE_URL = 'https://zywwypqddnvslgqztnep.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_fDRyejheqSBrLQcBe8KpQw_L76yFtp8';
 
 const ADMIN_UID = '85282aac-7813-442f-a51b-6d43e3eccf1e';
-const FALLBACK_UUID = '00000000-0000-0000-0000-000000000000'; // Ilaaliye haddii user.id maqan yahay
+const FALLBACK_UUID = '00000000-0000-0000-0000-000000000000'; 
 
 const { createClient } = window.supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
@@ -495,7 +495,7 @@ async function loadDriver() {
 }
 
 /* =========================================================
-   NAVIGATION & RENDER (Fixed)
+   NAVIGATION & RENDER
    ========================================================= */
 function buildNav() {
   const nav = $('bottomNav');
@@ -541,7 +541,6 @@ async function render() {
   $('screen').innerHTML = `<div class="skeleton" style="height:120px;margin-bottom:12px"></div><div class="skeleton" style="height:220px"></div>`;
   
   try { 
-    // FIX: Halkan waxaa lagu daray state.screenParam si loo gudbiyo ID-ga
     await fn(state.screenParam); 
   } catch (err) { 
     console.error('RENDER ERROR:', err); 
@@ -560,7 +559,7 @@ async function render() {
    ========================================================= */
 async function renderCustomerHome() {
   const uid = state.user?.id;
-  if (!uid) return; // Guard
+  if (!uid) return;
 
   const { data: orders } = await db.from('orders').select('*').eq('user_id', uid).order('created_at', { ascending: false }).limit(3);
   const { data: notices } = await db.from('app_notices').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(3);
@@ -1062,38 +1061,45 @@ async function markAllRead() {
 }
 
 /* =========================================================
-   COMMUNITY
+   COMMUNITY (Using specific columns)
    ========================================================= */
 async function renderCommunity() {
-  const { data: posts, error } = await db.from('community_posts').select('*, profiles(full_name, avatar_url)').order('created_at', { ascending: false }).limit(40);
-  if (error) throw error;
-  const ids = (posts || []).map(p => p.id);
-  let reactions = [], comments = [];
-  if (ids.length) {
-    const [{ data: r }, { data: c }] = await Promise.all([
-      db.from('community_reactions').select('*').in('post_id', ids),
-      db.from('community_comments').select('*').in('post_id', ids)
-    ]);
-    reactions = r || []; comments = c || [];
+  let posts = [];
+  let comments = [];
+
+  try {
+    const { data: pData, error: pErr } = await db.from('community_posts').select('*').order('created_at', { ascending: false }).limit(40);
+    if (pErr) throw pErr;
+    posts = pData || [];
+
+    if (posts.length > 0) {
+      const postIds = posts.map(p => p.id);
+      const { data: cData, error: cErr } = await db.from('community_comments').select('*').in('post_id', postIds);
+      if (!cErr) comments = cData || [];
+    }
+  } catch (err) {
+    console.error('Cilad Bulsho:', err);
   }
+
   $('screen').innerHTML = `
     <div class="page-head" style="display:flex;justify-content:space-between;align-items:start">
       <div><h2>${t('nav.community')}</h2><p>IGA KEEN Community</p></div>
       <button class="btn btn-sm btn-primary" onclick="App.openNewPost()">+ ${t('community.newPost')}</button>
     </div>
-    ${(posts || []).length ? posts.map(p => {
-      const likes = reactions.filter(r => r.post_id === p.id).length;
-      const liked = reactions.some(r => r.post_id === p.id && r.user_id === state.user.id);
+    ${posts.length ? posts.map(p => {
+      const authorName = p.author_name || 'IG User';
+      const likesCount = p.likes_count || 0;
       const cCount = comments.filter(c => c.post_id === p.id).length;
+
       return `<div class="card post-card">
         <div class="post-head">
-          <div class="post-avatar">${p.profiles?.avatar_url ? `<img src="${esc(p.profiles.avatar_url)}" alt="">` : esc(initials(p.profiles?.full_name || 'IG'))}</div>
-          <div class="post-meta"><strong>${esc(p.profiles?.full_name || 'IG User')}</strong><span>${fmtDate(p.created_at)}</span></div>
+          <div class="post-avatar">${esc(initials(authorName))}</div>
+          <div class="post-meta"><strong>${esc(authorName)}</strong><span>${fmtDate(p.created_at)}</span></div>
         </div>
         ${p.body ? `<p class="post-body">${esc(p.body)}</p>` : ''}
         ${p.image_url ? `<img class="post-image" src="${esc(p.image_url)}" alt="Post image" loading="lazy">` : ''}
         <div class="post-actions">
-          <button class="post-action ${liked ? 'liked' : ''}" onclick="App.toggleLike('${p.id}', ${liked})">♥ ${likes}</button>
+          <button class="post-action" onclick="App.toggleLike('${p.id}', ${likesCount})">♥ ${likesCount}</button>
           <button class="post-action" onclick="App.openComments('${p.id}')">💬 ${cCount}</button>
         </div>
       </div>`;
@@ -1112,36 +1118,74 @@ function openNewPost() {
 }
 async function createPost(e) {
   e.preventDefault();
-  if (!state.user?.id) return;
+  if (!state.user?.id) return toast('Fadlan mar kale gal (Login).', 'error');
   showLoading();
+  
   try {
     let imageUrl = null;
     const file = $('postImage').files[0];
-    if (file) imageUrl = await uploadFile('community', `${state.user.id}/${Date.now()}-${file.name}`, file);
-    const { error } = await db.from('community_posts').insert({ author_id: state.user.id, body: $('postBody').value.trim(), image_url: imageUrl, post_type: imageUrl ? 'photo' : 'normal' });
+    if (file) {
+      try {
+        imageUrl = await uploadFile('community', `${state.user.id}/${Date.now()}-${file.name}`, file);
+      } catch (err) {
+        console.warn('Image upload failed:', err);
+        toast('Sawirka lama soo gelin karin. (Hubi Storage-ka Supabase)', 'error');
+      }
+    }
+
+    const payload = {
+      user_id: state.user.id,
+      author_name: state.profile?.full_name || state.user.email?.split('@')[0] || 'IG User',
+      body: $('postBody').value.trim(),
+      image_url: imageUrl,
+      likes_count: 0
+    };
+
+    const { error } = await db.from('community_posts').insert(payload);
     if (error) throw error;
+    
     closeModal();
     toast('Post waa la daabacay.', 'success');
     renderCommunity();
-  } catch (err) { toast(friendlyError(err), 'error'); }
-  finally { showLoading(false); }
-}
-async function toggleLike(postId, liked) {
-  if (!postId || !state.user?.id) return;
-  if (liked) {
-    await db.from('community_reactions').delete().eq('post_id', postId).eq('user_id', state.user.id);
-  } else {
-    await db.from('community_reactions').insert({ post_id: postId, user_id: state.user.id, reaction: 'like' });
+  } catch (err) { 
+    toast(friendlyError(err), 'error'); 
+  } finally { 
+    showLoading(false); 
   }
-  renderCommunity();
+}
+async function toggleLike(postId, currentLikes) {
+  if (!postId) return;
+  try {
+    const { error } = await db.from('community_posts').update({ likes_count: currentLikes + 1 }).eq('id', postId);
+    if (error) throw error;
+    renderCommunity();
+  } catch (err) {
+    console.error('Like failed:', err);
+  }
 }
 async function openComments(postId) {
   if (!postId) return;
-  const { data } = await db.from('community_comments').select('*, profiles(full_name, avatar_url)').eq('post_id', postId).order('created_at', { ascending: true });
+  
+  let comments = [];
+  try {
+    const { data, error } = await db.from('community_comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
+    if (!error && data) comments = data;
+  } catch (err) {
+    console.warn('Comments fetch error:', err);
+  }
+
   openModal(`
     <div class="modal-head"><h3>${t('community.comment')}</h3><button class="modal-close" onclick="App.closeModal()">×</button></div>
     <div style="max-height:40dvh;overflow:auto;margin-bottom:12px">
-      ${(data || []).length ? data.map(c => `<div class="list-item"><div class="post-avatar">${esc(initials(c.profiles?.full_name || 'IG'))}</div><div class="list-main"><strong>${esc(c.profiles?.full_name || 'IG')}</strong><p>${esc(c.body)}</p><p style="font-size:10px">${fmtDate(c.created_at)}</p></div></div>`).join('') : emptyBox('💬', t('common.empty'), 'Qor faalladaada ugu horreysa.')}
+      ${comments.length ? comments.map(c => `
+        <div class="list-item">
+          <div class="post-avatar">${esc(initials(c.author_name || 'IG User'))}</div>
+          <div class="list-main">
+            <strong>${esc(c.author_name || 'IG User')}</strong>
+            <p>${esc(c.body)}</p>
+            <p style="font-size:10px">${fmtDate(c.created_at)}</p>
+          </div>
+        </div>`).join('') : emptyBox('💬', t('common.empty'), 'Qor faalladaada ugu horreysa.')}
     </div>
     <form onsubmit="App.createComment(event, '${postId}')" class="auth-form">
       <label class="field"><span>${t('community.comment')}</span><input id="commentBody" required placeholder="${t('community.writeComment')}" /></label>
@@ -1152,15 +1196,30 @@ async function openComments(postId) {
 async function createComment(e, postId) {
   e.preventDefault();
   if (!postId || !state.user?.id) return;
+  
+  const body = $('commentBody').value.trim();
+  if (!body) return;
+
   showLoading();
   try {
-    const { error } = await db.from('community_comments').insert({ post_id: postId, author_id: state.user.id, body: $('commentBody').value.trim() });
+    const payload = {
+      post_id: postId,
+      user_id: state.user.id,
+      author_name: state.profile?.full_name || state.user.email?.split('@')[0] || 'IG User',
+      body: body
+    };
+
+    const { error } = await db.from('community_comments').insert(payload);
     if (error) throw error;
+    
     closeModal();
     toast('Faallo waa la daray.', 'success');
     renderCommunity();
-  } catch (err) { toast(friendlyError(err), 'error'); }
-  finally { showLoading(false); }
+  } catch (err) { 
+    toast(friendlyError(err), 'error'); 
+  } finally { 
+    showLoading(false); 
+  }
 }
 
 /* =========================================================
@@ -1246,23 +1305,41 @@ async function renderProfileView(userId) {
    ADMIN DASHBOARD
    ========================================================= */
 async function renderAdminDashboard() {
-  const count = (table, apply) => {
-    let q = db.from(table).select('*', { count: 'exact', head: true });
-    if (apply) q = apply(q);
-    return q;
+  if (!state.isAdmin) {
+    $('screen').innerHTML = `<div class="empty"><div class="empty-ico">⛔</div><h4>Ma haysato fasax</h4><p>Boggan waa maamulka kaliya.</p></div>`;
+    return;
+  }
+
+  const safeCount = async (table, apply) => {
+    try {
+      let q = db.from(table).select('*', { count: 'exact', head: true });
+      if (apply) q = apply(q);
+      const { count, error } = await q;
+      if (error) return 0;
+      return count || 0;
+    } catch (err) {
+      return 0;
+    }
   };
+
   const [total, news, active, completed, pendingDrivers, pendingFees, customers, approvedDrivers] = await Promise.all([
-    count('orders'), count('orders', q => q.eq('status', 'new')), count('orders', q => q.in('status', ['confirmed', 'in_progress'])),
-    count('orders', q => q.eq('status', 'completed')), count('drivers', q => q.eq('approval_status', 'pending')),
-    count('driver_fee_payments', q => q.eq('status', 'pending')), count('profiles', q => q.eq('role', 'customer')),
-    count('drivers', q => q.eq('approval_status', 'approved'))
+    safeCount('orders'), 
+    safeCount('orders', q => q.eq('status', 'new')), 
+    safeCount('orders', q => q.in('status', ['confirmed', 'in_progress'])),
+    safeCount('orders', q => q.eq('status', 'completed')), 
+    safeCount('drivers', q => q.eq('approval_status', 'pending')),
+    safeCount('driver_fee_payments', q => q.eq('status', 'pending')), 
+    safeCount('profiles', q => q.eq('role', 'customer')),
+    safeCount('drivers', q => q.eq('approval_status', 'approved'))
   ]);
+
   const cards = [
-    [t('admin.totalOrders'), total.count], [t('admin.newOrders'), news.count],
-    [t('admin.activeOrders'), active.count], [t('admin.completedOrders'), completed.count],
-    [t('admin.pendingDrivers'), pendingDrivers.count], [t('admin.pendingFees'), pendingFees.count],
-    [t('admin.customersCount'), customers.count], [t('admin.approvedDrivers'), approvedDrivers.count]
+    [t('admin.totalOrders'), total], [t('admin.newOrders'), news],
+    [t('admin.activeOrders'), active], [t('admin.completedOrders'), completed],
+    [t('admin.pendingDrivers'), pendingDrivers], [t('admin.pendingFees'), pendingFees],
+    [t('admin.customersCount'), customers], [t('admin.approvedDrivers'), approvedDrivers]
   ];
+  
   $('screen').innerHTML = `
     <div class="page-head"><h2>${t('nav.dashboard')}</h2><p>IGA KEEN Admin</p></div>
     <div class="stat-grid">${cards.map(([label, val]) => `<div class="stat-card"><span>${esc(label)}</span><strong>${val || 0}</strong></div>`).join('')}</div>
@@ -1276,19 +1353,28 @@ async function renderAdminDashboard() {
   `;
 }
 async function renderAdminOrders() {
-  const { data, error } = await db.from('orders').select('*').order('created_at', { ascending: false }).limit(80);
-  if (error) throw error;
+  if (!state.isAdmin) return;
+  let data = [];
+  try {
+    const res = await db.from('orders').select('*').order('created_at', { ascending: false }).limit(80);
+    if (!res.error) data = res.data || [];
+  } catch (err) {}
   $('screen').innerHTML = `
     <div class="page-head"><h2>${t('admin.orders')}</h2><p>Dhammaan dalabyada</p></div>
-    ${(data || []).length ? data.map(orderCard).join('') : emptyBox('🧾', t('common.empty'), 'Ma jiraan dalabyo.')}
+    ${data.length ? data.map(orderCard).join('') : emptyBox('🧾', t('common.empty'), 'Ma jiraan dalabyo ama lama heli karin xogta.')}
   `;
 }
 async function renderAdminDrivers() {
-  const { data, error } = await db.from('drivers').select('*').order('created_at', { ascending: false });
-  if (error) throw error;
+  if (!state.isAdmin) return;
+  let data = [];
+  try {
+    const res = await db.from('drivers').select('*').order('created_at', { ascending: false });
+    if (!res.error) data = res.data || [];
+  } catch (err) {}
+  
   $('screen').innerHTML = `
-    <div class="page-head"><h2>${t('admin.drivers')}</h2><p>${t('admin.pendingDrivers')}: ${(data || []).filter(d => d.approval_status === 'pending').length}</p></div>
-    ${(data || []).length ? data.map(d => `
+    <div class="page-head"><h2>${t('admin.drivers')}</h2><p>${t('admin.pendingDrivers')}: ${data.filter(d => d.approval_status === 'pending').length}</p></div>
+    ${data.length ? data.map(d => `
       <div class="card">
         <div style="display:flex;justify-content:space-between;gap:8px;align-items:start">
           <div><p class="card-title">${esc(d.full_name || 'Driver')}</p><p class="card-sub">${esc(d.service_type)} · ${esc(d.phone || '—')}</p><p class="card-sub">${esc(d.vehicle_description || '')}</p></div>
@@ -1313,11 +1399,16 @@ async function adminDriverDecision(driverId, status) {
   finally { showLoading(false); }
 }
 async function renderAdminFees() {
-  const { data, error } = await db.from('driver_fee_payments').select('*').order('created_at', { ascending: false }).limit(80);
-  if (error) throw error;
+  if (!state.isAdmin) return;
+  let data = [];
+  try {
+    const res = await db.from('driver_fee_payments').select('*').order('created_at', { ascending: false }).limit(80);
+    if (!res.error) data = res.data || [];
+  } catch (err) {}
+
   $('screen').innerHTML = `
-    <div class="page-head"><h2>${t('admin.fees')}</h2><p>${t('admin.pendingFees')}: ${(data || []).filter(f => f.status === 'pending').length}</p></div>
-    ${(data || []).length ? data.map(f => `
+    <div class="page-head"><h2>${t('admin.fees')}</h2><p>${t('admin.pendingFees')}: ${data.filter(f => f.status === 'pending').length}</p></div>
+    ${data.length ? data.map(f => `
       <div class="card">
         <div style="display:flex;justify-content:space-between;gap:8px">
           <div><p class="card-title">${fmtMoney(f.amount, f.currency)}</p><p class="card-sub">${esc(f.payment_reference || '—')}</p><p class="card-sub">${esc(f.payment_note || '')}</p><p class="card-sub" style="font-size:11px">${fmtDate(f.created_at)}</p></div>
@@ -1342,6 +1433,7 @@ async function adminFeeDecision(paymentId, decision) {
   finally { showLoading(false); }
 }
 async function renderAdminSettings() {
+  if (!state.isAdmin) return;
   const { data: fees } = await db.from('service_fees').select('*').order('service_type');
   $('screen').innerHTML = `
     <div class="page-head"><h2>${t('admin.settings')}</h2><p>${t('admin.serviceFees')}</p></div>
@@ -1374,6 +1466,7 @@ async function saveFee(e, feeId) {
   finally { showLoading(false); }
 }
 async function renderAdminNotifications() {
+  if (!state.isAdmin) return;
   const { data: notices } = await db.from('app_notices').select('*').order('created_at', { ascending: false }).limit(20);
   $('screen').innerHTML = `
     <div class="page-head"><h2>${t('admin.notifications')}</h2><p>${t('admin.publishNotice')}</p></div>
