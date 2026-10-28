@@ -1163,62 +1163,133 @@ async function toggleLike(postId, currentLikes) {
     console.error('Like failed:', err);
   }
 }
+
 async function openComments(postId) {
   if (!postId) return;
-  
+
   let comments = [];
+
   try {
-    const { data, error } = await db.from('community_comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
-    if (!error && data) comments = data;
+    const { data, error } = await db
+      .from('community_comments')
+      .select('id, post_id, author_id, body, created_at')
+      .eq('post_id', postId)
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+    comments = data || [];
+
+    const authorIds = [
+      ...new Set(comments.map(c => c.author_id).filter(Boolean))
+    ];
+
+    if (authorIds.length) {
+      const { data: profiles, error: profileError } = await db
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', authorIds);
+
+      if (profileError) throw profileError;
+
+      const names = new Map(
+        (profiles || []).map(p => [p.id, p.full_name])
+      );
+
+      comments = comments.map(c => ({
+        ...c,
+        author_name: names.get(c.author_id) || 'IG User'
+      }));
+    }
   } catch (err) {
-    console.warn('Comments fetch error:', err);
+    console.error('Comments fetch error:', err);
+    return toast(
+      'Faallooyinka lama soo dejin karin. Mar kale isku day.',
+      'error'
+    );
   }
 
   openModal(`
-    <div class="modal-head"><h3>${t('community.comment')}</h3><button class="modal-close" onclick="App.closeModal()">×</button></div>
-    <div style="max-height:40dvh;overflow:auto;margin-bottom:12px">
-      ${comments.length ? comments.map(c => `
-        <div class="list-item">
-          <div class="post-avatar">${esc(initials(c.author_name || 'IG User'))}</div>
-          <div class="list-main">
-            <strong>${esc(c.author_name || 'IG User')}</strong>
-            <p>${esc(c.body)}</p>
-            <p style="font-size:10px">${fmtDate(c.created_at)}</p>
-          </div>
-        </div>`).join('') : emptyBox('💬', t('common.empty'), 'Qor faalladaada ugu horreysa.')}
+    <div class="modal-head">
+      <h3>${t('community.comment')}</h3>
+      <button class="modal-close" onclick="App.closeModal()">×</button>
     </div>
+
+    <div style="max-height:40dvh;overflow:auto;margin-bottom:12px">
+      ${
+        comments.length
+          ? comments.map(c => `
+            <div class="list-item">
+              <div class="post-avatar">
+                ${esc(initials(c.author_name))}
+              </div>
+              <div class="list-main">
+                <strong>${esc(c.author_name)}</strong>
+                <p>${esc(c.body)}</p>
+                <p style="font-size:10px">${fmtDate(c.created_at)}</p>
+              </div>
+            </div>
+          `).join('')
+          : emptyBox(
+              '💬',
+              t('common.empty'),
+              'Qor faalladaada ugu horreysa.'
+            )
+      }
+    </div>
+
     <form onsubmit="App.createComment(event, '${postId}')" class="auth-form">
-      <label class="field"><span>${t('community.comment')}</span><input id="commentBody" required placeholder="${t('community.writeComment')}" /></label>
-      <button class="btn btn-primary btn-block" type="submit">${t('common.send')}</button>
+      <label class="field">
+        <span>${t('community.comment')}</span>
+        <input
+          id="commentBody"
+          required
+          maxlength="2000"
+          placeholder="${t('community.writeComment')}"
+        />
+      </label>
+      <button class="btn btn-primary btn-block" type="submit">
+        ${t('common.send')}
+      </button>
     </form>
   `);
 }
+
 async function createComment(e, postId) {
   e.preventDefault();
-  if (!postId || !state.user?.id) return;
-  
-  const body = $('commentBody').value.trim();
+
+  if (!postId || !state.user?.id) {
+    return toast('Fadlan marka hore gal akoonkaaga.', 'error');
+  }
+
+  const input = $('commentBody');
+  const body = input?.value.trim();
+
   if (!body) return;
+  if (body.length > 2000) {
+    return toast('Faalladu kama badnaan karto 2000 xaraf.', 'error');
+  }
 
   showLoading();
-  try {
-    const payload = {
-      post_id: postId,
-      user_id: state.user.id,
-      author_name: state.profile?.full_name || state.user.email?.split('@')[0] || 'IG User',
-      body: body
-    };
 
-    const { error } = await db.from('community_comments').insert(payload);
+  try {
+    const { error } = await db
+      .from('community_comments')
+      .insert({
+        post_id: postId,
+        author_id: state.user.id,
+        body
+      });
+
     if (error) throw error;
-    
+
     closeModal();
     toast('Faallo waa la daray.', 'success');
-    renderCommunity();
-  } catch (err) { 
-    toast(friendlyError(err), 'error'); 
-  } finally { 
-    showLoading(false); 
+    await renderCommunity();
+  } catch (err) {
+    console.error('Comment insert error:', err);
+    toast(friendlyError(err), 'error');
+  } finally {
+    showLoading(false);
   }
 }
 
