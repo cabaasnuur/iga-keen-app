@@ -1170,36 +1170,12 @@ async function openComments(postId) {
   let comments = [];
 
   try {
-    const { data, error } = await db
-      .from('community_comments')
-      .select('id, post_id, author_id, body, created_at')
-      .eq('post_id', postId)
-      .order('created_at', { ascending: true });
-
+    // Halkan waxaan isticmaalaynaa RPC-ga aan SQL-ka ku abuurnay si ammaan ah
+    const { data, error } = await db.rpc('igakeen_get_community_comments', { p_post_id: postId });
+    
     if (error) throw error;
     comments = data || [];
 
-    const authorIds = [
-      ...new Set(comments.map(c => c.author_id).filter(Boolean))
-    ];
-
-    if (authorIds.length) {
-      const { data: profiles, error: profileError } = await db
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', authorIds);
-
-      if (profileError) throw profileError;
-
-      const names = new Map(
-        (profiles || []).map(p => [p.id, p.full_name])
-      );
-
-      comments = comments.map(c => ({
-        ...c,
-        author_name: names.get(c.author_id) || 'IG User'
-      }));
-    }
   } catch (err) {
     console.error('Comments fetch error:', err);
     return toast(
@@ -1220,7 +1196,7 @@ async function openComments(postId) {
           ? comments.map(c => `
             <div class="list-item">
               <div class="post-avatar">
-                ${esc(initials(c.author_name))}
+                ${c.author_avatar_url ? `<img src="${esc(c.author_avatar_url)}" alt="">` : esc(initials(c.author_name))}
               </div>
               <div class="list-main">
                 <strong>${esc(c.author_name)}</strong>
@@ -1272,12 +1248,13 @@ async function createComment(e, postId) {
   showLoading();
 
   try {
+    // Halkan waxaa lagu darayaa author_id si sax ah (ma jiro author_name ama user_id)
     const { error } = await db
       .from('community_comments')
       .insert({
         post_id: postId,
         author_id: state.user.id,
-        body
+        body: body
       });
 
     if (error) throw error;
